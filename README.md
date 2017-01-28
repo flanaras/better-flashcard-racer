@@ -2,7 +2,7 @@
 
 - Instructions for frontend environment setup:
     
-    - Clone repo
+    - git clone -b dev git@github.com:flanaras/better-flashcard-racer.git
     - cd better-flashcard-racer
     - cd frontend
     - npm install (installs all dependencies)

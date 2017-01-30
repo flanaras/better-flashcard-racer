@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {SelectMode, DeckConfig} from './components'
+import SelectMode from './SelectMode'
+import DeckConfig from './DeckConfig'
 import { Router, Route, browserHistory} from 'react-router'
 
 ReactDOM.render((

@@ -1,6 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {SelectMode, DeckConfig} from './components'
+import { Router, Route, browserHistory} from 'react-router'
 
-let Hello = () => <span>Hi</span>
-
-ReactDOM.render(<Hello/>, document.querySelector('#root'));
+ReactDOM.render((
+    <Router history={browserHistory}>
+        <Route path="/" component={SelectMode} />
+        <Route path="deckconfig" component={DeckConfig} />
+    </Router>
+), document.getElementById('root'));

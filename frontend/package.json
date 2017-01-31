@@ -4,7 +4,11 @@
   "description": "The clientside scripts for the flashcard racer application",
   "main": "./src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject" ,
+    "test-watch": "mocha --watch --require setup.js ./test/*.spec.js"
   },
   "repository": {
     "type": "git",

@@ -1,20 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {FlashcardPractice} from './components';
+import SelectMode from './SelectMode'
+import DeckConfig from './DeckConfig'
+import MotherOfDragons from './MotherOfDragons'
+import { FlashcardPractice } from './Flashcard'
+import { Router, Route, browserHistory} from 'react-router'
 
-let Hello = () => <span>Hi</span>
-
-var flashcards = [
-  {
-    "id":141,
-    "problem":"1+1",
-    "solution":2
-  },
-  {
-    "id":2,
-    "problem":"4+1",
-    "solution":5
-  }
-];
-
-ReactDOM.render(<FlashcardPractice flashcards={flashcards} />, document.querySelector('#root'));
+ReactDOM.render((
+    <Router history={browserHistory}>
+        <Route component={MotherOfDragons}>
+            <Route path="/" component={SelectMode} />
+            <Route path="deckconfig" component={DeckConfig} />
+            <Route path="playgame" component={FlashcardPractice} />
+        </Route>
+    </Router>
+), document.getElementById('root'));

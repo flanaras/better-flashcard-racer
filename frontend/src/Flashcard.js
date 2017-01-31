@@ -40,12 +40,12 @@ export class FlashcardPractice extends Component {
   }
 
   completeQuestion() {
-    let flashcard = this.props.flashcards[this.state.questionsAnswered];
+    let flashcard = this.props.chosenDeck.flashcards[this.state.questionsAnswered];
     flashcard.answer = this.state.currentAnswer;
 
     this.state.answers.push(flashcard);
 
-    if(this.state.questionsAnswered < this.props.flashcards.length - 1) {
+    if(this.state.questionsAnswered < this.props.chosenDeck.flashcards.length - 1) {
       this.setState({ questionsAnswered : this.state.questionsAnswered + 1 })
     }
     else {
@@ -64,8 +64,8 @@ export class FlashcardPractice extends Component {
   render() {
     return (
       <div>
-        <Flashcard flashcard={this.props.flashcards[this.state.questionsAnswered]} sendAnswer={this.updateAnswer}/>
-        <button onClick={this.completeQuestion}>{(this.state.questionsAnswered !== this.props.flashcards.length - 1) ? 'Next Question' : 'Complete Session'}</button>
+        <Flashcard flashcard={this.props.chosenDeck.flashcards[this.state.questionsAnswered]} sendAnswer={this.updateAnswer}/>
+        <button onClick={this.completeQuestion}>{(this.state.questionsAnswered !== this.props.chosenDeck.flashcards.length - 1) ? 'Next Question' : 'Complete Session'}</button>
       </div>
     )
   }

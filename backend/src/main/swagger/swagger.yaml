@@ -11,7 +11,7 @@ info:
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 basePath: /v1
 tags:
-  - name: Decks
+  - name: decks
     description: All about decks data
 #  - name: user
 #    description: Access to Petstore orders

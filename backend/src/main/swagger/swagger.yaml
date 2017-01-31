@@ -1,90 +1,61 @@
 swagger: "2.0"
 info:
-  description: "This is a sample server Petstore server.  You can find out more about Swagger at <a href=\"http://swagger.io\">http://swagger.io</a> or on irc.freenode.net, #swagger.  For this sample, you can use the api key \"special-key\" to test the authorization filters"
+  description: "This is a Flashcard server.  You can find out more about Swagger at <a href=\"http://swagger.io\">http://swagger.io</a> or on irc.freenode.net, #swagger.  You can use the api key \"special-key\" to test the authorization filters"
   version: 1.0.0
-  title: Better FlashCard Racer
+  title: Swagger Flashcard YAML
   termsOfService: "http://swagger.io/terms/"
   contact:
-    email: "apiteam@swagger.io"
+    email: "asailona@gmail.com"
   license:
     name: Apache 2.0
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 basePath: /v1
 tags:
-  - name: pet
-    description: Everything about your Pets
-    externalDocs:
-      description: Find out more
-      url: "http://swagger.io"
-  - name: store
-    description: Operations about user
-  - name: user
-    description: Access to Petstore orders
-    externalDocs:
-      description: Find out more about our store
-      url: "http://swagger.io"
+  - name: Decks
+    description: All about decks data
+#  - name: user
+#    description: Access to Petstore orders
+#    externalDocs:
+#      description: Find out more about our store
+#      url: "http://swagger.io"
 schemes:
   - http
 paths:
-  /pet/findByStatus:
+  /decks:
     get:
       tags:
-        - pet
-      summary: Finds Pets by status
-      description: Multiple status values can be provided with comma seperated strings
-      operationId: findPetsByStatus
+        - deck
+      summary: Find all decks available
+      x-swagger-router-controller: DeckController
+      description: Return all set of decks
+      operationId: getDecks
       consumes:
-        - application/xml
-        - application/json
-        - multipart/form-data
         - application/x-www-form-urlencoded
       produces:
-        - application/xml
         - application/json
-      parameters:
-        - name: status
-          in: query
-          description: Status values that need to be considered for filter
-          required: false
-          type: array
-          items:
-            type: string
-          collectionFormat: multi
-          default: available
-          enum:
-            - available
-            - pending
-            - sold
       responses:
         "200":
           description: successful operation
           schema:
-            type: array
-            items:
-              $ref: "#/definitions/Pet"
-        "400":
-          description: Invalid status value
+            $ref: "#/definitions/Deck"
       security:
-        - petstore_auth:
-            - "write:pets"
-            - "read:pets"
-  "/pet/{petId}":
+        - api_key: []
+  "/decks/{deckId}":
     get:
       tags:
-        - pet
-      summary: Find pet by ID
-      x-swagger-router-controller: SampleController
-      description: Returns a single pet
-      operationId: getPetById
+        - deck
+      summary: Find deck by ID
+      x-swagger-router-controller: DeckController
+      description: Returns a single set of deck
+      operationId: getDeckById
       consumes:
         - application/x-www-form-urlencoded
       produces:
-        - application/xml
         - application/json
       parameters:
-        - name: petId
+        - name: deckId
           in: path
-          description: ID of pet to return
+          description: ID of deck to return
           required: true
           type: integer
           format: int64
@@ -92,11 +63,11 @@ paths:
         "200":
           description: successful operation
           schema:
-            $ref: "#/definitions/Pet"
+            $ref: "#/definitions/Deck"
         "400":
           description: Invalid ID supplied
         "404":
-          description: Pet not found
+          description: Deck not found
       security:
         - api_key: []
         - petstore_auth:
@@ -104,31 +75,33 @@ paths:
             - "read:pets"
     post:
       tags:
-        - pet
-      summary: Updates a pet in the store with form data
+        - deck
+      summary: Updates a deck in the store with form data
       description: ""
-      operationId: updatePetWithForm
+      operationId: updateDeck
       consumes:
         - application/x-www-form-urlencoded
       produces:
-        - application/xml
         - application/json
       parameters:
-        - name: petId
+        - name: deckId
           in: path
-          description: ID of pet that needs to be updated
+          description: ID of deck that needs to be updated
           required: true
           type: string
-        - name: name
+        - name: numProblems
           in: formData
-          description: Updated name of the pet
-          required: false
-          type: string
-        - name: status
+          description: number of problem in the deck 
+          required: true
+          type: integer
+          format: int32
+        - name: card
           in: formData
-          description: Updated status of the pet
-          required: false
-          type: string
+          description: collection of cards
+          required: true
+          type: array
+          items:
+            $ref: "#/definitions/Card"
       responses:
         "405":
           description: Invalid input
@@ -136,159 +109,76 @@ paths:
         - petstore_auth:
             - "write:pets"
             - "read:pets"
-  "/pet/{petId}/uploadImage":
-    post:
+    delete:
       tags:
-        - pet
-      summary: uploads an image
-      x-swagger-router-controller: SampleController
+        - deck
+      summary: Deletes a deck
       description: ""
-      operationId: uploadFile
+      operationId: deleteDeck
       consumes:
         - multipart/form-data
+        - application/x-www-form-urlencoded
       produces:
+        - application/xml
         - application/json
       parameters:
-        - name: petId
+        - name: api_key
+          in: header
+          description: ""
+          required: false
+          type: string
+        - name: deckId
           in: path
-          description: ID of pet to update
+          description: Deck id to delete
           required: true
           type: integer
           format: int64
-        - name: additionalMetadata
-          in: formData
-          description: Additional data to pass to server
-          required: false
-          type: string
-        - name: file
-          in: formData
-          description: file to upload
-          required: false
-          type: file
       responses:
-        "200":
-          description: successful operation
-          schema:
-            $ref: "#/definitions/ApiResponse"
+        "400":
+          description: Invalid deck value
       security:
         - petstore_auth:
             - "write:pets"
             - "read:pets"
-securityDefinitions:
-  petstore_auth:
-    type: oauth2
-    authorizationUrl: "http://petstore.swagger.io/api/oauth/dialog"
-    flow: implicit
-    scopes:
-      "write:pets": modify pets in your account
-      "read:pets": read your pets
-  api_key:
-    type: apiKey
-    name: api_key
-    in: header
+#securityDefinitions:
+#  petstore_auth:
+#    type: oauth2
+#    authorizationUrl: "http://petstore.swagger.io/api/oauth/dialog"
+#    flow: implicit
+#    scopes:
+#      "write:pets": modify pets in your account
+#      "read:pets": read your pets
+#  api_key:
+#    type: apiKey
+#    name: api_key
+#    in: header
 definitions:
-  Order:
+  Card:
     properties:
       id:
         type: integer
         format: int64
-      petId:
-        type: integer
-        format: int64
-      quantity:
-        type: integer
-        format: int32
-      shipDate:
+      problem:
         type: string
-        format: date-time
-      status:
-        type: string
-        description: Order Status
-        enum:
-          - placed
-          - approved
-          - delivered
-      complete:
-        type: boolean
-    xml:
-      name: Order
-  Category:
-    properties:
-      id:
-        type: integer
-        format: int64
-      name:
+      answer:
         type: string
     xml:
-      name: Category
-  User:
-    properties:
-      id:
-        type: integer
-        format: int64
-      username:
-        type: string
-      firstName:
-        type: string
-      lastName:
-        type: string
-      email:
-        type: string
-      password:
-        type: string
-      phone:
-        type: string
-      userStatus:
-        type: integer
-        format: int32
-        description: User Status
-    xml:
-      name: User
-  Tag:
-    properties:
-      id:
-        type: integer
-        format: int64
-      name:
-        type: string
-    xml:
-      name: Tag
-  Pet:
+      name: Card
+  Deck:
     required:
-      - name
-      - photoUrls
+      - numProblems
+      - questionType
     properties:
       id:
         type: integer
         format: int64
-      category:
-        $ref: "#/definitions/Category"
-      name:
-        type: string
-        example: doggie
-      photoUrls:
-        type: array
-        xml:
-          name: photoUrl
-          wrapped: true
-        items:
-          type: string
-      tags:
-        type: array
-        xml:
-          name: tag
-          wrapped: true
-        items:
-          $ref: "#/definitions/Tag"
-      status:
-        type: string
-        description: pet status in the store
-        enum:
-          - available
-          - pending
-          - sold
+      numProblems:
+        type: integer
+        format: int32
+      flashcards:
+        $ref: "#/definitions/Card"
     xml:
-      name: Pet
+      name: Deck
   ApiResponse:
     properties:
       code:

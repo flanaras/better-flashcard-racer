@@ -12,6 +12,12 @@ The project uses [Gradle](https://gradle.org/) for its build system and you can 
 or
 
     ./gradlew clean build bootRun
+    
+To run the test cases:
+
+    ./gradlew test
+    
+In case of a failed test case append '-i' for more information.
 	
 Currently it wont run from the generated .jar due to some linking problems.
 

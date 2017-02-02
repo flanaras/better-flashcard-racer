@@ -20,6 +20,8 @@
 
 ###Start working on a new feature
 
+Are you starting to work on a subtask within a feature/user story? Then move down to "Start work on an existing feature", do not create a separate branch.
+
 - First make sure that you are standing in the "dev" branch.
 - Create a new branch, ex "practice-flashcards" (the branch should be off of "dev")
     - git checkout dev 
@@ -42,6 +44,8 @@
 - If there is more tasks to be done on the feature, repeat from 1.
 
 ###Start work on an existing feature
+
+Are you starting a subtask within practice-flashcards? Then follow this.
 
 - Choose the feature branch to work on
     - git checkout practice-flashcards

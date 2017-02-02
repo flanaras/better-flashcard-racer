@@ -42,6 +42,9 @@ describe('DeckConfig', () => {
         console.log(wrapper.state.chosenDeck)
         expect(wrapper.state('chosenDeck')).to.eql({id:2, desc: 'Medium plus and minus'})
     })
+    it('user should be able to choose between generating a deck or selecting a already defined deck', () => {
+
+    })
 });
 
 describe('Flashcards', () => {

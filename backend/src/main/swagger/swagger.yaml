@@ -259,10 +259,13 @@ responses:
     description: An unexpected error occured.
 #    schema:
 #      $ref: "#/definitions/Error"
+<<<<<<< af1319982341ff9f8c3e49babb28611d1437c0e9
   Standard200ErrorResponse:
     description: successful operation
   Standard403ErrorResponse:
     description: Forbidden.
+=======
+>>>>>>> Fix .yaml file, fixing based on John example & error found by Michael
   ObjectDoesNotExistResponse:
     description: The object was not found in
   Standard201CreatedResponse:

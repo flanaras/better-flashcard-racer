@@ -20,7 +20,14 @@
 
 ###Start working on a new feature
 
-Are you starting to work on a subtask within a feature/user story? Then move down to "Start work on an existing feature", do not create a separate branch.
+Are you starting to work on a subtask within a feature/user story? Check if there is already an open branch for the feature. If there is, move down to "Start work on an existing feature", do not create a separate branch.
+
+An example:
+- I want to start on the task "Add option to select game length: Either number of problems or a time limit.", which is one of the tasks in the checklist "S03. Practice flashcards"
+- First, I add myself as a member to the card and move it to "In progress" on Trello
+- Then I want to start working, so I check if there is a existing branch named something like "S03", or "practice-flashcards"
+- If I find branch, then continue with the instructions at "Start working on an existing feature". If not, move on to the instructions below.
+
 
 - First make sure that you are standing in the "dev" branch.
 - Create a new branch, ex "practice-flashcards" (the branch should be off of "dev")

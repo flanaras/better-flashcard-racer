@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { shallow, mount } from 'enzyme'
 import { spy } from 'sinon'
 import SelectMode from '../src/SelectMode'
-import DeckConfig from '../src/DeckConfig'
+import DeckConfig, {GenerateDeckOptions} from '../src/DeckConfig'
 import MotherOfDragons from '../src/MotherOfDragons'
 import { Flashcard, FlashcardPractice } from './../src/Flashcard'
 
@@ -19,14 +19,14 @@ describe('SelectMode', () => {
 describe('DeckConfig', () => {
     it('should dispaly decks in a dropdown', () => {
         const decks = ['Easy plus and minus', 'Medium plus and minus', 'Hard pus and minus']
-        const wrapper = shallow(<DeckConfig decks={decks}/>)
+        const wrapper = mount(<DeckConfig decks={decks}/>)
         wrapper.setState({decks})
         expect(wrapper.find('option').length).to.equal(3)
     })
     it('onDeckChange should be called when the selected deck is changed', () => {
         const onDeckChangeSpy = spy()
         const decks = [{id: 1, desc: 'Easy plus and minus'}, {id:2, desc: 'Medium plus and minus'}, {id:3, desc: 'Hard pus and minus'}]
-        const wrapper = shallow(<DeckConfig decks={decks} onDeckChange={onDeckChangeSpy}/>)
+        const wrapper = mount(<DeckConfig decks={decks} onDeckChange={onDeckChangeSpy}/>)
         const dropdown = wrapper.find('select')
         dropdown.simulate('change', ({target:{value: 2}}))
         expect(onDeckChangeSpy.calledOnce).to.equal(true)
@@ -39,7 +39,6 @@ describe('DeckConfig', () => {
         wrapper.setState({chosenDeck})
         wrapper.setState({decks})
         wrapper.instance().onDeckChange(2)
-        console.log(wrapper.state.chosenDeck)
         expect(wrapper.state('chosenDeck')).to.eql({id:2, desc: 'Medium plus and minus'})
     })
     it('user should be able to choose between generating a deck or selecting a already defined deck', () => {
@@ -47,19 +46,41 @@ describe('DeckConfig', () => {
         expect(wrapper.find('[name="selectType"][type="radio"]').length).to.equal(2)
     })
     it('onDeckTypeChange should be called when the user clicks a radio button', () => {
-        const onDeckTypeChangeSpy = spy()
-        const wrapper = mount(<DeckConfig decks={[{id:1, desc: 'Easy plus and minus'}]}/>)
+        const wrapper = shallow(<DeckConfig decks={[{id:1, desc: 'Easy plus and minus'}]}/>)
         wrapper.instance().onDeckTypeChange({target:{value:"existingDeck"}})
-        //const inputRadioGenerate = wrapper.find('[value="generateDeck"]')
-        //console.log(inputRadioGenerate)
-        //inputRadioGenerate.simulate('click')
-        expect(wrapper.state('showGenerate')).to.equal(true)
-        //expect(onDeckTypeChangeSpy.calledWith('generateDeck')).to.equal(true)
+        expect(wrapper.state('deckType')).to.equal('existingDeck')
     })
-    // Radio button, either generate deck or select existing deck
-    // Choosing generate, should only show generate and not existing deck dropdown
-    // And the other way around
+    it('choosing generateDeck should only show generate and not existing deck dropdown', () => {
+        const wrapper = mount(<DeckConfig decks={[{id:1, desc: 'Easy plus and minus'}]}/>)
+        wrapper.setState({deckType: 'generateDeck'})
+        expect(wrapper.find('select').length).to.equal(0)
+    })
+    it('choosing existingDeck should only show existingDeck and generateDeck', () => {
+        const wrapper = mount(<DeckConfig decks={[{id:1, desc: 'Easy plus and minus'}]}/>)
+        wrapper.setState({deckType: 'existingDeck'})
+        expect(wrapper.find('select').length).to.equal(1)
+    })
+
 });
+
+describe('GenerateDeck', () => {
+    it('generateDeck should show options for operand and range input', () => {
+        const wrapper = shallow(<GenerateDeckOptions/>)
+        expect(wrapper.containsAllMatchingElements([
+            <form>
+                <input type="checkbox" checked={wrapper.state.add === true ? 'true' : 'false'} value="add" />Addition <br />
+                <input type="checkbox" checked={wrapper.state.sub === true ? 'true' : 'false'} value="sub" />Subtraction <br />
+                <input type="checkbox" checked={wrapper.state.mult === true ? 'true' : 'false'} value="mult" />Multiplicaiton <br />
+                <input type="checkbox" checked={wrapper.state.div === true ? 'true' : 'false'} value="div" />Division <br />
+                <input type="radio" name="gameType" value="time" /> Time
+                <input type="radio" name="gameType" value="numberOfProblems" /> # Problems
+                <h3>Number range</h3>
+                <input type="text" value='min' />Min
+                <input type="text" value='max' />Max
+            </form>
+        ])).to.equal(true)
+    })
+})
 
 describe('Flashcards', () => {
   it('should display the problem statement and an input field to enter the solution', () => {

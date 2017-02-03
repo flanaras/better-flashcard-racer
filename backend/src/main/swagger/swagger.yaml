@@ -228,10 +228,8 @@ definitions:
     properties:
       id:
         type: integer
-        format: int64
       numProblems:
         type: integer
-        format: int32
       name:
         type: string
       description:

@@ -1,9 +1,9 @@
 import React from 'react'
 import { expect } from 'chai';
 import { shallow, mount } from 'enzyme'
-import { spy } from 'sinon'
+import sinon, { spy } from 'sinon'
 import SelectMode from '../src/SelectMode'
-import DeckConfig, {GenerateDeckOptions} from '../src/DeckConfig'
+import DeckConfig, {GenerateDeckOptions, ExistingDeck} from '../src/DeckConfig'
 import MotherOfDragons from '../src/MotherOfDragons'
 import { Flashcard, FlashcardPractice } from './../src/Flashcard'
 
@@ -19,99 +19,98 @@ describe('SelectMode', () => {
 describe('DeckConfig', () => {
     it('should dispaly decks in a dropdown', () => {
         const decks = ['Easy plus and minus', 'Medium plus and minus', 'Hard pus and minus']
-        const wrapper = mount(<DeckConfig decks={decks}/>)
+        const wrapper = mount(<DeckConfig />)
         wrapper.setState({decks})
         expect(wrapper.find('option').length).to.equal(3)
     })
-    it('onDeckChange should be called when the selected deck is changed', () => {
-        const onDeckChangeSpy = spy()
+    it('handleChange should be called when the selected deck is changed', () => {
+        const handleChangeSpy = spy()
         const decks = [{id: 1, desc: 'Easy plus and minus'}, {id:2, desc: 'Medium plus and minus'}, {id:3, desc: 'Hard pus and minus'}]
-        const wrapper = mount(<DeckConfig decks={decks} onDeckChange={onDeckChangeSpy}/>)
+        const wrapper = mount(<ExistingDeck handleChange = {handleChangeSpy} decks = {decks} deckType = {'savedDeck'} chosenDeck = {decks[0]}/>)
         const dropdown = wrapper.find('select')
-        dropdown.simulate('change', ({target:{value: 2}}))
-        expect(onDeckChangeSpy.calledOnce).to.equal(true)
-        expect(onDeckChangeSpy.calledWith(2)).to.equal(true)
+        dropdown.simulate('change', 2)
+        expect(handleChangeSpy.calledOnce).to.equal(true)
     })
     it('choosing a deck should change the currently chosen deck', () => {
         const chosenDeck = {id:1, desc: 'Easy plus and minus'}
         const decks = [{id:1, desc: 'Easy plus and minus'}, {id:2, desc: 'Medium plus and minus'}, {id:3, desc: 'Hard pus and minus'}]
-        const wrapper = shallow(<MotherOfDragons children={DeckConfig} />)
-        wrapper.setState({chosenDeck})
+        const wrapper = shallow(<DeckConfig />)
         wrapper.setState({decks})
-        wrapper.instance().onDeckChange(2)
+        wrapper.setState({chosenDeck})
+        wrapper.instance().handleChange({target:{value: 2, type: 'select-one'}})
         expect(wrapper.state('chosenDeck')).to.eql({id:2, desc: 'Medium plus and minus'})
     })
     it('user should be able to choose between generating a deck or selecting a already defined deck', () => {
-        const wrapper = shallow(<DeckConfig decks={[{id:1, desc: 'Easy plus and minus'}]}/>)
-        expect(wrapper.find('[name="selectType"][type="radio"]').length).to.equal(2)
+        const wrapper = shallow(<DeckConfig />)
+        expect(wrapper.find('[name="deckType"][type="radio"]').length).to.equal(2)
     })
-    it('onDeckTypeChange should be called when the user clicks a radio button', () => {
+    it('handleChange should be called when the user clicks a radio button', () => {
         const wrapper = shallow(<DeckConfig decks={[{id:1, desc: 'Easy plus and minus'}]}/>)
-        wrapper.instance().onDeckTypeChange({target:{value:"existingDeck"}})
-        expect(wrapper.state('deckType')).to.equal('existingDeck')
+        let output = wrapper.instance().handleChange({target:{value:"savedDeck", name:"deckType", type: 'select-one'}})
+        expect(wrapper.state('deckType')).to.equal('savedDeck')
     })
-    it('choosing generateDeck should only show generate and not existing deck dropdown', () => {
+    it('choosing generateDeck should only show generate and not savedDeck  dropdown', () => {
         const wrapper = mount(<DeckConfig decks={[{id:1, desc: 'Easy plus and minus'}]}/>)
         wrapper.setState({deckType: 'generateDeck'})
         expect(wrapper.find('select').length).to.equal(0)
     })
-    it('choosing existingDeck should only show existingDeck and generateDeck', () => {
+    it('choosing savedDeck should only show savedDeck and generateDeck', () => {
         const wrapper = mount(<DeckConfig decks={[{id:1, desc: 'Easy plus and minus'}]}/>)
-        wrapper.setState({deckType: 'existingDeck'})
+        wrapper.setState({deckType: 'savedDeck'})
         expect(wrapper.find('select').length).to.equal(1)
     })
-    it('when a user press submit, the onSubmit method should be called', () => {
-        const onSubmitGameConfigSpy = spy()
-        const wrapper = shallow(<DeckConfig decks={[{id:1, desc: 'Easy plus and minus'}]} onSubmitGameConfig={onSubmitGameConfigSpy}/>)
-        const submitButton = wrapper.find('[type="submit"]')
+    it('when a user press submit, the submitGameConfig method should be called', () => {
+        const submitGameConfigSpy = spy()
+        const wrapper = mount(<DeckConfig onSubmitGameConfig={submitGameConfigSpy}/>)
+        const form = wrapper.find('form')
         const generateDeckRadio = wrapper.find("[value='generateDeck']")
-        const addBox = wrapper.find("[value='add']")
-        const subBox = wrapper.find("[value='sub']")
-        const multBox = wrapper.find("[value='mult']")
-        const divBox = wrapper.find("[value='div']")
-        const timeBox = wrapper.find("[value='time']")
-        const numProbsBox = wrapper.find("[value='numberOfProblems']")
-        const minInput = wrapper.find("[value='min']")
-        const maxInput = wrapper.find("[value='max']")
+        generateDeckRadio.simulate('click')
+        form.simulate('submit')
+        expect(submitGameConfigSpy.calledOnce).to.equal(true)
+    })
+    it('when a user submits a savedDeck config, the config should be submitted successfully', () => {
+        const onSubmitGameConfigSpy = spy()
+        const chosenDeck = {id:1, desc: 'Easy plus and minus'}
+        const wrapper = mount(<DeckConfig onSubmitGameConfig={onSubmitGameConfigSpy} />)
 
-        generateDeckRadio.simulate('checked')
-        addBox.simulate('checked', true)
-        subBox.simulate('checked', true)
-        multBox.simulate('checked', false)
-        divBox.simulate('checked', false)
-        timeBox.simulate('checked', false)
-        numProbsBox.simulate('checked', true)
-        minInput.simulate('change','-10')
-        maxInput.simulate('change','20')
-        submitButton.simulate('click')
+        const form = wrapper.find('form')
+        const generateDeckRadio = wrapper.find("[value='generateDeck']")
+        const gameTypeRadio = wrapper.find("[value='timeGame']")
+        const gameLengthInput = wrapper.find("[name='gameLength']")
 
-        const gameConfig = {}
+        generateDeckRadio.simulate('click')
+        gameTypeRadio.simulate('click')
+        gameLengthInput.simulate('change', {target:{value:'20', type:'text', name: 'gameLength'}})
+
+        wrapper.setState({chosenDeck})
+        form.simulate('submit')
 
         expect(onSubmitGameConfigSpy.calledOnce).to.equal(true)
-        //expect(onSubmitGameConfigSpy.calledWith())
-
+        expect(onSubmitGameConfigSpy.getCall(0).args[0]).to.equal(chosenDeck)
+        expect(onSubmitGameConfigSpy.getCall(0).args[1]).to.equal('timeGame')
+        expect(onSubmitGameConfigSpy.getCall(0).args[2]).to.equal('20')
+        expect(onSubmitGameConfigSpy.calledWith(chosenDeck, 'timeGame', '20')).to.equal(true)
     })
+    it.skip('when a user submits a generatedDeck config, all the options should be added to the submit object', () => {
+        //TODO: Implement test when API in place
+        /*const addBox = generateWrapper.find("[name='add']")
+         const subBox = generateWrapper.find("[name='sub']")
+         const multBox = generateWrapper.find("[name='mult']")
+         const divBox = generateWrapper.find("[name='div']")
+         const minInput = generateWrapper.find("[name='min']")
+         const maxInput = generateWrapper.find("[name='max']")
+         */
 
+        /*addBox.simulate('click')
+         subBox.simulate('click')
+         multBox.simulate('click')
+         divBox.simulate('click')
+         minInput.simulate('change',{target:{value:'-10'}})
+         maxInput.simulate('change',{target:{value:'20'}})
+         */
+    })
 });
 
-describe('GenerateDeck', () => {
-    it('generateDeck should show options for operand and range input', () => {
-        const wrapper = shallow(<GenerateDeckOptions/>)
-        expect(wrapper.containsAllMatchingElements([
-            <form>
-                <input type="checkbox" checked={wrapper.state.add === true ? 'true' : 'false'} value="add" />Addition <br />
-                <input type="checkbox" checked={wrapper.state.sub === true ? 'true' : 'false'} value="sub" />Subtraction <br />
-                <input type="checkbox" checked={wrapper.state.mult === true ? 'true' : 'false'} value="mult" />Multiplicaiton <br />
-                <input type="checkbox" checked={wrapper.state.div === true ? 'true' : 'false'} value="div" />Division <br />
-                <input type="radio" name="gameType" value="time" /> Time
-                <input type="radio" name="gameType" value="numberOfProblems" /> # Problems
-                <h3>Number range</h3>
-                <input type="text" value='min' />Min
-                <input type="text" value='max' />Max
-            </form>
-        ])).to.equal(true)
-    })
-})
 
 describe('Flashcards', () => {
   it('should display the problem statement and an input field to enter the solution', () => {

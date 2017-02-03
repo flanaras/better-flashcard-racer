@@ -4,9 +4,7 @@ import {browserHistory} from "react-router";
 export default class SelectMode extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-            chosenDeck: {}
-        }
+        this.state = {}
         this.onSubmitGameConfig = this.onSubmitGameConfig.bind(this)
     }
 
@@ -20,8 +18,6 @@ export default class SelectMode extends Component {
         return (
             <div>
                 {React.cloneElement(this.props.children, {
-                    decks: this.state.decks,
-                    onDeckChange: this.onDeckChange,
                     chosenDeck: this.state.chosenDeck,
                     onSubmitGameConfig: this.onSubmitGameConfig
                 })}

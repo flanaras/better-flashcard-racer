@@ -6,7 +6,6 @@ public class DBConnect {
 
     public Connection connect() throws SQLException {
         Connection conn = null;
-        Properties connectionProps = new Properties();
         String username = "user=java";
         String password = "password=lordofgeese1997";
 

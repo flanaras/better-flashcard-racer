@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
-public class Card {
+public class Flashcard{
 
     @JsonProperty
     private long id;
@@ -44,7 +44,7 @@ public class Card {
 
 
     public String getProblem() {
-        return name;
+        return problem;
     }
 
     public void setProblem(String name) {
@@ -55,14 +55,15 @@ public class Card {
         return answer;
     }
 
-    public void setAnswer(String name) {
+    public void setAnswer(String answer) {
         this.answer = answer;
+    }
 
-    public Category() {
+    public Flashcard() {
 
     }
 
-    public Category(long id, String problem, String answer) {
+    public Flashcard(long id, String problem, String answer) {
         this.id = id;
         this.problem = problem;
         this.answer = answer;

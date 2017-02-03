@@ -19,50 +19,45 @@ package se.uu.it.bfcr.inflector.springboot.controllers;
 import com.github.javafaker.Faker;
 import io.swagger.inflector.models.RequestContext;
 import io.swagger.inflector.models.ResponseContext;
-import se.uu.it.bfcr.inflector.springboot.models.Category;
-import se.uu.it.bfcr.inflector.springboot.models.Pet;
-import se.uu.it.bfcr.inflector.springboot.models.Tag;
+import se.uu.it.bfcr.inflector.springboot.models.Deck;
+import se.uu.it.bfcr.inflector.springboot.models.Flashcard;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.Response.Status;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
-public class SampleController {
+public class DeckController {
 
-    Faker faker = new Faker();
+//    Faker faker = new Faker();
 
-    public ResponseContext getPetById(RequestContext requestContext, Long id)
+    public ResponseContext getDecks(RequestContext requestContext, Long user_id)
     {
-        Pet pet = new Pet();
-        pet.setId(id);
-        pet.setCategory(new Category(16, faker.cat().breed()));
-        pet.setName(faker.cat().name());
-        pet.getTags().add(new Tag(21,faker.cat().registry()));
-        pet.setStatus("active");
+    	List<Flashcard> cards = new ArrayList<Flashcard>();
+    	cards.add(new Flashcard(1, "1+3", "4"));
+    	cards.add(new Flashcard(1, "2+3", "5"));
+    	cards.add(new Flashcard(1, "3+4", "7"));
+    	cards.add(new Flashcard(1, "5+0", "5"));
+    	cards.add(new Flashcard(1, "6-2", "4"));
+        Deck deck = new Deck();
+        deck.setUserId(user_id);
+        deck.setFlashcard(cards);
+        deck.setName("test");
+        deck.setCreated(OffsetDateTime.now().toString());
+        deck.setChanged(OffsetDateTime.now().toString());
+        deck.setDescription("simple description");
+        deck.setId(1);
+        deck.setIsPrivate(false);
+        deck.setNumProblems(5);
+        deck.setUserName("Teacher1");
         return new ResponseContext().status(Status.OK)
-                                    .entity(pet);
+                                    .entity(deck);
     }
 
-
-    public ResponseContext addPet(RequestContext request, Pet body) {
-        return new ResponseContext()
-                .status(Status.OK)
-                .entity(body);
-    }
-
-    public ResponseContext uploadFile(RequestContext request, Long petId, String additionalMetadata, java.io.InputStream file) {
-        ByteArrayOutputStream outputStream;
-        try {
-            outputStream = new ByteArrayOutputStream();
-            IOUtils.copy(file, outputStream);
-            outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
+    
 }

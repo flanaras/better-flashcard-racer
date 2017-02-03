@@ -7,7 +7,7 @@ import { FlashcardPractice } from './Flashcard'
 import { Router, Route, browserHistory, hashHistory} from 'react-router'
 
 ReactDOM.render((
-    <Router history={hashHistory}>
+    <Router history={browserHistory}>
         <Route component={MotherOfDragons}>
             <Route path="/" component={SelectMode} />
             <Route path="deckconfig" component={DeckConfig} />

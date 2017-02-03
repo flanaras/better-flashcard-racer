@@ -60,6 +60,37 @@ describe('DeckConfig', () => {
         wrapper.setState({deckType: 'existingDeck'})
         expect(wrapper.find('select').length).to.equal(1)
     })
+    it('when a user press submit, the onSubmit method should be called', () => {
+        const onSubmitGameConfigSpy = spy()
+        const wrapper = shallow(<DeckConfig decks={[{id:1, desc: 'Easy plus and minus'}]} onSubmitGameConfig={onSubmitGameConfigSpy}/>)
+        const submitButton = wrapper.find('[type="submit"]')
+        const generateDeckRadio = wrapper.find("[value='generateDeck']")
+        const addBox = wrapper.find("[value='add']")
+        const subBox = wrapper.find("[value='sub']")
+        const multBox = wrapper.find("[value='mult']")
+        const divBox = wrapper.find("[value='div']")
+        const timeBox = wrapper.find("[value='time']")
+        const numProbsBox = wrapper.find("[value='numberOfProblems']")
+        const minInput = wrapper.find("[value='min']")
+        const maxInput = wrapper.find("[value='max']")
+
+        generateDeckRadio.simulate('checked')
+        addBox.simulate('checked', true)
+        subBox.simulate('checked', true)
+        multBox.simulate('checked', false)
+        divBox.simulate('checked', false)
+        timeBox.simulate('checked', false)
+        numProbsBox.simulate('checked', true)
+        minInput.simulate('change','-10')
+        maxInput.simulate('change','20')
+        submitButton.simulate('click')
+
+        const gameConfig = {}
+
+        expect(onSubmitGameConfigSpy.calledOnce).to.equal(true)
+        //expect(onSubmitGameConfigSpy.calledWith())
+
+    })
 
 });
 

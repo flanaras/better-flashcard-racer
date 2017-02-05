@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Link} from "react-router";
 
 export class Flashcard extends Component {
 
@@ -43,17 +44,15 @@ export class FlashcardPractice extends Component {
     let flashcard = this.props.chosenDeck.flashcards[this.state.questionsAnswered];
     flashcard.answer = this.state.currentAnswer;
 
+    flashcard.check = parseInt(flashcard.answer) === flashcard.solution? true: false;
+
     this.state.answers.push(flashcard);
 
     if(this.state.questionsAnswered < this.props.chosenDeck.flashcards.length - 1) {
       this.setState({ questionsAnswered : this.state.questionsAnswered + 1 })
     }
     else {
-      //TODO: end the session -> send the answers to the parent component
-      /*
-        Something along the lines of:
         this.props.submitAnswers(this.state.answers);
-       */
     }
   }
 
@@ -65,14 +64,10 @@ export class FlashcardPractice extends Component {
     return (
       <div>
         {
-          (this.state.questionsAnswered !== this.props.chosenDeck.flashcards.length - 1) ?
             <div>
-              <Flashcard flashcard={this.props.chosenDeck.flashcards[this.state.questionsAnswered]} sendAnswer={this.updateAnswer}/>
-              <button onClick={this.completeQuestion}>{(this.state.questionsAnswered !== this.props.chosenDeck.flashcards.length - 1) ? 'Next Question' : 'Complete Session'}</button>
-            </div>
-            :
-            <div>
-              <p>Session completed! :)</p>
+                <Flashcard flashcard={this.props.chosenDeck.flashcards[this.state.questionsAnswered]} sendAnswer={this.updateAnswer}/>
+                <button onClick={this.completeQuestion}>{(this.state.questionsAnswered !== this.props.chosenDeck.flashcards.length - 1) ? 'Next Question' : <Link to="solutions">Complete Session</Link>}</button>
+
             </div>
         }
       </div>

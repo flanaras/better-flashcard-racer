@@ -18,7 +18,7 @@ const decks = [{
         {
             "id": 5,
             "problem": "6+0",
-            "solution": 9
+            "solution": 6
         },
         {
             "id": 8,
@@ -38,7 +38,7 @@ const decks = [{
         {
             "id": 15,
             "problem": "1+3",
-            "solution": 2
+            "solution": 4
         }
     ]
 },
@@ -60,7 +60,7 @@ const decks = [{
             {
                 "id": 5,
                 "problem": "6+0",
-                "solution": 9
+                "solution": 6
             },
             {
                 "id": 8,

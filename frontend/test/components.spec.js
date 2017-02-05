@@ -6,6 +6,7 @@ import SelectMode from '../src/SelectMode'
 import DeckConfig, {GenerateDeckOptions, ExistingDeck} from '../src/DeckConfig'
 import MotherOfDragons from '../src/MotherOfDragons'
 import { Flashcard, FlashcardPractice } from './../src/Flashcard'
+import Solutions from '../src/Solutions'
 
 describe('SelectMode', () => {
     it('should be able to select mode: Login or practice mode', () => {
@@ -17,7 +18,7 @@ describe('SelectMode', () => {
 });
 
 describe('DeckConfig', () => {
-    it('should dispaly decks in a dropdown', () => {
+    it('should display decks in a dropdown', () => {
         const decks = ['Easy plus and minus', 'Medium plus and minus', 'Hard pus and minus']
         const wrapper = mount(<DeckConfig />)
         wrapper.setState({decks})
@@ -130,7 +131,7 @@ describe('Flashcards', () => {
     expect(wrapper.instance().isSolutionCorrect("2")).to.be.true;
     expect(wrapper.instance().isSolutionCorrect("3")).to.be.false;
     expect(wrapper.instance().isSolutionCorrect("-1")).to.be.false;
-  })
+  });
 });
 
 describe('FlashcardPractice', () => {
@@ -188,4 +189,51 @@ describe('FlashcardPractice', () => {
     wrapper.find('button').simulate('click');
     expect(wrapper.state('answers')[0].answer).to.equal("2");
   });
+
+    it('should save solution checking on clicking "Next Question"', () => {
+        const wrapper = mount(<FlashcardPractice chosenDeck={chosenDeck} />);
+
+        wrapper.find('input').simulate('change', { target : { value : "3" } });
+        wrapper.find('button').simulate('click');
+        expect(wrapper.state('answers')[0].check).to.equal(false);
+    });
+
+    it('should submit answers to parent component after completing all questions', () => {
+        //TODO: How to check?
+    });
+});
+
+describe('Solutions', () => {
+    var chosenDeck = [
+        {
+            "answer": "3",
+            "check": false,
+            "id": 141,
+            "problem": "1+1",
+            "solution": 2
+        },
+        {
+            "answer": "5",
+            "check": true,
+            "id": 2,
+            "problem": "4+1",
+            "solution": 5
+        }
+    ];
+
+    it ('should calculate performance info', () => {
+        const wrapper = shallow(<Solutions chosenDeck={chosenDeck} />);
+        expect(wrapper.state('countCorrect')).to.eql(1);
+        expect(wrapper.state('countIncorrect')).to.eql(1);
+    });
+
+    it ('should render detailed list', () => {
+        const wrapper = shallow(<Solutions chosenDeck={chosenDeck} />);
+        expect(wrapper.containsAllMatchingElements([
+            <h1>Your results are:</h1>,
+            <h2>Correct answers: {1}</h2>,
+            <h2>Incorrect answers: {1}</h2>
+        ])).to.equal(true);
+        expect(wrapper.find('li').length).to.equal(2);
+    });
 });

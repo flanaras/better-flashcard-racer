@@ -6,6 +6,7 @@ export default class SelectMode extends Component {
         super(props)
         this.state = {}
         this.onSubmitGameConfig = this.onSubmitGameConfig.bind(this)
+        this.submitAnswers = this.submitAnswers.bind(this)
     }
 
 
@@ -14,12 +15,17 @@ export default class SelectMode extends Component {
         browserHistory.push('playgame')
     }
 
+    submitAnswers(chosenDeck) {
+        this.setState({chosenDeck})
+    }
+
     render() {
         return (
             <div>
                 {React.cloneElement(this.props.children, {
                     chosenDeck: this.state.chosenDeck,
-                    onSubmitGameConfig: this.onSubmitGameConfig
+                    onSubmitGameConfig: this.onSubmitGameConfig,
+                    submitAnswers: this.submitAnswers
                 })}
             </div>
             )

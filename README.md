@@ -7,6 +7,7 @@
     - cd frontend
     - npm install (installs all dependencies)
     - npm install -g mocha
+    - npm install react-bootstrap --save
     - mocha --require setup.js ./test/*.spec.js
         - You should see a passing test. If you see an error, something is wrong.
     - npm start

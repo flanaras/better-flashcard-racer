@@ -92,6 +92,12 @@ describe('DeckConfig', () => {
         expect(onSubmitGameConfigSpy.getCall(0).args[2]).to.equal('20')
         expect(onSubmitGameConfigSpy.calledWith(chosenDeck, 'timeGame', '20')).to.equal(true)
     })
+    it('when the component gets rendered, the component should call our API', () => {
+        const apiCallSpy = spy(DeckConfig.prototype, "apiCall")
+        expect(apiCallSpy.notCalled).to.equal(true)
+        const wrapper = mount(<DeckConfig/>)
+        expect(apiCallSpy.calledOnce).to.equal(true)
+    })
     it.skip('when a user submits a generatedDeck config, all the options should be added to the submit object', () => {
         //TODO: Implement test when API in place
         /*const addBox = generateWrapper.find("[name='add']")

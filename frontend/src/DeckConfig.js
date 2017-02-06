@@ -1,13 +1,14 @@
 import React, {Component} from 'react'
-import decks from './mock'
+import config from './../config.json'
+import LoadJson from "./services/LoadJson";
 
 export default class DeckConfig extends Component {
     constructor() {
         super()
         this.state = {
             deckType: 'savedDeck',
-            decks: decks,
-            chosenDeck: decks[0],
+            decks: ['Placeholder deck'],
+            chosenDeck: 'some place',
             generateDeck: {
                 operators: {
                     add: true,
@@ -26,6 +27,19 @@ export default class DeckConfig extends Component {
         this.handleChange = this.handleChange.bind(this)
         this.handleChangeGenerateDeck = this.handleChangeGenerateDeck.bind(this)
         this.submitGameConfig = this.submitGameConfig.bind(this)
+        this.apiCall = this.apiCall.bind(this)
+    }
+
+    componentDidMount() {
+        this.apiCall('decks')
+    }
+
+    async apiCall(endpoint) {
+        const url = `${config.mock_api_url}/${endpoint}`
+        const decks = await LoadJson(url)
+        this.setState({decks})
+        this.setState({chosenDeck: decks[0]})
+        console.log(decks)
     }
 
     handleChange(e) {
@@ -93,7 +107,7 @@ export class ExistingDeck extends Component {
                     <select value={this.props.chosenDeck.id} onChange={this.props.handleChange}>
                         {
                             this.props.decks.map((deck, index) => (
-                                    <option key={index} value={deck.id}>{deck.desc}</option>
+                                    <option key={index} value={deck.id}>{deck.description}</option>
                                 )
                             )
                         }

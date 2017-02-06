@@ -47,7 +47,7 @@ public class Flashcard{
         return problem;
     }
 
-    public void setProblem(String name) {
+    public void setProblem(String problem) {
         this.problem = problem;
     }
 

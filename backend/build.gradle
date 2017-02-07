@@ -12,6 +12,7 @@ buildscript {
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 		classpath('gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17')
+		classpath('mysql:mysql-connector-java:6.0.5')
 	}
 }
 
@@ -68,6 +69,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile("org.thymeleaf:thymeleaf-spring4")
 	compile("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect")
+	compile(group: 'mysql', name: 'mysql-connector-java', version: '6.0.5')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 
 }

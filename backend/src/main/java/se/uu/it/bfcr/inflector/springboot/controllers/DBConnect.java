@@ -8,8 +8,9 @@ public class DBConnect {
 
     public static Connection connect() throws SQLException {
         Connection conn = null;
-        String username = "user=java";
-        String password = "password=lordofgeese1997";
+        String url = "jdbc:mysql://localhost:3306/flashcardracer";
+        String username = "java";
+        String password = "lordofgeese1997";
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -18,7 +19,8 @@ public class DBConnect {
         }
 
         try {
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + username + "&" + password);
+//            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + username + "&" + password);
+        	conn = DriverManager.getConnection(url, username, password);
 
         } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());

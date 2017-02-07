@@ -16,17 +16,23 @@
 
 package se.uu.it.bfcr.inflector.springboot.controllers;
 
-import com.github.javafaker.Faker;
 import io.swagger.inflector.models.RequestContext;
 import io.swagger.inflector.models.ResponseContext;
 import se.uu.it.bfcr.inflector.springboot.models.Deck;
 import se.uu.it.bfcr.inflector.springboot.models.Flashcard;
+import se.uu.it.bfcr.inflector.springboot.controllers.DBConnect;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.Response.Status;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,29 +40,85 @@ import java.util.List;
 @Component
 public class DeckController {
 
-//    Faker faker = new Faker();
+    public ResponseContext getDecks(RequestContext requestContext) throws SQLException {
+    	//put some query here
+        Connection con = null;
+        PreparedStatement preparedStm1 = null, preparedStm2 = null;
+        List<Deck> decks = new ArrayList<Deck>();
+        
+        try {
+            con = DBConnect.connect();
+            String selectDecks = "SELECT COUNT(*) as num_problem, decks.id as id, decks.name, decks.description, decks.difficulty, decks.private, decks.created, decks.changed, users.id as user_id, users.username FROM `decks`, users, deck_card_dep where decks.created_by = users.id AND decks.id=deck_card_dep.deck_id GROUP BY deck_card_dep.deck_id";
+            String selectCards = "SELECT card.id as card_id, problem, solution FROM deck_card_dep, card where deck_card_dep.card_id=card.id AND deck_card_dep.deck_id = ?";
+            
+            preparedStm1 = con.prepareStatement(selectDecks);
+            ResultSet rs = preparedStm1.executeQuery();
 
-    public ResponseContext getDecks(RequestContext requestContext, Long user_id)
-    {
-    	List<Flashcard> cards = new ArrayList<Flashcard>();
-    	cards.add(new Flashcard(1, "1+3", "4"));
-    	cards.add(new Flashcard(1, "2+3", "5"));
-    	cards.add(new Flashcard(1, "3+4", "7"));
-    	cards.add(new Flashcard(1, "5+0", "5"));
-    	cards.add(new Flashcard(1, "6-2", "4"));
-        Deck deck = new Deck();
-        deck.setUserId(user_id);
-        deck.setFlashcard(cards);
-        deck.setName("test");
-        deck.setCreated(OffsetDateTime.now().toString());
-        deck.setChanged(OffsetDateTime.now().toString());
-        deck.setDescription("simple description");
-        deck.setId(1);
-        deck.setIsPrivate(false);
-        deck.setNumProblems(5);
-        deck.setUserName("Teacher1");
+			while (rs.next()) {
+				Deck deck = new Deck();
+				deck.setUserId(rs.getInt("user_id"));
+		        deck.setName(rs.getString("name"));
+		        deck.setCreated(rs.getString("created"));
+		        deck.setChanged(rs.getString("changed"));
+		        deck.setDescription(rs.getString("description"));
+		        deck.setId(rs.getInt("id"));
+		        if(rs.getInt("user_id") == 0){
+		        	deck.setIsPrivate(false);
+		        }else {
+		        	deck.setIsPrivate(true);
+		        }
+		        deck.setNumProblems(rs.getInt("num_problem"));
+		        deck.setUserName(rs.getString("username"));
+		        
+				preparedStm2 = con.prepareStatement(selectCards);
+				preparedStm2.setInt(1, rs.getInt("id"));
+				ResultSet rsCards = preparedStm2.executeQuery();
+				
+				List<Flashcard> cards = new ArrayList<Flashcard>();
+				while (rsCards.next()) {
+					Flashcard card = new Flashcard();
+					card.setId(rsCards.getInt("card_id"));
+					card.setProblem(rsCards.getString("problem"));
+					card.setAnswer(rsCards.getString("solution"));
+					cards.add(card);
+				}
+				
+				deck.setFlashcard(cards);
+				
+				decks.add(deck);
+			}
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DeckController.class.getName()).log(Level.SEVERE,
+                null, ex);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(DeckController.class.getName()).log(
+                    Level.SEVERE, null, ex);
+            }
+        }
+
+//        List<Flashcard> cards = new ArrayList<Flashcard>();
+//    	cards.add(new Flashcard(1, "1+3", "4"));
+//    	cards.add(new Flashcard(1, "2+3", "5"));
+//    	cards.add(new Flashcard(1, "3+4", "7"));
+//    	cards.add(new Flashcard(1, "5+0", "5"));
+//    	cards.add(new Flashcard(1, "6-2", "4"));
+//        Deck deck = new Deck();
+//        deck.setUserId(1);
+//        deck.setFlashcard(cards);
+//        deck.setName("test");
+//        deck.setCreated(OffsetDateTime.now().toString());
+//        deck.setChanged(OffsetDateTime.now().toString());
+//        deck.setDescription("simple description");
+//        deck.setId(1);
+//        deck.setIsPrivate(false);
+//        deck.setNumProblems(5);
+//        deck.setUserName("Teacher1");
         return new ResponseContext().status(Status.OK)
-                                    .entity(deck);
+                                    .entity(decks);
     }
 
     

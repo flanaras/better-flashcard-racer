@@ -1,10 +1,12 @@
+package se.uu.it.bfcr.inflector.springboot.controllers;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnect {
 
-    public Connection connect() throws SQLException {
+    public static Connection connect() throws SQLException {
         Connection conn = null;
         String username = "user=java";
         String password = "password=lordofgeese1997";

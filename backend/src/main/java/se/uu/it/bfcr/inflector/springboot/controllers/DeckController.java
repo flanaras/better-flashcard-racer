@@ -100,23 +100,6 @@ public class DeckController {
             }
         }
 
-//        List<Flashcard> cards = new ArrayList<Flashcard>();
-//    	cards.add(new Flashcard(1, "1+3", "4"));
-//    	cards.add(new Flashcard(1, "2+3", "5"));
-//    	cards.add(new Flashcard(1, "3+4", "7"));
-//    	cards.add(new Flashcard(1, "5+0", "5"));
-//    	cards.add(new Flashcard(1, "6-2", "4"));
-//        Deck deck = new Deck();
-//        deck.setUserId(1);
-//        deck.setFlashcard(cards);
-//        deck.setName("test");
-//        deck.setCreated(OffsetDateTime.now().toString());
-//        deck.setChanged(OffsetDateTime.now().toString());
-//        deck.setDescription("simple description");
-//        deck.setId(1);
-//        deck.setIsPrivate(false);
-//        deck.setNumProblems(5);
-//        deck.setUserName("Teacher1");
         return new ResponseContext().status(Status.OK)
                                     .entity(decks);
     }

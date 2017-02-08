@@ -6,9 +6,9 @@ export default class DeckConfig extends Component {
     constructor() {
         super()
         this.state = {
-            deckType: 'savedDeck',
+            deckType: 'generateDeck',
             decks: ['Placeholder deck'],
-            chosenDeck: 'some place',
+            chosenDeck: 'placeholder',
             generateDeck: {
                 operators: {
                     add: true,
@@ -74,7 +74,7 @@ export default class DeckConfig extends Component {
         if(deckType === 'savedDeck') {
             this.props.onSubmitGameConfig(this.state.chosenDeck, this.state.gameType, this.state.gameLength)
         } else {
-            // TODO: Fetch the generated deck and send it to MotherOfDragons. For now, use existing deck
+            // TODO: Fetch the generated deck and send it to MotherOfDragons. For now, use saved deck
             this.props.onSubmitGameConfig(this.state.chosenDeck, this.state.gameType, this.state.gameLength)
         }
     }
@@ -84,9 +84,9 @@ export default class DeckConfig extends Component {
             <div>
                 <h1>Game configuration</h1>
                 <form onSubmit={this.submitGameConfig} >
-                    <input type="radio" name="deckType" value="savedDeck" checked={this.state.deckType === 'savedDeck'} onChange={this.handleChange} />Choose an existing deck of flashcards<br />
+                    <input type="radio" name="deckType" value="savedDeck" checked={this.state.deckType === 'savedDeck'} onChange={this.handleChange} />Choose a saved deck of flashcards<br />
                     <input type="radio" name="deckType" value="generateDeck" checked={this.state.deckType === 'generateDeck'} onChange={this.handleChange} />Generate a deck
-                    <ExistingDeck handleChange={this.handleChange} decks={this.state.decks} deckType={this.state.deckType} chosenDeck={this.state.chosenDeck}/>
+                    <SavedDeck handleChange={this.handleChange} decks={this.state.decks} deckType={this.state.deckType} chosenDeck={this.state.chosenDeck}/>
                     <GenerateDeckOptions handleChangeGenerateDeck={this.handleChangeGenerateDeck} deckType={this.state.deckType} generateDeck={this.state.generateDeck}/>
                     <h4>Game length</h4>
                     <input type="radio" name="gameType" value="timeGame" checked={this.state.gameType === 'timeGame'}  onChange={this.handleChange} /> Time in seconds
@@ -100,18 +100,22 @@ export default class DeckConfig extends Component {
 }
 
 
-export class ExistingDeck extends Component {
+export class SavedDeck extends Component {
     render() {
-        return this.props.deckType === 'savedDeck' ? (
+        return this.props.deckType === 'savedDeck' && this.props.chosenDeck !== 'placeholder' ? (
                 <div>
                     <select value={this.props.chosenDeck.id} onChange={this.props.handleChange}>
                         {
                             this.props.decks.map((deck, index) => (
-                                    <option key={index} value={deck.id}>{deck.description}</option>
+                                    <option key={index} value={deck.id}>{deck.name}</option>
                                 )
                             )
                         }
                     </select>
+                    <p data-type="description">{this.props.chosenDeck.description}</p>
+                    <h4>Sample problem from deck</h4>
+                    <p>Problem: {this.props.chosenDeck.flashcards[0].problem}</p>
+                    <p>Solution: {this.props.chosenDeck.flashcards[0].solution}</p>
                 </div>
             ) : null
     }

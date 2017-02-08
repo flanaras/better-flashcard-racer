@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { shallow, mount } from 'enzyme'
 import sinon, { spy } from 'sinon'
 import SelectMode from '../src/SelectMode'
-import DeckConfig, {GenerateDeckOptions, ExistingDeck} from '../src/DeckConfig'
+import DeckConfig, {GenerateDeckOptions, SavedDeck} from '../src/DeckConfig'
 import MotherOfDragons from '../src/MotherOfDragons'
 import { Flashcard, FlashcardPractice } from './../src/Flashcard'
 import Solutions from '../src/Solutions'
@@ -27,7 +27,7 @@ describe('DeckConfig', () => {
     it('handleChange should be called when the selected deck is changed', () => {
         const handleChangeSpy = spy()
         const decks = [{id: 1, desc: 'Easy plus and minus'}, {id:2, desc: 'Medium plus and minus'}, {id:3, desc: 'Hard pus and minus'}]
-        const wrapper = mount(<ExistingDeck handleChange = {handleChangeSpy} decks = {decks} deckType = {'savedDeck'} chosenDeck = {decks[0]}/>)
+        const wrapper = mount(<SavedDeck handleChange = {handleChangeSpy} decks = {decks} deckType = {'savedDeck'} chosenDeck = {decks[0]}/>)
         const dropdown = wrapper.find('select')
         dropdown.simulate('change', 2)
         expect(handleChangeSpy.calledOnce).to.equal(true)
@@ -98,6 +98,7 @@ describe('DeckConfig', () => {
         const wrapper = mount(<DeckConfig/>)
         expect(apiCallSpy.calledOnce).to.equal(true)
     })
+
     it.skip('when a user submits a generatedDeck config, all the options should be added to the submit object', () => {
         //TODO: Implement test when API in place
         /*const addBox = generateWrapper.find("[name='add']")
@@ -117,6 +118,16 @@ describe('DeckConfig', () => {
          */
     })
 });
+
+describe('SavedDeck', () => {
+    it('when selecting a saved deck, a description should be displayed', () => {
+        const decks = [{id:1, name: "The name of my deck", description:"A short description of the deck"}]
+        const deckType = 'savedDeck'
+        const chosenDeck = decks[0]
+        const wrapper = shallow(<SavedDeck  decks={decks} deckType={deckType} chosenDeck={chosenDeck}/>)
+        expect(wrapper.find("[data-type='description']").length).to.equal(1)
+    })
+})
 
 
 describe('Flashcards', () => {

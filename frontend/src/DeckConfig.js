@@ -39,7 +39,6 @@ export default class DeckConfig extends Component {
         const decks = await LoadJson(url)
         this.setState({decks})
         this.setState({chosenDeck: decks[0]})
-        console.log(decks)
     }
 
     handleChange(e) {

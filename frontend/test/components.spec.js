@@ -19,14 +19,19 @@ describe('SelectMode', () => {
 
 describe('DeckConfig', () => {
     it('should display decks in a dropdown', () => {
-        const decks = ['Easy plus and minus', 'Medium plus and minus', 'Hard pus and minus']
+        const decks = [{id:1, name: "The name of my deck", description:"A short description of the deck",
+            flashcards:[{problem: 1+1, solution: 2}]}]
         const wrapper = mount(<DeckConfig />)
         wrapper.setState({decks})
-        expect(wrapper.find('option').length).to.equal(3)
+        wrapper.setState({deckType: 'savedDeck'})
+        wrapper.setState({chosenDeck: decks[0]})
+        expect(wrapper.find('option').length).to.equal(1)
     })
     it('handleChange should be called when the selected deck is changed', () => {
         const handleChangeSpy = spy()
-        const decks = [{id: 1, desc: 'Easy plus and minus'}, {id:2, desc: 'Medium plus and minus'}, {id:3, desc: 'Hard pus and minus'}]
+        const decks = [{id:1, name: "The name of my deck", description:"A short description of the deck",
+            flashcards:[{problem: 1+1, solution: 2}]}, {id:2, name: "The name of my deck", description:"A short description of the deck",
+            flashcards:[{problem: 1+1, solution: 2}]}]
         const wrapper = mount(<SavedDeck handleChange = {handleChangeSpy} decks = {decks} deckType = {'savedDeck'} chosenDeck = {decks[0]}/>)
         const dropdown = wrapper.find('select')
         dropdown.simulate('change', 2)
@@ -46,18 +51,28 @@ describe('DeckConfig', () => {
         expect(wrapper.find('[name="deckType"][type="radio"]').length).to.equal(2)
     })
     it('handleChange should be called when the user clicks a radio button', () => {
-        const wrapper = shallow(<DeckConfig decks={[{id:1, desc: 'Easy plus and minus'}]}/>)
-        let output = wrapper.instance().handleChange({target:{value:"savedDeck", name:"deckType", type: 'select-one'}})
+        const decks = [{id:1, name: "The name of my deck", description:"A short description of the deck",
+            flashcards:[{problem: 1+1, solution: 2}]}]
+        const chosenDeck = decks[0]
+        const wrapper = shallow(<DeckConfig />)
+        wrapper.setState({decks})
+        wrapper.setState({chosenDeck})
+        let output = wrapper.instance().handleChange({target:{value:"savedDeck", name:"deckType", type: 'radio'}})
         expect(wrapper.state('deckType')).to.equal('savedDeck')
     })
-    it('choosing generateDeck should only show generate and not savedDeck  dropdown', () => {
+    it('choosing generateDeck should only show generate and not savedDeck dropdown', () => {
         const wrapper = mount(<DeckConfig decks={[{id:1, desc: 'Easy plus and minus'}]}/>)
         wrapper.setState({deckType: 'generateDeck'})
         expect(wrapper.find('select').length).to.equal(0)
     })
-    it('choosing savedDeck should only show savedDeck and generateDeck', () => {
-        const wrapper = mount(<DeckConfig decks={[{id:1, desc: 'Easy plus and minus'}]}/>)
+    it('choosing savedDeck should only show savedDeck and not generateDeck', () => {
+        const decks = [{id:1, name: "The name of my deck", description:"A short description of the deck",
+            flashcards:[{problem: 1+1, solution: 2}]}]
+        const chosenDeck = decks[0]
+        const wrapper = mount(<DeckConfig />)
         wrapper.setState({deckType: 'savedDeck'})
+        wrapper.setState({decks})
+        wrapper.setState({chosenDeck})
         expect(wrapper.find('select').length).to.equal(1)
     })
     it('when a user press submit, the submitGameConfig method should be called', () => {
@@ -121,7 +136,8 @@ describe('DeckConfig', () => {
 
 describe('SavedDeck', () => {
     it('when selecting a saved deck, a description should be displayed', () => {
-        const decks = [{id:1, name: "The name of my deck", description:"A short description of the deck"}]
+        const decks = [{id:1, name: "The name of my deck", description:"A short description of the deck",
+            flashcards:[{problem: 1+1, solution: 2}]}]
         const deckType = 'savedDeck'
         const chosenDeck = decks[0]
         const wrapper = shallow(<SavedDeck  decks={decks} deckType={deckType} chosenDeck={chosenDeck}/>)

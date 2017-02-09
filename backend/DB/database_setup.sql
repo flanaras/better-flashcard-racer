@@ -21,16 +21,21 @@ CREATE TABLE `card` (
 --
 
 INSERT INTO `card` (`id`, `problem`, `solution`) VALUES
-(1, '1+2', '3'),
-(2, '2-1', '1'),
-(3, '4/2', '2'),
-(4, '2*3', '6'),
-(5, '4+6', '10'),
-(6, '10-4', '6'),
-(7, '3/1', '3'),
-(8, '2*0', '0'),
-(9, '0+5', '5'),
-(10, '8-6', '2');
+(1, '1 + 2', '3'),
+(2, '2 - 1', '1'),
+(3, '4 / 2', '2'),
+(4, '2 * 3', '6'),
+(5, '4 + 6', '10'),
+(6, '10 - 4', '6'),
+(7, '3 / 1', '3'),
+(8, '2 * 0', '0'),
+(9, '0 + 5', '5'),
+(10, '8 - 6', '2'),
+(11, '1 + 1', '2'),
+(12, '3 - 1', '2'),
+(13, '9 / 3', '3'),
+(14, '2 * 5', '10'),
+(15, '5 - 3', '2');
 
 -- --------------------------------------------------------
 
@@ -54,7 +59,8 @@ CREATE TABLE `decks` (
 --
 
 INSERT INTO `decks` (`id`, `name`, `description`, `difficulty`, `created_by`, `private`, `created`, `changed`) VALUES
-(1, 'easy all operator', 'test deck for frontend', 1, 1, 1, '2017-01-25T20:17:45.000Z', '2017-01-25T20:17:45.000Z');
+(1, 'easy all operator', 'test deck for frontend', 1, 1, 1, '2017-01-25T20:17:45.000Z', '2017-01-25T20:17:45.000Z'),
+(2, 'easy all operator v2', 'test deck for frontend', 1, 1, 0, '2017-02-09T20:17:45.000Z', '2017-02-09T20:17:45.000Z');
 
 -- --------------------------------------------------------
 
@@ -81,7 +87,12 @@ INSERT INTO `deck_card_dep` (`deck_id`, `card_id`) VALUES
 (1, 7),
 (1, 8),
 (1, 9),
-(1, 10);
+(1, 10),
+(2, 11),
+(2, 12),
+(2, 13),
+(2, 14),
+(2, 15);
 
 -- --------------------------------------------------------
 
@@ -140,12 +151,12 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `card`
 --
 ALTER TABLE `card`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT for table `decks`
 --
 ALTER TABLE `decks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `users`
 --
@@ -167,5 +178,4 @@ ALTER TABLE `decks`
 ALTER TABLE `deck_card_dep`
   ADD CONSTRAINT `deck_card_dep_ibfk_1` FOREIGN KEY (`deck_id`) REFERENCES `decks` (`id`),
   ADD CONSTRAINT `deck_card_dep_ibfk_2` FOREIGN KEY (`card_id`) REFERENCES `card` (`id`);
-
 

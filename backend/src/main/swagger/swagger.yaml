@@ -62,13 +62,14 @@ paths:
           $ref: "#/responses/Standard500ErrorResponse"  
   "/decks/{id}":
     parameters:
-      - $ref: "#/parameters/id"
+      - $ref: "#/parameters/deck_id"
     get:
       tags:
         - deck
       summary: Find deck by ID
       x-swagger-router-controller: DeckController
       description: Returns a single set of deck
+      operationId: getDecksById
       responses:
         200:
           description: successful operation
@@ -160,7 +161,7 @@ responses:
   Standard201CreatedResponse:
     description: Created entity
 parameters:
-  id:
+  deck_id:
     name: id
     in: path
     required: true

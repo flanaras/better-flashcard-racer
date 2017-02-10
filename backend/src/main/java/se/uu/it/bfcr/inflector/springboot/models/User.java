@@ -1,48 +1,30 @@
-/*
- *  Copyright 2016 SmartBear Software
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+package backend.src.main.java.se.uu.it.bfcr.inflector.springboot.models;
+
+/**
+ * Created by Bartok on 2/10/17.
  */
-
-package se.uu.it.bfcr.inflector.springboot.models;
-
 public class User {
-    private Long id;
-    private String user;
 
-    public User id(Long id) {
-        this.id = id;
-        return this;
+    private int id;
+    private String username;
+    private int auth_level;
+
+    public User(int ID,String name, int authlevel){
+        this.id = ID;
+        this.username = name;
+        this.auth_level = authlevel;
     }
 
-    public User user(String user) {
-        this.user = user;
-        return this;
+    public String getUsername(){
+        return username;
     }
 
-    public Long getId() {
+    public int getId(){
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public int getAuth_level(){
+        return auth_level;
     }
 
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
 }

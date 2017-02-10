@@ -86,26 +86,25 @@ describe('DeckConfig', () => {
     })
     it('when a user submits a savedDeck config, the config should be submitted successfully', () => {
         const onSubmitGameConfigSpy = spy()
-        const chosenDeck = {id:1, desc: 'Easy plus and minus'}
+        const chosenDeck = {id:1, name: "The name of my deck", description:"A short description of the deck",
+            flashcards:[{problem: 1+1, solution: 2}]}
         const wrapper = mount(<DeckConfig onSubmitGameConfig={onSubmitGameConfigSpy} />)
+        wrapper.setState({chosenDeck})
 
         const form = wrapper.find('form')
         const generateDeckRadio = wrapper.find("[value='generateDeck']")
-        const gameTypeRadio = wrapper.find("[value='timeGame']")
-        const gameLengthInput = wrapper.find("[name='gameLength']")
+        const gameLengthInput = wrapper.find("[name='gameLengthProblems']")
 
         generateDeckRadio.simulate('click')
-        gameTypeRadio.simulate('click')
-        gameLengthInput.simulate('change', {target:{value:'20', type:'text', name: 'gameLength'}})
+        gameLengthInput.simulate('change', {target:{value:'20', type:'text', name: 'gameLengthProblems'}})
 
         wrapper.setState({chosenDeck})
         form.simulate('submit')
 
         expect(onSubmitGameConfigSpy.calledOnce).to.equal(true)
         expect(onSubmitGameConfigSpy.getCall(0).args[0]).to.equal(chosenDeck)
-        expect(onSubmitGameConfigSpy.getCall(0).args[1]).to.equal('timeGame')
-        expect(onSubmitGameConfigSpy.getCall(0).args[2]).to.equal('20')
-        expect(onSubmitGameConfigSpy.calledWith(chosenDeck, 'timeGame', '20')).to.equal(true)
+        expect(onSubmitGameConfigSpy.getCall(0).args[1]).to.equal('20')
+        expect(onSubmitGameConfigSpy.calledWith(chosenDeck, '20', '10')).to.equal(true)
     })
     it('when the component gets rendered, the component should call our API', () => {
         const apiCallSpy = spy(DeckConfig.prototype, "apiCall")

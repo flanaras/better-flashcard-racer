@@ -10,8 +10,8 @@ export default class SelectMode extends Component {
     }
 
 
-    onSubmitGameConfig(chosenDeck, gameType, gameLength) {
-        this.setState({chosenDeck, gameType, gameLength})
+    onSubmitGameConfig(chosenDeck, gameLengthProblems, timePerProblem) {
+        this.setState({chosenDeck, gameLengthProblems, timePerProblem})
         browserHistory.push('playgame')
     }
 

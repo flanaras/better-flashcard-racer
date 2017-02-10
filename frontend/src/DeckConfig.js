@@ -21,8 +21,9 @@ export default class DeckConfig extends Component {
                     max: 100
                 }
             },
-            gameType: 'timeGame',
-            gameLength: 30
+            gameLengthProblems: '30',
+            timePerProblem: '10',
+            showTooBigInput: false
         }
         this.handleChange = this.handleChange.bind(this)
         this.handleChangeGenerateDeck = this.handleChangeGenerateDeck.bind(this)
@@ -42,60 +43,85 @@ export default class DeckConfig extends Component {
     }
 
     handleChange(e) {
-        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
+        let value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
         const name = e.target.name
+        const isGameLengthChange = name === 'gameLengthProblems'
+        const isSavedDeckChange = e.target.type === 'select-one'
+        const isDeckTypeChange = name === 'deckType'
         // if dropdown being changed
-        if(e.target.type === 'select-one') {
+        if(isSavedDeckChange) {
             const chosenDeck = this.state.decks.find( deck => parseInt(deck.id) === parseInt(value))
             this.setState({chosenDeck})
         } else {
-            this.setState({[name]: value})
+            if(isGameLengthChange && this.state.deckType === 'savedDeck') {
+                let gameLengthProblems, showTooBigInput
+                ({gameLengthProblems, showTooBigInput} = this.validateGameLength(value, this.state.chosenDeck, name))
+                this.setState({gameLengthProblems, showTooBigInput})
+            } else if(isDeckTypeChange && this.state.deckType === 'generateDeck') {
+                let gameLengthProblems, showTooBigInput
+                ({gameLengthProblems, showTooBigInput} = this.validateGameLength(this.state.chosenDeck.flashcards.length, this.state.chosenDeck, 'gameLengthProblems'))
+                this.setState({[name]: value, gameLengthProblems, showTooBigInput})
+            } else {
+            this.setState({[name]: value, showTooBigInput: false})
         }
     }
+}
 
-    handleChangeGenerateDeck(e) {
-        const isOperator =  e.target.type === 'checkbox'
-        const value = isOperator ? e.target.checked : e.target.value
-        const name = e.target.name
-        let generateDeck = this.state.generateDeck
-        if(isOperator) {
-            generateDeck.operators[name] = value
-            this.setState({generateDeck})
-        } else {
-            generateDeck.operandRange[name] = value
-            this.setState({generateDeck})
-        }
-    }
+validateGameLength(value, chosenDeck, name) {
+    const gameLengthState = value > chosenDeck.flashcards.length ?
+        {[name]: this.state.chosenDeck.flashcards.length, showTooBigInput: true} :
+        {[name]: value, showTooBigInput: false}
+    return gameLengthState
+}
 
-    submitGameConfig(e) {
-        e.preventDefault()
-        const deckType = this.state.deckType
-        if(deckType === 'savedDeck') {
-            this.props.onSubmitGameConfig(this.state.chosenDeck, this.state.gameType, this.state.gameLength)
-        } else {
-            // TODO: Fetch the generated deck and send it to MotherOfDragons. For now, use saved deck
-            this.props.onSubmitGameConfig(this.state.chosenDeck, this.state.gameType, this.state.gameLength)
-        }
+handleChangeGenerateDeck(e) {
+    const isOperator =  e.target.type === 'checkbox'
+    const value = isOperator ? e.target.checked : e.target.value
+    const name = e.target.name
+    let generateDeck = this.state.generateDeck
+    if(isOperator) {
+        generateDeck.operators[name] = value
+        this.setState({generateDeck})
+    } else {
+        generateDeck.operandRange[name] = value
+        this.setState({generateDeck})
     }
+}
 
-    render() {
-        return (
-            <div>
-                <h1>Game configuration</h1>
-                <form onSubmit={this.submitGameConfig} >
-                    <input type="radio" name="deckType" value="savedDeck" checked={this.state.deckType === 'savedDeck'} onChange={this.handleChange} />Choose a saved deck of flashcards<br />
-                    <input type="radio" name="deckType" value="generateDeck" checked={this.state.deckType === 'generateDeck'} onChange={this.handleChange} />Generate a deck
-                    <SavedDeck handleChange={this.handleChange} decks={this.state.decks} deckType={this.state.deckType} chosenDeck={this.state.chosenDeck}/>
-                    <GenerateDeckOptions handleChangeGenerateDeck={this.handleChangeGenerateDeck} deckType={this.state.deckType} generateDeck={this.state.generateDeck}/>
-                    <h4>Game length</h4>
-                    <input type="radio" name="gameType" value="timeGame" checked={this.state.gameType === 'timeGame'}  onChange={this.handleChange} /> Time in seconds
-                    <input type="radio" name="gameType" value="problemGame" checked={this.state.gameType === 'problemGame'}  onChange={this.handleChange} /> Number of problems <br />
-                    <input type="text" name="gameLength" value={this.state.gameLength} onChange={this.handleChange} /> game length <br />
-                    <input type="submit" value="Start Game"/>
-                </form>
-            </div>
-        )
+submitGameConfig(e) {
+    e.preventDefault()
+    const deckType = this.state.deckType
+    if(deckType === 'savedDeck') {
+        this.props.onSubmitGameConfig(this.state.chosenDeck, this.state.gameLengthProblems, this.state.timePerProblem)
+    } else {
+        // TODO: Fetch the generated deck and send it to MotherOfDragons. For now, use saved deck
+        this.props.onSubmitGameConfig(this.state.chosenDeck, this.state.gameLengthProblems, this.state.timePerProblem)
     }
+}
+
+render() {
+    return (
+        <div>
+            <h1>Game configuration</h1>
+            <form onSubmit={this.submitGameConfig} >
+                <input type="radio" name="deckType" value="savedDeck" checked={this.state.deckType === 'savedDeck'} onChange={this.handleChange} />Choose a saved deck of flashcards<br />
+                <input type="radio" name="deckType" value="generateDeck" checked={this.state.deckType === 'generateDeck'} onChange={this.handleChange} />Generate a deck
+                <SavedDeck handleChange={this.handleChange} decks={this.state.decks} deckType={this.state.deckType} chosenDeck={this.state.chosenDeck}/>
+                <GenerateDeckOptions handleChangeGenerateDeck={this.handleChangeGenerateDeck} deckType={this.state.deckType} generateDeck={this.state.generateDeck}/>
+                <h4>Number of problems</h4>
+                <input type="text" name="gameLengthProblems" value={this.state.gameLengthProblems} onChange={this.handleChange} /> game length <br/>
+                {
+                    this.state.showTooBigInput ?
+                        <p>{this.state.gameLengthProblems} problems exceeds the number of cards in the deck which is {this.state.chosenDeck.flashcards.length}</p>
+                        : null
+                }
+                <h4>Timelimit on each problem in seconds</h4>
+                <input type="text" name="timePerProblem" value={this.state.timePerProblem} onChange={this.handleChange} /> time per problem <br />
+                <input type="submit" value="Start Game"/>
+            </form>
+        </div>
+    )
+}
 }
 
 

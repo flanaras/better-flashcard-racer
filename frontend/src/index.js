@@ -5,7 +5,7 @@ import DeckConfig from './DeckConfig'
 import MotherOfDragons from './MotherOfDragons'
 import { FlashcardPractice } from './Flashcard'
 import Solutions from './Solutions'
-import { Router, Route, browserHistory, hashHistory} from 'react-router'
+import { Router, Route, browserHistory } from 'react-router'
 
 ReactDOM.render((
     <Router history={browserHistory}>

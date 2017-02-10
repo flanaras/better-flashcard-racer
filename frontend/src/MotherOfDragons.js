@@ -16,7 +16,8 @@ export default class SelectMode extends Component {
     }
 
     submitAnswers(chosenDeck) {
-        this.setState({chosenDeck})
+        this.setState({chosenDeck});
+        browserHistory.push('solutions');
     }
 
     render() {

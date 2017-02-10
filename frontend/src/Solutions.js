@@ -1,8 +1,4 @@
-/**
- * Created by alekodu on 2017-02-01.
- */
-
-import React, { Component } from 'react';
+import React from 'react';
 
 export default class Solutions extends React.Component {
     constructor(props) {

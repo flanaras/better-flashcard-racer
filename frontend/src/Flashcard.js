@@ -4,9 +4,10 @@ export class Flashcard extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { solution : '' };
+        this.state = { solution : '', inputState: false };
 
-        this.handleInputChange = this.handleInputChange.bind(this)
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.disableInput = this.disableInput.bind(this);
     }
 
     handleInputChange(event) {
@@ -18,12 +19,19 @@ export class Flashcard extends Component {
         return this.props.flashcard.solution === parseInt(solution);
     }
 
+    disableInput() {
+        this.setState({inputState: true});
+    }
+
     render() {
+        var opts = {};
+        if (this.state.inputState)
+            opts['disabled'] = 'disabled';
         return (
             <div>
                 <p>{this.props.flashcard.problem}</p>
-                <input type="text" placeholder="Your solution" value={this.state.solution} onChange={this.handleInputChange}/>
-                <TimeCounter start={Date.now()}  timePerProblem={this.props.timePerProblem} remProb={this.props.remProb} completeQuestion={this.props.completeQuestion} />
+                <input type="text" {...opts} placeholder="Your solution" value={this.state.solution} onChange={this.handleInputChange}/>
+                <TimeCounter disableInput={this.disableInput} start={Date.now()}  timePerProblem={this.props.timePerProblem} remProb={this.props.remProb} completeQuestion={this.props.completeQuestion} />
                 <p>Remaining problems: {this.props.remProb}</p>
             </div>
         )
@@ -50,9 +58,12 @@ export class TimeCounter extends Component {
     tick() {
         this.setState({elapsed: new Date() - this.props.start});
         if(this.state.elapsed >= this.props.timePerProblem*1000) {
-            if (this.props.remProb===0)
+            if (this.props.remProb===0) {
                 clearInterval(this.timer);
-            this.props.completeQuestion();
+                this.props.disableInput();
+            } else {
+                this.props.completeQuestion();
+            }
         }
     }
 

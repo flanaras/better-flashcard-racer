@@ -13,6 +13,7 @@ async function LoadJson(url, method, body) {
 	let myInit = {
 		method,
 		headers: myHeaders,
+        mode: 'cors',
 		cache: 'default'
 	};
 

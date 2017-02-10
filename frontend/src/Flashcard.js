@@ -24,9 +24,40 @@ export class Flashcard extends Component {
       <div>
         <p>{this.props.flashcard.problem}</p>
         <input type="text" placeholder="Your solution" value={this.state.solution} onChange={this.handleInputChange}/>
+        <TimeCounter start={Date.now()} timePerProblem={this.props.timePerProblem} completeQuestion={this.props.completeQuestion} />
+        <p>Remaining problems: {this.props.remProb}</p>
       </div>
     )
   }
+}
+
+export class TimeCounter extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = { elapsed: 0 };
+
+        this.tick = this.tick.bind(this);
+    }
+
+    componentDidMount() {
+        this.timer = setInterval(this.tick, 500);
+    }
+
+    tick() {
+        this.setState({elapsed: new Date() - this.props.start});
+        if(this.state.elapsed >= this.props.timePerProblem*1000)
+            this.props.completeQuestion();
+    }
+
+    componentWillUnmount(){
+        console.log('unmount');
+        clearInterval(this.timer);
+    }
+
+    render() {
+        return <p>Remaining time: {this.props.timePerProblem - Math.round(this.state.elapsed / 1000)} seconds</p>;
+    }
 }
 
 export class FlashcardPractice extends Component {
@@ -65,7 +96,7 @@ export class FlashcardPractice extends Component {
       <div>
         {
             <div>
-                <Flashcard flashcard={this.props.chosenDeck.flashcards[this.state.questionsAnswered]} sendAnswer={this.updateAnswer}/>
+                <Flashcard flashcard={this.props.chosenDeck.flashcards[this.state.questionsAnswered]} sendAnswer={this.updateAnswer} remProb={this.props.gameLengthProblems-this.state.questionsAnswered-1} timePerProblem={this.props.timePerProblem} completeQuestion={this.completeQuestion} />
                 <button onClick={this.completeQuestion}>{(this.state.questionsAnswered !== this.props.chosenDeck.flashcards.length - 1) ? 'Next Question' : <Link to="solutions">Complete Session</Link>}</button>
 
             </div>

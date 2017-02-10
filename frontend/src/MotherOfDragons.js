@@ -25,7 +25,9 @@ export default class SelectMode extends Component {
                 {React.cloneElement(this.props.children, {
                     chosenDeck: this.state.chosenDeck,
                     onSubmitGameConfig: this.onSubmitGameConfig,
-                    submitAnswers: this.submitAnswers
+                    submitAnswers: this.submitAnswers,
+                    gameLengthProblems: this.state.gameLengthProblems,
+                    timePerProblem: this.state.timePerProblem
                 })}
             </div>
             )

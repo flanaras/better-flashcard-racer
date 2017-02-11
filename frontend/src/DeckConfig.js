@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import config from './../config.json'
 import LoadJson from "./services/LoadJson";
+import {PageHeader, Form, Grid, Row, Col, Panel, Button, FormGroup, ControlLabel, FormControl, Radio, Checkbox} from 'react-bootstrap';
 
 export default class DeckConfig extends Component {
     constructor() {
@@ -102,23 +103,51 @@ submitGameConfig(e) {
 render() {
     return (
         <div>
-            <h1>Game configuration</h1>
-            <form onSubmit={this.submitGameConfig} >
-                <input type="radio" name="deckType" value="savedDeck" checked={this.state.deckType === 'savedDeck'} onChange={this.handleChange} />Choose a saved deck of flashcards<br />
-                <input type="radio" name="deckType" value="generateDeck" checked={this.state.deckType === 'generateDeck'} onChange={this.handleChange} />Generate a deck
-                <SavedDeck handleChange={this.handleChange} decks={this.state.decks} deckType={this.state.deckType} chosenDeck={this.state.chosenDeck}/>
-                <GenerateDeckOptions handleChangeGenerateDeck={this.handleChangeGenerateDeck} deckType={this.state.deckType} generateDeck={this.state.generateDeck}/>
-                <h4>Number of problems</h4>
-                <input type="text" name="gameLengthProblems" value={this.state.gameLengthProblems} onChange={this.handleChange} /> game length <br/>
-                {
-                    this.state.showTooBigInput ?
-                        <p>{this.state.gameLengthProblems} problems exceeds the number of cards in the deck which is {this.state.chosenDeck.flashcards.length}</p>
-                        : null
-                }
-                <h4>Timelimit on each problem in seconds</h4>
-                <input type="text" name="timePerProblem" value={this.state.timePerProblem} onChange={this.handleChange} /> time per problem <br />
-                <input type="submit" value="Start Game"/>
-            </form>
+            <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Game Configuration</small></PageHeader>
+            <Grid>
+                <Row className="show-grid">
+                    <Col xs={1} md={3}></Col>
+                    <Col xs={12} md={6}>
+                        <Panel style={{textAlign: "center"}}>
+                            <Form onSubmit={this.submitGameConfig} >
+                                <Panel style={{textAlign: "left"}}>
+                                    <ControlLabel>Options:</ControlLabel>
+                                    <Radio name="deckType" value="savedDeck" checked={this.state.deckType === 'savedDeck'} onChange={this.handleChange} >
+                                        Choose a saved deck of flashcards
+                                    </Radio>
+                                    <Radio name="deckType" value="generateDeck" checked={this.state.deckType === 'generateDeck'} onChange={this.handleChange} >
+                                        Generate a deck
+                                    </Radio>
+                                </Panel>
+
+                                <SavedDeck handleChange={this.handleChange} decks={this.state.decks} deckType={this.state.deckType} chosenDeck={this.state.chosenDeck}/>
+                                <GenerateDeckOptions handleChangeGenerateDeck={this.handleChangeGenerateDeck} deckType={this.state.deckType} generateDeck={this.state.generateDeck}/>
+                                <Panel style={{textAlign: "left"}}>
+                                    <ControlLabel>Game length:</ControlLabel>
+                                    <FormGroup controlId="gameLength">
+                                        <ControlLabel>Number of problems:</ControlLabel>
+                                        {' '}
+                                        <FormControl type="text" style={{textAlign: "right", width: 80, display: 'inline'}} name="gameLengthProblems" value={this.state.gameLengthProblems} onChange={this.handleChange} />
+                                        {
+                                            this.state.showTooBigInput ?
+                                                <p>{this.state.gameLengthProblems} problems exceeds the number of cards in the deck which is {this.state.chosenDeck.flashcards.length}</p>
+                                                : null
+                                        }
+                                        {' '}
+                                        <ControlLabel>Time per question (s):</ControlLabel>
+                                        {' '}
+                                        <FormControl type="text" style={{textAlign: "right", width: 80, display: 'inline'}} name="timePerProblem" value={this.state.timePerProblem} onChange={this.handleChange} />
+                                    </FormGroup>
+                                </Panel>
+                                <Button bsStyle="info" type="submit">
+                                    Start game
+                                </Button>
+                            </Form>
+                        </Panel>
+                    </Col>
+                    <Col xs={1} md={4}></Col>
+                </Row>
+            </Grid>
         </div>
     )
 }
@@ -129,18 +158,24 @@ export class SavedDeck extends Component {
     render() {
         return this.props.deckType === 'savedDeck' && this.props.chosenDeck !== 'placeholder' ? (
                 <div>
-                    <select value={this.props.chosenDeck.id} onChange={this.props.handleChange}>
-                        {
-                            this.props.decks.map((deck, index) => (
-                                    <option key={index} value={deck.id}>{deck.name}</option>
-                                )
-                            )
-                        }
-                    </select>
-                    <p data-type="description">{this.props.chosenDeck.description}</p>
-                    <h4>Sample problem from deck</h4>
-                    <p>Problem: {this.props.chosenDeck.flashcards[0].problem}</p>
-                    <p>Solution: {this.props.chosenDeck.flashcards[0].solution}</p>
+                    <Panel style={{textAlign: "left"}}>
+                        <FormGroup controlId="deckSelect">
+                            <ControlLabel>Details:</ControlLabel>
+                            {' '}
+                            <FormControl componentClass="select" value={this.props.chosenDeck.id} onChange={this.props.handleChange} >
+                                {
+                                    this.props.decks.map((deck, index) => (
+                                            <option key={index} value={deck.id}>{deck.name}</option>
+                                        )
+                                    )
+                                }
+                            </FormControl>
+                            <p data-type="description"><i>{this.props.chosenDeck.description}</i></p>
+                            <ControlLabel>Sample problem:</ControlLabel>
+                            <p>Problem: {this.props.chosenDeck.flashcards[0].problem}</p>
+                            <p>Solution: {this.props.chosenDeck.flashcards[0].solution}</p>
+                        </FormGroup>
+                    </Panel>
                 </div>
             ) : null
     }
@@ -151,13 +186,37 @@ export class GenerateDeckOptions extends Component {
     render() {
         return  this.props.deckType === 'generateDeck' ? (
                 <div>
-                    <input type="checkbox" name="add" checked={this.props.generateDeck.operators.add} onChange={this.props.handleChangeGenerateDeck}/>Addition <br />
-                    <input type="checkbox" name="sub" checked={this.props.generateDeck.operators.sub} onChange={this.props.handleChangeGenerateDeck}/>Subtraction <br />
-                    <input type="checkbox" name="mult" checked={this.props.generateDeck.operators.mult} onChange={this.props.handleChangeGenerateDeck}/>Multiplication <br />
-                    <input type="checkbox" name="div" checked={this.props.generateDeck.operators.div} onChange={this.props.handleChangeGenerateDeck}/>Division <br />
-                    <h4>Number range</h4>
-                    <input type="text" name="min" value={this.props.generateDeck.operandRange.min} onChange={this.props.handleChangeGenerateDeck}/>Min
-                    <input type="text" name="max" value={this.props.generateDeck.operandRange.max} onChange={this.props.handleChangeGenerateDeck}/>Max
+                    <Panel style={{textAlign: "left"}}>
+                        <FormGroup controlId="detOpt" >
+                            <ControlLabel>Details:</ControlLabel>
+                            {' '}
+                            <Checkbox inline name="add" checked={this.props.generateDeck.operators.add} onChange={this.props.handleChangeGenerateDeck} >
+                                Addition
+                            </Checkbox>
+                            <Checkbox inline name="sub" checked={this.props.generateDeck.operators.sub} onChange={this.props.handleChangeGenerateDeck} >
+                                Subtraction
+                            </Checkbox>
+                            <Checkbox inline name="mult" checked={this.props.generateDeck.operators.mult} onChange={this.props.handleChangeGenerateDeck} >
+                                Multiplication
+                            </Checkbox>
+                            <Checkbox inline name="div" checked={this.props.generateDeck.operators.div} onChange={this.props.handleChangeGenerateDeck} >
+                                Division
+                            </Checkbox>
+                        </FormGroup>
+                    </Panel>
+                    <Panel style={{textAlign: "left"}}>
+                        <ControlLabel >Number range:</ControlLabel>
+                        <FormGroup controlId="numRange">
+                            {' '}
+                            <ControlLabel>Min:</ControlLabel>
+                            {' '}
+                            <FormControl type="text" style={{textAlign: "right", width: 80, display: 'inline'}} name="min" value={this.props.generateDeck.operandRange.min} onChange={this.props.handleChangeGenerateDeck} />
+                            {' '}
+                            <ControlLabel>Max: </ControlLabel>
+                            {' '}
+                            <FormControl type="text" style={{textAlign: "right", width: 80, display: 'inline'}} name="max" value={this.props.generateDeck.operandRange.max} onChange={this.props.handleChangeGenerateDeck} />
+                        </FormGroup>
+                    </Panel>
                 </div>
             ) : null
     }

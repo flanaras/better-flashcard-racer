@@ -1,4 +1,5 @@
 import React from 'react';
+import { PageHeader, Grid, Row, Col, Panel, FormControl, ControlLabel, ListGroup, ListGroupItem } from 'react-bootstrap';
 
 export default class Solutions extends React.Component {
     constructor(props) {
@@ -18,17 +19,39 @@ export default class Solutions extends React.Component {
     render() {
         return (
             <div>
-                <h1>Your results are:</h1>
-                <h2>Correct answers: {this.state.countCorrect}</h2>
-                <h2>Incorrect answers: {this.state.countIncorrect}</h2>
-                <ul>
-                    {
-                     this.props.chosenDeck.map((flashcard, index) => (
-                         <li key={index} style={{color: (flashcard.check? 'green': 'red')}}>Problem: {flashcard.problem}   /   Your answer: {flashcard.answer} /   Correct answer: {flashcard.solution}</li>
-                         )
-                     )
-                     }
-                </ul>
+                <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Results</small></PageHeader>
+                    <Grid>
+                        <Row className="show-grid">
+                            <Col xs={1} md={3}></Col>
+                            <Col xs={12} md={6}>
+                                <Panel style={{textAlign: "left"}}>
+                                    <h4>Correct answers: {this.state.countCorrect}</h4>
+                                    <h4>Incorrect answers: {this.state.countIncorrect}</h4>
+                                    <ListGroup>
+                                        {
+                                            this.props.chosenDeck.map((flashcard, index) => (
+                                                    <ListGroupItem header={'Problem ' + (index+1) + ':'} key={index} bsStyle={flashcard.check? "success": "danger"}>
+                                                        <p style={{display: 'inline'}}>Question:</p>
+                                                        {' '}
+                                                        <FormControl type="text" readOnly style={{textAlign: "right", width: 60, display: 'inline'}} placeholder={flashcard.problem} />
+                                                        {' '}
+                                                        <p style={{display: 'inline'}}>Your answer:</p>
+                                                        {' '}
+                                                        <FormControl type="text" readOnly style={{textAlign: "right", width: 60, display: 'inline'}} placeholder={flashcard.answer} />
+                                                        {' '}
+                                                        <p style={{display: 'inline'}}>Correct answer:</p>
+                                                        {' '}
+                                                        <FormControl type="text" readOnly style={{textAlign: "right", width: 60, display: 'inline'}} placeholder={flashcard.solution} />
+                                                    </ListGroupItem>
+                                                )
+                                            )
+                                        }
+                                    </ListGroup>
+                                </Panel>
+                            </Col>
+                            <Col xs={1} md={3}></Col>
+                        </Row>
+                    </Grid>
             </div>
         );
     }

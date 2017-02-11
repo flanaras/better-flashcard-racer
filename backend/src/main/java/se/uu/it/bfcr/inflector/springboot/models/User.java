@@ -9,6 +9,12 @@ public class User {
     private String username;
     private int auth_level;
 
+    public User(){
+        this.id = -1;
+        this.username = "Default";
+        this.auth_level = -1;
+    }
+
     public User(int ID,String name, int authlevel){
         this.id = ID;
         this.username = name;

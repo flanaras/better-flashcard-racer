@@ -112,7 +112,54 @@ paths:
           $ref: "#/responses/ObjectDoesNotExistResponse"
         500:
           $ref: "#/responses/Standard500ErrorResponse"
+  "/user/{id}":
+    get:
+      tags:
+        - user
+      summary: Find a user by ID
+      x-swagger-router-controller: UserController
+      description: Return a user object identified by its id
+      operationId: getUserById
+      parameters:
+        - $ref: "#/parameters/id"
+      responses:
+        200:
+          description: successful operation
+          schema:
+              $ref: "#/definitions/User"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
+  /user:
+    parameters:
+          - $ref:
+    summary: Find all users
+          x-swagger-router-controller: UserController
+          description: Return all set of decks
+          operationId: getUsers
+          parameters:
+            - $ref: "#/parameters/id"
+          responses:
+            200:
+              description: successful operation
+              schema:
+                $ref: "#/definitions/Users"
+            500:
+              $ref: "#/responses/Standard500ErrorResponse"
+
 definitions:
+  User:
+    properties:
+      id:
+        type: integer
+      username:
+        type: string
+      auth_level:
+        type: integer
+    xml:
+      name: User
+  Users:
+    type: array
+      items: "#/definitions/User"
   Card:
     properties:
       id:

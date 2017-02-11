@@ -7,7 +7,7 @@ import DeckConfig, {GenerateDeckOptions, SavedDeck} from '../src/DeckConfig'
 import MotherOfDragons from '../src/MotherOfDragons'
 import { Flashcard, FlashcardPractice } from './../src/Flashcard'
 import Solutions from '../src/Solutions'
-import {ControlLabel, FormControl, Button} from 'react-bootstrap'
+import {ControlLabel, FormControl, Button, ListGroup} from 'react-bootstrap'
 
 describe('SelectMode', () => {
     it('should be able to select mode: Login or practice mode', () => {
@@ -263,10 +263,9 @@ describe('Solutions', () => {
     it ('should render detailed list', () => {
         const wrapper = shallow(<Solutions chosenDeck={chosenDeck} />);
         expect(wrapper.containsAllMatchingElements([
-            <h1>Your results are:</h1>,
-            <h2>Correct answers: {1}</h2>,
-            <h2>Incorrect answers: {1}</h2>
+            <h4>Correct answers: {1}</h4>,
+            <h4>Incorrect answers: {1}</h4>
         ])).to.equal(true);
-        expect(wrapper.find('li').length).to.equal(2);
+        expect(wrapper.find('ListGroupItem').length).to.equal(2);
     });
 });

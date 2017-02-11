@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { PageHeader, Grid, Row, Col, Panel, Button, FormGroup, FormControl, ControlLabel, ProgressBar } from 'react-bootstrap';
 
 export class Flashcard extends Component {
 
@@ -29,10 +30,11 @@ export class Flashcard extends Component {
             opts['disabled'] = 'disabled';
         return (
             <div>
-                <p>{this.props.flashcard.problem}</p>
-                <input type="text" {...opts} placeholder="Your solution" value={this.state.solution} onChange={this.handleInputChange}/>
-                <TimeCounter disableInput={this.disableInput} start={Date.now()}  timePerProblem={this.props.timePerProblem} remProb={this.props.remProb} completeQuestion={this.props.completeQuestion} />
-                <p>Remaining problems: {this.props.remProb}</p>
+                <FormGroup controlId="flashcard">
+                    <ControlLabel>{this.props.flashcard.problem}</ControlLabel>
+                    <FormControl type="text" {...opts} style={{textAlign: "center"}} placeholder="Your solution" value={this.state.solution} onChange={this.handleInputChange} />
+                    <TimeCounter disableInput={this.disableInput} timePerProblem={this.props.timePerProblem} remProb={this.props.remProb} completeQuestion={this.props.completeQuestion} />
+                </FormGroup>
             </div>
         )
     }
@@ -42,13 +44,13 @@ export class TimeCounter extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { elapsed: 0 };
+        this.state = { elapsed: 0, backRemProb: this.props.remProb, remTime: this.props.timePerProblem, barPerc: 100, barStyle: 'success'};
 
         this.tick = this.tick.bind(this);
     }
 
     componentDidMount() {
-        this.timer = setInterval(this.tick, 500);
+        this.timer = setInterval(this.tick, 250);
     }
 
     componentWillUnmount() {
@@ -56,8 +58,23 @@ export class TimeCounter extends Component {
     }
 
     tick() {
-        this.setState({elapsed: new Date() - this.props.start});
+        this.setState({elapsed: this.state.elapsed+250,
+            remTime: this.props.timePerProblem - Math.round(this.state.elapsed / 1000),
+            barPerc: Math.round((this.state.remTime/this.props.timePerProblem) * 100)
+        });
+
+        if(this.state.backRemProb != this.props.remProb)
+            this.setState({elapsed: 0, backRemProb: this.props.remProb});
+
+        if(this.state.barPerc >= 66)
+            this.setState({barStyle: 'success'});
+        else if(this.state.barPerc >= 33 && this.state.barPerc < 66)
+            this.setState({barStyle: 'warning'});
+        else if(this.state.barPerc < 33 )
+            this.setState({barStyle: 'danger'});
+
         if(this.state.elapsed >= this.props.timePerProblem*1000) {
+            this.setState({elapsed: 0});
             if (this.props.remProb===0) {
                 clearInterval(this.timer);
                 this.props.disableInput();
@@ -68,7 +85,12 @@ export class TimeCounter extends Component {
     }
 
     render() {
-        return <p>Remaining time: {this.props.timePerProblem - Math.round(this.state.elapsed / 1000)} seconds</p>;
+        return (
+            <div>
+                <ProgressBar active bsStyle={this.state.barStyle} now={this.state.barPerc} label={this.state.remTime + ' s'} />
+            </div>
+
+        )
     }
 }
 
@@ -106,8 +128,20 @@ export class FlashcardPractice extends Component {
     render() {
         return (
             <div>
-                <Flashcard flashcard={this.props.chosenDeck.flashcards[this.state.questionsAnswered]} sendAnswer={this.updateAnswer} remProb={this.props.gameLengthProblems-this.state.questionsAnswered-1} timePerProblem={this.props.timePerProblem}  completeQuestion={this.completeQuestion}/>
-                <button onClick={this.completeQuestion}>{(this.state.questionsAnswered !== this.props.chosenDeck.flashcards.length - 1) ? 'Next Question' : 'Complete Session'}</button>
+                <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Go!</small></PageHeader>
+                <Grid>
+                    <Row className="show-grid">
+                        <Col xs={1} md={4}></Col>
+                        <Col xs={4} md={4}>
+                            <FormControl type="text" disabled style={{textAlign: "center", width: 60}} placeholder={(this.state.questionsAnswered+1) + '/' + this.props.gameLengthProblems} />
+                            <Panel collapsible style={{textAlign: "center"}} expanded={true}>
+                                <Flashcard flashcard={this.props.chosenDeck.flashcards[this.state.questionsAnswered]} sendAnswer={this.updateAnswer} timePerProblem={this.props.timePerProblem} remProb={this.props.gameLengthProblems-this.state.questionsAnswered-1} completeQuestion={this.completeQuestion}/>
+                                <Button bsStyle="info" onClick={this.completeQuestion}>{(this.state.questionsAnswered !== this.props.chosenDeck.flashcards.length - 1) ? 'Next Question' : 'Complete Session'}</Button>
+                            </Panel>
+                        </Col>
+                        <Col xs={1} md={4}></Col>
+                    </Row>
+                </Grid>
             </div>
         )
     }

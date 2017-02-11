@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import config from './../config.json'
 import LoadJson from "./services/LoadJson";
-import {PageHeader, Form, Grid, Row, Col, Panel, Button, FormGroup, ControlLabel, FormControl, Radio, Checkbox} from 'react-bootstrap';
+import { PageHeader, Form, Grid, Row, Col, Panel, Button, FormGroup, ControlLabel, FormControl, Radio, Checkbox } from 'react-bootstrap';
 
 export default class DeckConfig extends Component {
     constructor() {
@@ -145,7 +145,7 @@ render() {
                             </Form>
                         </Panel>
                     </Col>
-                    <Col xs={1} md={4}></Col>
+                    <Col xs={1} md={3}></Col>
                 </Row>
             </Grid>
         </div>

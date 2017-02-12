@@ -1,4 +1,4 @@
-package backend.src.main.java.se.uu.it.bfcr.inflector.springboot.models;
+package se.uu.it.bfcr.inflector.springboot.models;
 
 /**
  * Created by Bartok on 2/10/17.

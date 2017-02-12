@@ -1,7 +1,7 @@
-package backend.src.main.java.se.uu.it.bfcr.inflector.springboot.controllers;
+package se.uu.it.bfcr.inflector.springboot.controllers;
 
 import io.swagger.inflector.models.ResponseContext;
-import backend.src.main.java.se.uu.it.bfcr.inflector.springboot.models.User;
+import se.uu.it.bfcr.inflector.springboot.models.User;
 import javax.ws.rs.core.Response.Status;
 import java.sql.Connection;
 import java.sql.ResultSet;

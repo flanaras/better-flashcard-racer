@@ -29,4 +29,3 @@ create table deck_card_dep (
     FOREIGN KEY (deck_id) REFERENCES decks (id),
     FOREIGN KEY (card_id) REFERENCES card (id)
 );
-

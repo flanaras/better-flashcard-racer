@@ -19,7 +19,7 @@ public class DBConnect {
         }
 
         try {
-//            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + username + "&" + password);
+            //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + username + "&" + password);
             conn = DriverManager.getConnection(url, username, password);
 
         } catch (SQLException ex) {

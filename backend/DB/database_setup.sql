@@ -7,7 +7,8 @@ GRANT SELECT, DELETE, INSERT ON flashcardracer.* TO 'java'@'localhost';
 create table users (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(20),
-    password VARCHAR(30)
+    password VARCHAR(30),
+    authlevel INTEGER
 );
 
 create table decks (

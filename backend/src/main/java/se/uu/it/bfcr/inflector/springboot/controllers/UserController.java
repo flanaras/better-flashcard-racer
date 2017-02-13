@@ -26,6 +26,7 @@ public class UserController {
             stmnt = con.createStatement();
             res = stmnt.executeQuery(query);
 
+            //TODO: extract auth_level from DB...
             user = new User(res.getInt("id"),res.getString("username"),0);
             System.out.println(user.getUsername());
 
@@ -56,6 +57,7 @@ public class UserController {
             stmnt = con.createStatement();
             res = stmnt.executeQuery(query);
 
+            //TODO: extract auth_level from DB...
             while(res.next()){
                 user = new User(res.getInt("id"),res.getString("username"),0);
                 users.add(user);
@@ -67,9 +69,9 @@ public class UserController {
             System.out.println("VendorError: " + ex.getErrorCode());
         }finally {
             try {
-            stmnt.close();
-            res.close();
-            con.close();
+                stmnt.close();
+                res.close();
+                con.close();
             } catch (SQLException ex) {/*ignore*/}
         }
 

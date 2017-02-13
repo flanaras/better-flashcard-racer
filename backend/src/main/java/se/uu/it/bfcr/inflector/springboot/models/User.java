@@ -7,18 +7,24 @@ public class User {
 
     private int id;
     private String username;
-    private int auth_level;
+    private String auth_level;
 
     public User(){
-        this.id = -1;
+        this.id = 0;
         this.username = "Default";
-        this.auth_level = -1;
+        this.auth_level = "Student";
     }
 
     public User(int ID,String name, int authlevel){
         this.id = ID;
         this.username = name;
-        this.auth_level = authlevel;
+        if(authlevel == 2){
+            this.auth_level = "admin";
+        }else if(authlevel == 1){
+            this.auth_level = "teacher";
+        } else{
+            this.auth_level = "student";
+        }
     }
 
     public String getUsername(){
@@ -29,7 +35,7 @@ public class User {
         return id;
     }
 
-    public int getAuth_level(){
+    public String getAuth_level(){
         return auth_level;
     }
 

@@ -1,5 +1,6 @@
 package se.uu.it.bfcr.inflector.springboot.controllers;
 
+import io.swagger.inflector.models.RequestContext;
 import io.swagger.inflector.models.ResponseContext;
 import se.uu.it.bfcr.inflector.springboot.models.User;
 import javax.ws.rs.core.Response.Status;
@@ -9,12 +10,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import se.uu.it.bfcr.inflector.springboot.controllers.DBConnect;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by Bartok on 2/9/17.
  */
+@Component
 public class UserController {
-    public ResponseContext getUserById(int id) throws SQLException{
+    public ResponseContext getUserById(RequestContext requestContext, int id) throws SQLException{
         User user = new User();
         Connection con = null;
         Statement stmnt = null;
@@ -26,7 +29,7 @@ public class UserController {
             stmnt = con.createStatement();
             res = stmnt.executeQuery(query);
 
-            user = new User(res.getInt("id"),res.getString("username"),0);
+            user = new User(res.getInt("id"),res.getString("username"),res.getInt("authlevel"));
             System.out.println(user.getUsername());
 
         }catch (SQLException ex){
@@ -43,7 +46,7 @@ public class UserController {
         return new ResponseContext().status(Status.OK).entity(user);
     }
 
-    public ResponseContext getUsers() throws SQLException{
+    public ResponseContext getUsers(RequestContext requestContext) throws SQLException{
         ArrayList<User> users = new ArrayList<User>();
         User user = new User();
         Connection con = null;
@@ -57,7 +60,7 @@ public class UserController {
             res = stmnt.executeQuery(query);
 
             while(res.next()){
-                user = new User(res.getInt("id"),res.getString("username"),0);
+                user = new User(res.getInt("id"),res.getString("username"),res.getInt("authlevel"));
                 users.add(user);
             }
 
@@ -67,9 +70,9 @@ public class UserController {
             System.out.println("VendorError: " + ex.getErrorCode());
         }finally {
             try {
-            stmnt.close();
-            res.close();
-            con.close();
+                stmnt.close();
+                res.close();
+                con.close();
             } catch (SQLException ex) {/*ignore*/}
         }
 

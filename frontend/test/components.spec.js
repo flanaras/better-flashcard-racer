@@ -116,12 +116,12 @@ describe('FlashcardPractice', () => {
     expect(wrapper.state('questionsAnswered')).to.equal(1);
   });
 
-  it.skip('should display the next question after clicking the "Next Question" button', () => {
+  it('should display the next question after clicking the "Next Question" button', () => {
     const wrapper = mount(<FlashcardPractice chosenDeck={chosenDeck} />);
 
-    expect(wrapper.find('p').text()).to.equal("1+1");
+    expect(wrapper.find('label').text()).to.equal("1+1");
     wrapper.find('button').simulate('click');
-    expect(wrapper.find('p').text()).to.equal("4+1");
+    expect(wrapper.find('label').text()).to.equal("4+1");
   });
 
   it('should update the "currentAnswer" state when the answer is changed in the flashcard', () => {

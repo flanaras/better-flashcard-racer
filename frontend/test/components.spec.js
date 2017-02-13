@@ -6,6 +6,7 @@ import SelectMode from '../src/SelectMode'
 import DeckConfig from '../src/DeckConfig'
 import MotherOfDragons from '../src/MotherOfDragons'
 import { Flashcard, FlashcardPractice } from './../src/Flashcard'
+import UserList from '../src/UserList';
 
 describe('SelectMode', () => {
     it('should be able to select mode: Login or practice mode', () => {
@@ -120,4 +121,17 @@ describe('FlashcardPractice', () => {
     wrapper.find('button').simulate('click');
     expect(wrapper.state('answers')[0].answer).to.equal("2");
   });
+});
+
+describe('UserList', () => {
+
+  const users = [{id: 1, name: "Test User", auth_role: "Teacher"}, {id: 2, name : "Another User", auth_role: "Student"}];
+
+  it('should display the correct number of elements in the table', () => {
+    const wrapper = shallow(<UserList users={users} />);
+
+    const tableRows = wrapper.find('tr');
+    expect(tableRows).to.have.length.of(3);
+  });
+
 });

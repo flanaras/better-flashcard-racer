@@ -5,7 +5,16 @@ import React, {Component} from 'react'
 import { PageHeader, Grid, Row, Col, Table } from 'react-bootstrap';
 
 export default class SelectMode extends Component {
+
   render() {
+    const users = this.props.users;
+    const userList = users.map((user) =>
+      <tr>
+        <td>{user.id}</td>
+        <td>{user.name}</td>
+        <td>{user.auth_role}</td>
+      </tr>
+    );
     return (
       <div>
         <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Game Configuration</small></PageHeader>
@@ -22,11 +31,7 @@ export default class SelectMode extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Test</td>
-                    <td>Student</td>
-                  </tr>
+                  {userList}
                 </tbody>
               </Table>
             </Col>

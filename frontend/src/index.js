@@ -5,6 +5,7 @@ import DeckConfig from './DeckConfig'
 import MotherOfDragons from './MotherOfDragons'
 import { FlashcardPractice } from './Flashcard'
 import UserList from './UserList';
+import CreateUser from './CreateUser';
 import { Router, Route, browserHistory } from 'react-router'
 
 ReactDOM.render((
@@ -14,6 +15,7 @@ ReactDOM.render((
             <Route path="deckconfig" component={DeckConfig} />
             <Route path="playgame" component={FlashcardPractice} />
             <Route path="users" component={UserList} />
+            <Route path="createuser" component={CreateUser} />
         </Route>
     </Router>
 ), document.getElementById('root'));

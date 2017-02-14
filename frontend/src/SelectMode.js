@@ -1,15 +1,29 @@
 import React, {Component} from 'react'
 import {Link} from "react-router";
+import config from './../config.json';
+import LoadJson from "./services/LoadJson";
 
 export default class SelectMode extends Component {
     constructor(props) {
         super(props);
-        this.state = {username: '',
-            password: ''
+        this.state = {nickname: '',
+            password: '',
+            username: '',
+            userRole: '',
+            auth: false
         }
 
         this.onLoginChange = this.onLoginChange.bind(this);
         this.onSubmitLogin = this.onSubmitLogin.bind(this);
+        this.apiCall = this.apiCall.bind(this);
+    }
+
+    async apiCall(endpoint, nickname, password) {
+        const url = `${config.mock_api_url}/${endpoint}`;
+        const userInfo = await LoadJson(url, 'POST', {nickname, password});
+        this.setState({username: userInfo[0].username, userRole: userInfo[0].auth_level});
+        console.log(userInfo[0].auth_level);
+        this.props.login(this.state.username, true);
     }
 
     onLoginChange(e) {
@@ -21,7 +35,7 @@ export default class SelectMode extends Component {
     onSubmitLogin(e) {
         // TODO: Add login post
         e.preventDefault();
-        this.props.login(this.state.username, this.state.password, true);
+        this.apiCall('login', this.state.nickname, this.state.password);
     }
 
     render() {
@@ -29,7 +43,7 @@ export default class SelectMode extends Component {
             <div>
                 <h1>Welcome to the (better) flashcard racer!</h1>
                 <form onSubmit={this.onSubmitLogin}>
-                    <input type="text" name="username" placeholder="Username" value={this.state.username} onChange={this.onLoginChange} />
+                    <input type="text" name="nickname" placeholder="Nickname" value={this.state.nickname} onChange={this.onLoginChange} />
                     <input type="password" name="password" placeholder="Password" value={this.state.password} onChange={this.onLoginChange} />
                     <input type="submit" value="Log in"/>
                 </form>

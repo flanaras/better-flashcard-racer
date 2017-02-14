@@ -145,8 +145,8 @@ export default class SelectMode extends Component {
         this.setState({chosenDeck})
     }
 
-    login(username, password, auth) {
-        this.setState({username, password, auth});
+    login(username, auth) {
+        this.setState({username, auth});
         browserHistory.push('deckconfig');
     }
 

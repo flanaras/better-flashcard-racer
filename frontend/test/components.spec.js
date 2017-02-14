@@ -104,6 +104,7 @@ describe('DeckConfig', () => {
         expect(onSubmitGameConfigSpy.calledOnce).to.equal(true)
         expect(onSubmitGameConfigSpy.getCall(0).args[0]).to.equal(chosenDeck)
         expect(onSubmitGameConfigSpy.getCall(0).args[1]).to.equal('20')
+        expect(onSubmitGameConfigSpy.getCall(0).args[2]).to.equal('10')
         expect(onSubmitGameConfigSpy.calledWith(chosenDeck, '20', '10')).to.equal(true)
     })
     it('when the component gets rendered, the component should call our API', () => {

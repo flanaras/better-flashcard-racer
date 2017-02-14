@@ -16,24 +16,26 @@
 
 package se.uu.it.bfcr.inflector.springboot.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.inflector.models.RequestContext;
 import io.swagger.inflector.models.ResponseContext;
 import se.uu.it.bfcr.inflector.springboot.models.Deck;
 import se.uu.it.bfcr.inflector.springboot.models.Flashcard;
-import se.uu.it.bfcr.inflector.springboot.controllers.DBConnect;
-import org.apache.commons.io.IOUtils;
+import se.uu.it.bfcr.inflector.springboot.models.generateCarding;
 import org.springframework.stereotype.Component;
+import se.uu.it.bfcr.inflector.springboot.models.OperandGenerate;
 
 import javax.ws.rs.core.Response.Status;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,5 +139,95 @@ public class DeckController {
 		return new ResponseContext().status(Status.OK)
 				.entity(decksList);
 	}
-    
+
+	public ResponseContext generateCards(RequestContext requestContext, JsonNode genDecks)
+	{
+		Deck deck = new Deck();
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			generateCarding genCard = mapper.treeToValue(genDecks,generateCarding.class);
+
+			HashMap<Integer,String>hmap = new HashMap<Integer,String>();
+			ArrayList<OperandGenerate> operandarr = genCard.getOperand();
+
+
+
+			hmap = mappingOperand(operandarr);
+			List<Flashcard> cards = new ArrayList<Flashcard>();
+			for(int i = 0; i<genCard.getNumberSolution();i++)
+			{
+				int randNumber1 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
+				int randNumber2 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
+				int randOperand = 1 + (int)(Math.random()*hmap.size());
+				int total = 0;
+				if(hmap.get(randOperand).equals("+"))
+				{
+					total = randNumber1 + randNumber2;
+				}
+				else if(hmap.get(randOperand).equals("-"))
+				{
+					total = randNumber1 - randNumber2;
+				}
+				else if(hmap.get(randOperand).equals("X"))
+				{
+					total  =  randNumber1 * randNumber2;
+				}
+				else if(hmap.get(randOperand).equals("/"))
+				{
+					total = randNumber1 / randNumber2;
+				}
+
+				String problems = randNumber1+" "+hmap.get(randOperand)+" "+randNumber2;
+				cards.add(new Flashcard(999999, problems, String.valueOf(total)));
+			}
+
+
+
+			deck.setUserId(9999);
+			deck.setFlashcard(cards);
+			deck.setName("PraticeDeck");
+			deck.setCreated(OffsetDateTime.now().toString());
+			deck.setChanged(OffsetDateTime.now().toString());
+			deck.setDescription("Deck created by request of user");
+			deck.setId(99999);
+			deck.setIsPrivate(false);
+			deck.setNumProblems(genCard.getNumberSolution());
+			deck.setUserName("NN");
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
+
+		return new ResponseContext().status(Status.OK)
+				.entity(deck);
+	}
+
+	private HashMap<Integer,String> mappingOperand(ArrayList<OperandGenerate> operand)
+	{
+		HashMap<Integer,String>hmaps = new HashMap<Integer,String>();
+		int count = 1;
+		if(operand.get(0).isAdd())
+		{
+			hmaps.put(count,"+");
+			count++;
+		}
+		if(operand.get(0).isMinus())
+		{
+			hmaps.put(count,"-");
+			count++;
+		}
+		if(operand.get(0).isMulti())
+		{
+			hmaps.put(count,"X");
+			count++;
+		}
+		if(operand.get(0).isDiv())
+		{
+			hmaps.put(count,"/");
+			count++;
+		}
+
+
+		return hmaps;
+	}
 }

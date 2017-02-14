@@ -5,8 +5,10 @@ import sinon, { spy } from 'sinon'
 import SelectMode from '../src/SelectMode'
 import DeckConfig, {GenerateDeckOptions, SavedDeck} from '../src/DeckConfig'
 import MotherOfDragons from '../src/MotherOfDragons'
-import { Flashcard, FlashcardPractice } from './../src/Flashcard'
+import Flashcard from './../src/Flashcard'
+import FlashcardPractice from './../src/FlashcardPractice';
 import Solutions from '../src/Solutions'
+import {ControlLabel, FormControl, Button, ListGroup} from 'react-bootstrap'
 
 describe('SelectMode', () => {
     it('should be able to select mode: Login or practice mode', () => {
@@ -152,8 +154,8 @@ describe('Flashcards', () => {
 
     const wrapper = shallow(<Flashcard flashcard={flashcard} />);
     expect(wrapper.containsAllMatchingElements([
-      <p>1 + 1</p>,
-      <input type="text" placeholder="Your solution" />
+        <ControlLabel>1 + 1</ControlLabel>,
+        <FormControl type="text" placeholder="Your solution" />
     ])).to.equal(true);
   });
 
@@ -188,7 +190,7 @@ describe('FlashcardPractice', () => {
     const wrapper = shallow(<FlashcardPractice chosenDeck={chosenDeck}/>);
     expect(wrapper.containsAllMatchingElements([
       <Flashcard />,
-      <button>Next Question</button>
+      <Button bsStyle="info" >Next Question</Button>
     ])).to.be.true;
   });
 
@@ -196,37 +198,37 @@ describe('FlashcardPractice', () => {
     const wrapper = shallow(<FlashcardPractice chosenDeck={chosenDeck}/>);
 
     expect(wrapper.state('questionsAnswered')).to.equal(0);
-    wrapper.find('button').simulate('click');
+    wrapper.find('Button').simulate('click');
     expect(wrapper.state('questionsAnswered')).to.equal(1);
   });
 
-  it.skip('should display the next question after clicking the "Next Question" button', () => {
+  it('should display the next question after clicking the "Next Question" button', () => {
     const wrapper = mount(<FlashcardPractice chosenDeck={chosenDeck} />);
 
-    expect(wrapper.find('p').text()).to.equal("1+1");
+    expect(wrapper.find('label').text()).to.equal("1+1");
     wrapper.find('button').simulate('click');
-    expect(wrapper.find('p').text()).to.equal("4+1");
+    expect(wrapper.find('label').text()).to.equal("4+1");
   });
 
   it('should update the "currentAnswer" state when the answer is changed in the flashcard', () => {
     const wrapper = mount(<FlashcardPractice chosenDeck={chosenDeck} />);
 
-    wrapper.find('input').simulate('change', { target : { value : "2" }});
+    wrapper.find('#flashcard').simulate('change', { target : { value : "2" }});
     expect(wrapper.state('currentAnswer')).to.equal('2');
   });
 
   it('should save an answer on clicking "Next Question"', () => {
     const wrapper = mount(<FlashcardPractice chosenDeck={chosenDeck} />);
 
-    wrapper.find('input').simulate('change', { target : { value : "2" }});
-    wrapper.find('button').simulate('click');
+    wrapper.find('#flashcard').simulate('change', { target : { value : "2" }});
+    wrapper.find('Button').simulate('click');
     expect(wrapper.state('answers')[0].answer).to.equal("2");
   });
 
     it('should save solution checking on clicking "Next Question"', () => {
         const wrapper = mount(<FlashcardPractice chosenDeck={chosenDeck} />);
 
-        wrapper.find('input').simulate('change', { target : { value : "3" } });
+        wrapper.find('#flashcard').simulate('change', { target : { value : "3" } });
         wrapper.find('button').simulate('click');
         expect(wrapper.state('answers')[0].check).to.equal(false);
     });
@@ -263,10 +265,9 @@ describe('Solutions', () => {
     it ('should render detailed list', () => {
         const wrapper = shallow(<Solutions chosenDeck={chosenDeck} />);
         expect(wrapper.containsAllMatchingElements([
-            <h1>Your results are:</h1>,
-            <h2>Correct answers: {1}</h2>,
-            <h2>Incorrect answers: {1}</h2>
+            <h4>Correct answers: {1}</h4>,
+            <h4>Incorrect answers: {1}</h4>
         ])).to.equal(true);
-        expect(wrapper.find('li').length).to.equal(2);
+        expect(wrapper.find('ListGroupItem').length).to.equal(2);
     });
 });

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import SelectMode from './SelectMode'
 import DeckConfig from './DeckConfig'
 import MotherOfDragons from './MotherOfDragons'
-import { FlashcardPractice } from './Flashcard'
+import FlashcardPractice  from './FlashcardPractice'
 import Solutions from './Solutions'
 import { Router, Route, browserHistory } from 'react-router'
 

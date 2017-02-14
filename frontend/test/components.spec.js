@@ -5,7 +5,8 @@ import sinon, { spy } from 'sinon'
 import SelectMode from '../src/SelectMode'
 import DeckConfig, {GenerateDeckOptions, SavedDeck} from '../src/DeckConfig'
 import MotherOfDragons from '../src/MotherOfDragons'
-import { Flashcard, FlashcardPractice } from './../src/Flashcard'
+import Flashcard from './../src/Flashcard'
+import FlashcardPractice from './../src/FlashcardPractice';
 import Solutions from '../src/Solutions'
 import {ControlLabel, FormControl, Button, ListGroup} from 'react-bootstrap'
 

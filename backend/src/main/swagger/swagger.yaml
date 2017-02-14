@@ -69,6 +69,7 @@ paths:
       summary: Find deck by ID
       x-swagger-router-controller: DeckController
       description: Returns a single set of deck
+      operationId: getDecksById
       responses:
         200:
           description: successful operation

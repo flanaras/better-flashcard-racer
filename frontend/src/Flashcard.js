@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { PageHeader, Grid, Row, Col, Panel, Button, FormGroup, FormControl, ControlLabel, ProgressBar } from 'react-bootstrap';
 
 export class Flashcard extends Component {
@@ -9,6 +10,17 @@ export class Flashcard extends Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.disableInput = this.disableInput.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
+    }
+
+    componentDidMount() {
+      ReactDOM.findDOMNode(this.refs.solutionInput).focus();
+    }
+
+    componentWillReceiveProps(nextProps) {
+      if(nextProps.flashcard !== this.props.flashcard) {
+        this.setState({solution : '' });
+      }
     }
 
     handleInputChange(event) {
@@ -24,6 +36,12 @@ export class Flashcard extends Component {
         this.setState({inputState: true});
     }
 
+    handleKeyPress(event) {
+        if(event.key === 'Enter') {
+            this.props.submitAnswer(event.target.value);
+        }
+    }
+
     render() {
         var opts = {};
         if (this.state.inputState)
@@ -32,7 +50,11 @@ export class Flashcard extends Component {
             <div>
                 <FormGroup controlId="flashcard">
                     <ControlLabel>{this.props.flashcard.problem}</ControlLabel>
-                    <FormControl type="text" {...opts} style={{textAlign: "center"}} placeholder="Your solution" value={this.state.solution} onChange={this.handleInputChange} />
+                    <FormControl type="text" {...opts} style={{textAlign: "center"}}
+                                 placeholder="Your solution" value={this.state.solution}
+                                 ref="solutionInput"
+                                 onKeyPress={this.handleKeyPress}
+                                 onChange={this.handleInputChange} />
                     <TimeCounter disableInput={this.disableInput} timePerProblem={this.props.timePerProblem} remProb={this.props.remProb} completeQuestion={this.props.completeQuestion} />
                 </FormGroup>
             </div>
@@ -135,7 +157,7 @@ export class FlashcardPractice extends Component {
                         <Col xs={4} md={4}>
                             <FormControl type="text" disabled style={{textAlign: "center", width: 60}} placeholder={(this.state.questionsAnswered+1) + '/' + this.props.gameLengthProblems} />
                             <Panel collapsible style={{textAlign: "center"}} expanded={true}>
-                                <Flashcard flashcard={this.props.chosenDeck.flashcards[this.state.questionsAnswered]} sendAnswer={this.updateAnswer} timePerProblem={this.props.timePerProblem} remProb={this.props.gameLengthProblems-this.state.questionsAnswered-1} completeQuestion={this.completeQuestion}/>
+                                <Flashcard flashcard={this.props.chosenDeck.flashcards[this.state.questionsAnswered]} sendAnswer={this.updateAnswer} submitAnswer={this.completeQuestion} timePerProblem={this.props.timePerProblem} remProb={this.props.gameLengthProblems-this.state.questionsAnswered-1} completeQuestion={this.completeQuestion}/>
                                 <Button bsStyle="info" onClick={this.completeQuestion}>{(this.state.questionsAnswered !== this.props.chosenDeck.flashcards.length - 1) ? 'Next Question' : 'Complete Session'}</Button>
                             </Panel>
                         </Col>

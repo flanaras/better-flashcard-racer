@@ -17,7 +17,7 @@ export default class FlashcardPractice extends Component {
     let flashcard = this.props.chosenDeck.flashcards[this.state.questionsAnswered];
     flashcard.answer = this.state.currentAnswer;
 
-    flashcard.check = parseInt(flashcard.answer) === flashcard.solution? true: false;
+    flashcard.check = parseInt(flashcard.answer) === flashcard.solution;
 
     this.state.answers.push(flashcard);
 

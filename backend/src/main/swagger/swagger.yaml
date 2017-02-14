@@ -126,7 +126,7 @@ paths:
           $ref: "#/responses/Standard500ErrorResponse"
   "/user/{id}":
     parameters:
-      - $ref: "#/parameters/user_id"
+      - $ref: "#/parameters/id"
     get:
       tags:
         - user

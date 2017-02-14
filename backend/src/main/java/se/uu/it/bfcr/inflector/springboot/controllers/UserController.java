@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UserController {
-    public ResponseContext getUserById(RequestContext requestContext, int id) throws SQLException{
+    public ResponseContext getUserById(RequestContext requestContext, Long id) throws SQLException{
         User user = new User();
         Connection con = null;
         Statement stmnt = null;
@@ -29,8 +29,8 @@ public class UserController {
             stmnt = con.createStatement();
             res = stmnt.executeQuery(query);
 
-            user = new User(res.getInt("id"),res.getString("username"),res.getInt("authlevel"));
-            System.out.println(user.getUsername());
+            res.first();
+            user = new User(res.getInt("id"), res.getString("username"), res.getInt("authlevel"));
 
         }catch (SQLException ex){
             System.out.println("SQLException: " + ex.getMessage());

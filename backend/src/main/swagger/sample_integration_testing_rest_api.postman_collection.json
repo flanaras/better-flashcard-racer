@@ -1,0 +1,1762 @@
+{
+	"variables": [],
+	"info": {
+		"name": "byggstyrning_api_tests_done",
+		"_postman_id": "0bc360a3-9156-045d-a13f-fd0ff893c5e9",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "composite-material",
+			"description": "",
+			"item": [
+				{
+					"name": "{{url}}/api/composite-materials/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJson = JSON.parse(responseBody);",
+									"",
+									"let referenceJson = ",
+									"    {",
+									"    \"id\": 1,",
+									"    \"user_id\": 1,",
+									"    \"user_name\": \"El-entreprenad\",",
+									"    \"name\": \"Betong\",",
+									"    \"unit_id\": 3,",
+									"    \"unit_name\": \"m3\",",
+									"    \"composite_has_materials\": [",
+									"      {",
+									"        \"composite_material_id\": 1,",
+									"        \"material_id\": 1,",
+									"        \"material_name\": \"Betong\",",
+									"        \"recycle_type_id\": 2,",
+									"        \"recycle_type_name\": \"Återvunnet\",",
+									"        \"unit_id\": 2,",
+									"        \"unit_name\": \"kg\",",
+									"        \"amount\": 1",
+									"      }",
+									"    ]",
+									"  }",
+									"  ",
+									"function removeTimeStamps(response) {",
+									"    delete response.created",
+									"    delete response.changed",
+									"",
+									"    return response",
+									"}",
+									"",
+									"function foundCorrectObj(response, reference, name) {",
+									"    removeTimeStamps(response)",
+									"    return JSON.stringify(response) === JSON.stringify(reference) ",
+									"}",
+									"",
+									"",
+									"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson[0], referenceJson)"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/composite-materials/",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/api/composite-materials/1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJson = JSON.parse(responseBody);",
+									"",
+									"let referenceJson = ",
+									"    {",
+									"    \"id\": 1,",
+									"    \"user_id\": 1,",
+									"    \"user_name\": \"El-entreprenad\",",
+									"    \"name\": \"Betong\",",
+									"    \"unit_id\": 3,",
+									"    \"unit_name\": \"m3\",",
+									"    \"composite_has_materials\": [",
+									"      {",
+									"        \"composite_material_id\": 1,",
+									"        \"material_id\": 1,",
+									"        \"material_name\": \"Betong\",",
+									"        \"recycle_type_id\": 2,",
+									"        \"recycle_type_name\": \"Återvunnet\",",
+									"        \"unit_id\": 2,",
+									"        \"unit_name\": \"kg\",",
+									"        \"amount\": 1",
+									"      }",
+									"    ]",
+									"  }",
+									"  ",
+									"function removeTimeStamps(response) {",
+									"    delete response.created",
+									"    delete response.changed",
+									"    return response",
+									"}",
+									"",
+									"function foundCorrectObj(response, reference) {",
+									"    removeTimeStamps(response)",
+									"    return JSON.stringify(response) === JSON.stringify(reference) ",
+									"}",
+									"",
+									"",
+									"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson[0], referenceJson)"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/composite-materials/1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/api/composite-materials/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"postman.setEnvironmentVariable(\"id_inserted_composite_material\", jsonData.insertId);",
+									"",
+									"",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/composite-materials/",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"test6\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 1,\n              \"recycle_type_id\": 2,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "test  insert successful",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/composite-materials/{{id_inserted_composite_material}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:3000/composite-materials/8",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/composite-materials/{{id_inserted_composite_material}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "material",
+			"description": "",
+			"item": [
+				{
+					"name": "{{url}/api/materials/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJson = JSON.parse(responseBody);",
+									"",
+									"let referenceJson = ",
+									"     {",
+									"    \"id\": 1,",
+									"    \"name\": \"Betong\",",
+									"    \"user_id\": 1,",
+									"    \"user_name\": \"El-entreprenad\"",
+									"  }",
+									"  ",
+									"function removeTimeStamps(response) {",
+									"    delete response.created",
+									"    delete response.changed",
+									"    return response",
+									"}",
+									"",
+									"function foundCorrectObj(response, reference) {",
+									"    removeTimeStamps(response)",
+									"    return JSON.stringify(response) === JSON.stringify(reference) ",
+									"}",
+									"",
+									"",
+									"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson[0], referenceJson)"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/materials/",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}/api/materials/1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJson = JSON.parse(responseBody);",
+									"",
+									"let referenceJson = ",
+									"     {",
+									"    \"id\": 1,",
+									"    \"name\": \"Betong\",",
+									"    \"user_id\": 1,",
+									"    \"user_name\": \"El-entreprenad\"",
+									"  }",
+									"  ",
+									"function removeTimeStamps(response) {",
+									"    delete response.created",
+									"    delete response.changed",
+									"    return response",
+									"}",
+									"",
+									"function foundCorrectObj(response, reference) {",
+									"    removeTimeStamps(response)",
+									"    return JSON.stringify(response) === JSON.stringify(reference) ",
+									"}",
+									"",
+									"",
+									"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson[0], referenceJson)"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/materials/1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/api/materials/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"postman.setEnvironmentVariable(\"id_inserted_material\", jsonData.insertId);",
+									"",
+									"",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/materials/",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": " {\n    \"name\": \"TEST\",\n    \"user_id\": 1\n  }"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "test  insert successful",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/materials/{{id_inserted_material}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/api/materials/{{id_inserted_material}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/materials/{{id_inserted_material}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "material-has-meta",
+			"description": "",
+			"item": [
+				{
+					"name": "{{url}}/api/material-has-metas/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJson = JSON.parse(responseBody);",
+									"",
+									"let referenceJson = ",
+									"    {",
+									"    \"amount\": 1,",
+									"    \"meta_material_id\": 1,",
+									"    \"material_id\": 1,",
+									"    \"material_name\": \"Betong\",",
+									"    \"recycle_type_id\": 1,",
+									"    \"recycle_type_name\": \"Nytt\",",
+									"    \"unit_id\": 3,",
+									"    \"unit_name\": \"m3\"",
+									"  }",
+									"  ",
+									"function removeTimeStamps(response) {",
+									"    delete response.created",
+									"    delete response.changed",
+									"    return response",
+									"}",
+									"",
+									"function foundCorrectObj(response, reference) {",
+									"    removeTimeStamps(response)",
+									"    return JSON.stringify(response) === JSON.stringify(reference) ",
+									"}",
+									"",
+									"",
+									"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson[0], referenceJson)"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/material-has-metas/",
+						"method": "GET",
+						"header": [
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "record-state",
+			"description": "",
+			"item": [
+				{
+					"name": "{{url}/api/record-states/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJson = JSON.parse(responseBody);",
+									"",
+									"let referenceJson = ",
+									"    {",
+									"    \"id\": 1,",
+									"    \"name\": \"ACTIVE\"",
+									"  }",
+									"function removeTimeStamps(response) {",
+									"    delete response.created",
+									"    delete response.changed",
+									"    return response",
+									"}",
+									"",
+									"function foundCorrectObj(response, reference) {",
+									"    removeTimeStamps(response)",
+									"    return JSON.stringify(response) === JSON.stringify(reference) ",
+									"}",
+									"",
+									"",
+									"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson[0], referenceJson)"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/record-states/",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}/api/record-states/1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJson = JSON.parse(responseBody);",
+									"",
+									"let referenceJson = ",
+									"    {",
+									"    \"id\": 1,",
+									"    \"name\": \"ACTIVE\"",
+									"  }",
+									"  ",
+									"function removeTimeStamps(response) {",
+									"    delete response.created",
+									"    delete response.changed",
+									"    return response",
+									"}",
+									"",
+									"function foundCorrectObj(response, reference) {",
+									"    removeTimeStamps(response)",
+									"    return JSON.stringify(response) === JSON.stringify(reference) ",
+									"}",
+									"",
+									"",
+									"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson[0], referenceJson)"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/record-states/1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/api/record-states/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"postman.setEnvironmentVariable(\"id_inserted_record_state\", jsonData.insertId);",
+									"",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/record-states/",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n  {\n    \"name\": \"TEST\"\n  }\n"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "test  insert successful",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/record-states/{{id_inserted_record_state}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/api/materials/{{id_inserted_material}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/record-states/{{id_inserted_record_state}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "recycle-type",
+			"description": "",
+			"item": [
+				{
+					"name": "{{url}/api/recycle-types/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJson = JSON.parse(responseBody);",
+									"",
+									"let referenceJson = ",
+									"    {",
+									"    \"id\": 2,",
+									"    \"name\": \"Återvunnet\"",
+									"  }",
+									"  ",
+									"function removeTimeStamps(response) {",
+									"    delete response.created",
+									"    delete response.changed",
+									"    return response",
+									"}",
+									"",
+									"function foundCorrectObj(response, reference) {",
+									"    removeTimeStamps(response)",
+									"    return JSON.stringify(response) === JSON.stringify(reference) ",
+									"}",
+									"",
+									"",
+									"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson[0], referenceJson)"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/recycle-types/",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}/api/recycle-types/1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJson = JSON.parse(responseBody);",
+									"",
+									"let referenceJson = ",
+									"    {",
+									"    \"id\": 2,",
+									"    \"name\": \"Återvunnet\"",
+									"  }",
+									"  ",
+									"function removeTimeStamps(response) {",
+									"    delete response.created",
+									"    delete response.changed",
+									"    return response",
+									"}",
+									"",
+									"function foundCorrectObj(response, reference) {",
+									"    removeTimeStamps(response)",
+									"    return JSON.stringify(response) === JSON.stringify(reference) ",
+									"}",
+									"",
+									"",
+									"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson[0], referenceJson)"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/recycle-types/2",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/api/recycle-types/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"postman.setEnvironmentVariable(\"id_inserted_recycle_type\", jsonData.insertId);",
+									"",
+									"",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/recycle-types/",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"TESTARE\"\n  }\n"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "test  insert successful",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/recycle-types/{{id_inserted_recycle_type}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/api/recycle-types/{{id_inserted_recycle_type}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/recycle-types/{{id_inserted_recycle_type}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "unit",
+			"description": "",
+			"item": [
+				{
+					"name": "{{url}/api/units/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJson = JSON.parse(responseBody);",
+									"",
+									"let referenceJson = ",
+									"    {",
+									"    \"id\": 1,",
+									"    \"name\": \"m\",",
+									"    \"user_id\": 1,",
+									"    \"user_name\": \"El-entreprenad\"",
+									"  }",
+									"  ",
+									"function removeTimeStamps(response) {",
+									"    delete response.created",
+									"    delete response.changed",
+									"    return response",
+									"}",
+									"",
+									"function foundCorrectObj(response, reference) {",
+									"    removeTimeStamps(response)",
+									"    return JSON.stringify(response) === JSON.stringify(reference) ",
+									"}",
+									"",
+									"",
+									"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson[0], referenceJson)"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/units/",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}/api/units/1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJson = JSON.parse(responseBody);",
+									"",
+									"let referenceJson = ",
+									"    {",
+									"    \"id\": 1,",
+									"    \"name\": \"m\",",
+									"    \"user_id\": 1,",
+									"    \"user_name\": \"El-entreprenad\"",
+									"  }",
+									"  ",
+									"function removeTimeStamps(response) {",
+									"    delete response.created",
+									"    delete response.changed",
+									"    return response",
+									"}",
+									"",
+									"function foundCorrectObj(response, reference) {",
+									"    removeTimeStamps(response)",
+									"    return JSON.stringify(response) === JSON.stringify(reference) ",
+									"}",
+									"",
+									"",
+									"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson[0], referenceJson)"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/units/1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/api/units/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"postman.setEnvironmentVariable(\"id_inserted_unit\", jsonData.insertId);",
+									"",
+									"",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/units/",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"m4\",\n    \"user_id\": 1\n  }\n"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "test  insert successful",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/units/{{id_inserted_unit}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/api/units/{{id_inserted_unit}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/units/{{id_inserted_unit}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "used-material",
+			"description": "",
+			"item": [
+				{
+					"name": "{{url}/api/used-materials/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJson = JSON.parse(responseBody);",
+									"",
+									"let referenceJson = ",
+									"    {",
+									"    \"id\": 1,",
+									"    \"comment\": \"Första våningsplanet\",",
+									"    \"amount\": 8,",
+									"    \"user_id\": 1,",
+									"    \"user_name\": \"El-entreprenad\",",
+									"    \"composite_material_id\": 1,",
+									"    \"composite_material_name\": \"Betong\",",
+									"    \"record_state_id\": 1,",
+									"    \"record_state_name\": \"ACTIVE\"",
+									"  }",
+									"  ",
+									"function removeTimeStamps(response) {",
+									"    delete response.created",
+									"    delete response.changed",
+									"    return response",
+									"}",
+									"",
+									"function foundCorrectObj(response, reference) {",
+									"    removeTimeStamps(response)",
+									"    return JSON.stringify(response) === JSON.stringify(reference) ",
+									"}",
+									"",
+									"",
+									"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson[0], referenceJson)"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/used-materials/",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}/api/used-materials/1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJson = JSON.parse(responseBody);",
+									"",
+									"let referenceJson = ",
+									"    {",
+									"    \"id\": 1,",
+									"    \"comment\": \"Första våningsplanet\",",
+									"    \"amount\": 8,",
+									"    \"user_id\": 1,",
+									"    \"user_name\": \"El-entreprenad\",",
+									"    \"composite_material_id\": 1,",
+									"    \"composite_material_name\": \"Betong\",",
+									"    \"record_state_id\": 1,",
+									"    \"record_state_name\": \"ACTIVE\"",
+									"  }",
+									"  ",
+									"function removeTimeStamps(response) {",
+									"    delete response.created",
+									"    delete response.changed",
+									"    return response",
+									"}",
+									"",
+									"function foundCorrectObj(response, reference) {",
+									"    removeTimeStamps(response)",
+									"    return JSON.stringify(response) === JSON.stringify(reference) ",
+									"}",
+									"",
+									"",
+									"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson[0], referenceJson)"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/used-materials/1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/api/used-materials/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"postman.setEnvironmentVariable(\"id_inserted_used_material\", jsonData.insertId);",
+									"",
+									"",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/used-materials/",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 1,\n    \"composite_material_id\": 1,\n    \"comment\": \"TEST\",\n    \"amount\": 10\n  }\n"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "test  insert successful",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/used-materials/{{id_inserted_used_material}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/api/used-materials/{{id_inserted_used_material}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/used-materials/{{id_inserted_used_material}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"description": "",
+			"item": [
+				{
+					"name": "{{url}/api/users/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJson = JSON.parse(responseBody);",
+									"",
+									"let referenceJson = ",
+									"    {",
+									"    \"id\": 1,",
+									"    \"name\": \"El-entreprenad\"",
+									"  }",
+									"  ",
+									"function removeTimeStamps(response) {",
+									"    delete response.created",
+									"    delete response.changed",
+									"    return response",
+									"}",
+									"",
+									"function foundCorrectObj(response, reference) {",
+									"    removeTimeStamps(response)",
+									"    return JSON.stringify(response) === JSON.stringify(reference) ",
+									"}",
+									"",
+									"",
+									"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson[0], referenceJson)"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/users/",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}/api/users/1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJson = JSON.parse(responseBody);",
+									"",
+									"let referenceJson = ",
+									"    {",
+									"    \"id\": 1,",
+									"    \"name\": \"El-entreprenad\"",
+									"  }",
+									"  ",
+									"function removeTimeStamps(response) {",
+									"    delete response.created",
+									"    delete response.changed",
+									"    return response",
+									"}",
+									"",
+									"function foundCorrectObj(response, reference) {",
+									"    removeTimeStamps(response)",
+									"    return JSON.stringify(response) === JSON.stringify(reference) ",
+									"}",
+									"",
+									"",
+									"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson[0], referenceJson)"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/users/1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/api/users/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"postman.setEnvironmentVariable(\"id_inserted_user\", jsonData.insertId);",
+									"",
+									"",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/users/",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"TEST_USER\"\n  }\n"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "test  insert successful",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/users/{{id_inserted_user}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"user_id\": 1,\n          \"name\": \"ghfd-eer\",\n          \"unit_id\": 1,\n          \"composite_has_materials\": \n          [{\n              \"material_id\": 2,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 1,\n              \"amount\": 1\n            },\n              {\n              \"material_id\": 1,\n              \"recycle_type_id\": 1,\n              \"unit_id\": 2,\n              \"amount\": 1\n              }\n          ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/api/users/{{id_inserted_user}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/api/users/{{id_inserted_user}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "api_key",
+								"value": "pellejohn",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

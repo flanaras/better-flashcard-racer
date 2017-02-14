@@ -5,10 +5,10 @@ import DeckConfig from './DeckConfig'
 import MotherOfDragons from './MotherOfDragons'
 import { FlashcardPractice } from './Flashcard'
 import UserList from './UserList';
-import { Router, Route, browserHistory, hashHistory} from 'react-router'
+import { Router, Route, browserHistory } from 'react-router'
 
 ReactDOM.render((
-    <Router history={hashHistory}>
+    <Router history={browserHistory}>
         <Route component={MotherOfDragons}>
             <Route path="/" component={SelectMode} />
             <Route path="deckconfig" component={DeckConfig} />

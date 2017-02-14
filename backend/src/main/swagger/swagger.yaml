@@ -141,6 +141,26 @@ paths:
               $ref: "#/definitions/User"
         500:
           $ref: "#/responses/Standard500ErrorResponse"
+  /login:
+    post:
+      tags:
+        - user
+      summary: login
+      x-swagger-router-controller: UserController
+      operationId: login
+      parameters:
+        - name: loginInfo
+          in: body
+          description: Login attempt
+          schema:
+            $ref: "#/definitions/Login"
+      responses:
+        200:
+          $ref: "#/responses/Standard200ErrorResponse"
+          schema:
+            $ref: "#/definitions/User"
+        403:
+          $ref: "#/responses/Standard403ErrorResponse"
 definitions:
   User:
     properties:
@@ -156,6 +176,15 @@ definitions:
     type: array
     items:
       $ref: "#/definitions/User"
+  Login:
+    required:
+      - username
+      - password
+    properies:
+      username:
+        type: string
+      password:
+        type: string
   Card:
     properties:
       id:
@@ -203,6 +232,10 @@ responses:
     description: An unexpected error occured.
 #    schema:
 #      $ref: "#/definitions/Error"
+  Standard200ErrorResponse:
+    description: successful operation
+  Standard403ErrorResponse:
+    description: Forbidden.
   ObjectDoesNotExistResponse:
     description: The object was not found in
   Standard201CreatedResponse:

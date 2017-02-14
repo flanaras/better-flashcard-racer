@@ -1,8 +1,12 @@
 package se.uu.it.bfcr.inflector.springboot.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.inflector.models.RequestContext;
 import io.swagger.inflector.models.ResponseContext;
+import se.uu.it.bfcr.inflector.springboot.models.LoginResponse;
 import se.uu.it.bfcr.inflector.springboot.models.User;
+
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -77,5 +81,28 @@ public class UserController {
         }
 
         return new ResponseContext().status(Status.OK).entity(users);
+    }
+
+    public ResponseContext login(RequestContext requestContext, JsonNode body) {
+        ResponseContext responseContext;
+
+        String password = body.get("password").asText();
+        String username = body.get("username").asText();
+
+        if (username.equals(password)) {
+            responseContext = new ResponseContext().status(Response.Status.OK);
+
+            //TODO: mockup response
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setUsername(username);
+            loginResponse.setUserid(99324);
+            loginResponse.setUserRole("GOD");
+
+            responseContext.entity(loginResponse);
+        } else {
+            responseContext = new ResponseContext().status(Response.Status.FORBIDDEN);
+        }
+
+        return responseContext;
     }
 }

@@ -193,7 +193,7 @@ paths:
   /users:
       get:
         x-swagger-router-controller: UserController
-        description: Return all set of decks
+        description: Return all set of users
         operationId: getUsers
         responses:
           200:
@@ -213,6 +213,22 @@ paths:
                   username: Studentname
           500:
             $ref: "#/responses/Standard500ErrorResponse"
+
+        post:
+              tags:
+                - user
+              summary: Create a new user
+              parameters:
+                - name: user
+                  in: body
+                  description: The user object that will be inserted
+                  schema:
+                    $ref: "#/definitions/Users"
+              responses:
+                201:
+                  $ref: "#/responses/Standard201CreatedResponse"
+                500:
+                  $ref: "#/responses/Standard500ErrorResponse"
   /users/{id}:
       parameters:
         - $ref: "#/parameters/id"

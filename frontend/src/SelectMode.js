@@ -21,8 +21,8 @@ export default class SelectMode extends Component {
     async apiCall(endpoint, nickname, password) {
         const url = `${config.mock_api_url}/${endpoint}`;
         const userInfo = await LoadJson(url, 'POST', {nickname, password});
+        // TODO: Address login errors
         this.setState({username: userInfo[0].username, userRole: userInfo[0].auth_level});
-        console.log(userInfo[0].auth_level);
         this.props.login(this.state.username, true);
     }
 

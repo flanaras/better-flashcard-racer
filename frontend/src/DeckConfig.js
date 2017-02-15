@@ -13,8 +13,8 @@ export default class DeckConfig extends Component {
             generateDeck: {
                 operators: {
                     add: true,
-                    sub: true,
-                    mult: false,
+                    minus: true,
+                    multi: false,
                     div: false
                 },
                 operandRange: {
@@ -30,6 +30,7 @@ export default class DeckConfig extends Component {
         this.handleChangeGenerateDeck = this.handleChangeGenerateDeck.bind(this)
         this.submitGameConfig = this.submitGameConfig.bind(this)
         this.apiCall = this.apiCall.bind(this)
+
     }
 
     componentDidMount() {
@@ -38,7 +39,7 @@ export default class DeckConfig extends Component {
 
     async apiCall(endpoint) {
         const url = `${config.mock_api_url}/${endpoint}`
-        const decks = await LoadJson(url)
+        let decks = await LoadJson(url)
         this.setState({decks})
         this.setState({chosenDeck: decks[0]})
     }
@@ -60,77 +61,88 @@ export default class DeckConfig extends Component {
                 this.setState({gameLengthProblems, showTooBigInput})
             } else if(isDeckTypeChange && this.state.deckType === 'generateDeck') {
                 let gameLengthProblems, showTooBigInput
-                ({gameLengthProblems, showTooBigInput} = this.validateGameLength(this.state.chosenDeck.flashcards.length, this.state.chosenDeck, 'gameLengthProblems'))
+                ({gameLengthProblems, showTooBigInput} = this.validateGameLength(this.state.chosenDeck.flashcard.length, this.state.chosenDeck, 'gameLengthProblems'))
                 this.setState({[name]: value, gameLengthProblems, showTooBigInput})
             } else {
-            this.setState({[name]: value, showTooBigInput: false})
+                this.setState({[name]: value, showTooBigInput: false})
+            }
         }
     }
-}
 
-validateGameLength(value, chosenDeck, name) {
-    const gameLengthState = value > chosenDeck.flashcards.length ?
-        {[name]: this.state.chosenDeck.flashcards.length, showTooBigInput: true} :
-        {[name]: value, showTooBigInput: false}
-    return gameLengthState
-}
-
-handleChangeGenerateDeck(e) {
-    const isOperator =  e.target.type === 'checkbox'
-    const value = isOperator ? e.target.checked : e.target.value
-    const name = e.target.name
-    let generateDeck = this.state.generateDeck
-    if(isOperator) {
-        generateDeck.operators[name] = value
-        this.setState({generateDeck})
-    } else {
-        generateDeck.operandRange[name] = value
-        this.setState({generateDeck})
+    validateGameLength(value, chosenDeck, name) {
+        const gameLengthState = value > chosenDeck.flashcard.length ?
+            {[name]: this.state.chosenDeck.flashcard.length, showTooBigInput: true} :
+            {[name]: value, showTooBigInput: false}
+        return gameLengthState
     }
-}
 
-submitGameConfig(e) {
-    e.preventDefault()
-    const deckType = this.state.deckType
-    if(deckType === 'savedDeck') {
-        this.props.onSubmitGameConfig(this.state.chosenDeck, this.state.gameLengthProblems, this.state.timePerProblem)
-    } else {
-        // TODO: Fetch the generated deck and send it to MotherOfDragons. For now, use saved deck
-        this.props.onSubmitGameConfig(this.state.chosenDeck, this.state.gameLengthProblems, this.state.timePerProblem)
+    handleChangeGenerateDeck(e) {
+        const isOperator =  e.target.type === 'checkbox'
+        const value = isOperator ? e.target.checked : e.target.value
+        const name = e.target.name
+        let generateDeck = this.state.generateDeck
+        if(isOperator) {
+            generateDeck.operators[name] = value
+            this.setState({generateDeck})
+        } else {
+            generateDeck.operandRange[name] = value
+            this.setState({generateDeck})
+        }
     }
-}
 
-render() {
-    return (
-        <div>
-            <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Game Configuration</small></PageHeader>
-            <Grid>
-                <Row className="show-grid">
-                    <Col xs={1} md={3}></Col>
-                    <Col xs={12} md={6}>
-                        <Panel style={{textAlign: "center"}}>
-                            <Form onSubmit={this.submitGameConfig} >
-                                <Panel style={{textAlign: "left"}}>
-                                    <ControlLabel>Options:</ControlLabel>
-                                    <Radio name="deckType" value="savedDeck" checked={this.state.deckType === 'savedDeck'} onChange={this.handleChange} >
-                                        Choose a saved deck of flashcards
-                                    </Radio>
-                                    <Radio name="deckType" value="generateDeck" checked={this.state.deckType === 'generateDeck'} onChange={this.handleChange} >
-                                        Generate a deck
-                                    </Radio>
-                                </Panel>
+    async submitGameConfig(e) {
+        e.preventDefault()
+        const deckType = this.state.deckType
+        if(deckType === 'savedDeck') {
+            this.props.onSubmitGameConfig(this.state.chosenDeck, this.state.gameLengthProblems, this.state.timePerProblem)
+        } else {
+            const reqPayload = {
+                min: this.state.generateDeck.operandRange.min,
+                max: this.state.generateDeck.operandRange.max,
+                numberSolution: this.state.gameLengthProblems,
+                operators: [{
+                    minus: this.state.generateDeck.operators.minus,
+                    add: this.state.generateDeck.operators.add,
+                    div: this.state.generateDeck.operators.div,
+                    multi: this.state.generateDeck.operators.multi
+                }]
+            }
+            const chosenDeck = await LoadJson(config.mock_api_url + '/generate-cards', 'POST', reqPayload)
+            this.props.onSubmitGameConfig(chosenDeck, this.state.gameLengthProblems, this.state.timePerProblem)
+        }
+    }
 
-                                <SavedDeck handleChange={this.handleChange} decks={this.state.decks} deckType={this.state.deckType} chosenDeck={this.state.chosenDeck}/>
-                                <GenerateDeckOptions handleChangeGenerateDeck={this.handleChangeGenerateDeck} deckType={this.state.deckType} generateDeck={this.state.generateDeck}/>
-                                <Panel style={{textAlign: "left"}}>
-                                    <ControlLabel>Game length:</ControlLabel>
+    render() {
+        return (
+            <div>
+                <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Game Configuration</small></PageHeader>
+                <Grid>
+                    <Row className="show-grid">
+                        <Col xs={1} md={3}></Col>
+                        <Col xs={12} md={6}>
+                            <Panel style={{textAlign: "center"}}>
+                                <Form onSubmit={this.submitGameConfig} >
+                                    <Panel style={{textAlign: "left"}}>
+                                        <ControlLabel>Options:</ControlLabel>
+                                        <Radio name="deckType" value="savedDeck" checked={this.state.deckType === 'savedDeck'} onChange={this.handleChange} >
+                                            Choose a saved deck of flashcards
+                                        </Radio>
+                                        <Radio name="deckType" value="generateDeck" checked={this.state.deckType === 'generateDeck'} onChange={this.handleChange} >
+                                            Generate a deck
+                                        </Radio>
+                                    </Panel>
+
+                                    <SavedDeck handleChange={this.handleChange} decks={this.state.decks} deckType={this.state.deckType} chosenDeck={this.state.chosenDeck}/>
+                                    <GenerateDeckOptions handleChangeGenerateDeck={this.handleChangeGenerateDeck} deckType={this.state.deckType} generateDeck={this.state.generateDeck}/>
+                                    <Panel style={{textAlign: "left"}}>
+                                        <ControlLabel>Game length:</ControlLabel>
                                     <FormGroup controlId="gameLength">
                                         <ControlLabel>Number of problems:</ControlLabel>
                                         {' '}
                                         <FormControl type="text" style={{textAlign: "right", width: 80, display: 'inline'}} name="gameLengthProblems" value={this.state.gameLengthProblems} onChange={this.handleChange} />
                                         {
                                             this.state.showTooBigInput ?
-                                                <p>{this.state.gameLengthProblems} problems exceeds the number of cards in the deck which is {this.state.chosenDeck.flashcards.length}</p>
+                                                <p>{this.state.gameLengthProblems} problems exceeds the number of cards in the deck which is {this.state.chosenDeck.flashcard.length}</p>
                                                 : null
                                         }
                                         {' '}
@@ -172,8 +184,8 @@ export class SavedDeck extends Component {
                             </FormControl>
                             <p data-type="description"><i>{this.props.chosenDeck.description}</i></p>
                             <ControlLabel>Sample problem:</ControlLabel>
-                            <p>Problem: {this.props.chosenDeck.flashcards[0].problem}</p>
-                            <p>Solution: {this.props.chosenDeck.flashcards[0].solution}</p>
+                            <p>Problem: {this.props.chosenDeck.flashcard[0].problem}</p>
+                            <p>Solution: {this.props.chosenDeck.flashcard[0].answer}</p>
                         </FormGroup>
                     </Panel>
                 </div>
@@ -193,10 +205,10 @@ export class GenerateDeckOptions extends Component {
                             <Checkbox inline name="add" checked={this.props.generateDeck.operators.add} onChange={this.props.handleChangeGenerateDeck} >
                                 Addition
                             </Checkbox>
-                            <Checkbox inline name="sub" checked={this.props.generateDeck.operators.sub} onChange={this.props.handleChangeGenerateDeck} >
+                            <Checkbox inline name="minus" checked={this.props.generateDeck.operators.minus} onChange={this.props.handleChangeGenerateDeck} >
                                 Subtraction
                             </Checkbox>
-                            <Checkbox inline name="mult" checked={this.props.generateDeck.operators.mult} onChange={this.props.handleChangeGenerateDeck} >
+                            <Checkbox inline name="multi" checked={this.props.generateDeck.operators.multi} onChange={this.props.handleChangeGenerateDeck} >
                                 Multiplication
                             </Checkbox>
                             <Checkbox inline name="div" checked={this.props.generateDeck.operators.div} onChange={this.props.handleChangeGenerateDeck} >
@@ -221,3 +233,4 @@ export class GenerateDeckOptions extends Component {
             ) : null
     }
 }
+

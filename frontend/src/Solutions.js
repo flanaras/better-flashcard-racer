@@ -1,5 +1,7 @@
 import React from 'react';
-import { PageHeader, Grid, Row, Col, Panel, FormControl, ControlLabel, ListGroup, ListGroupItem } from 'react-bootstrap';
+import {Link} from "react-router";
+import { PageHeader, Grid, Row, Col, Panel, FormControl, ControlLabel, ListGroup, ListGroupItem, Button} from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 export default class Solutions extends React.Component {
     constructor(props) {
@@ -46,12 +48,19 @@ export default class Solutions extends React.Component {
                                                 )
                                             )
                                         }
+                                        <LinkContainer to={{ pathname: '/deckconfig'}}>
+                                            <Button>Play another deck</Button>
+                                        </LinkContainer>   <LinkContainer to={{ pathname: '/'}}>
+                                        <Button>Home</Button>
+                                    </LinkContainer>
                                     </ListGroup>
                                 </Panel>
                             </Col>
                             <Col xs={1} md={3}></Col>
                         </Row>
+
                     </Grid>
+
             </div>
         );
     }

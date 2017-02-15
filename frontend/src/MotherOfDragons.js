@@ -11,7 +11,8 @@ export default class SelectMode extends Component {
 
 
     onSubmitGameConfig(chosenDeck, gameLengthProblems, timePerProblem) {
-        this.setState({chosenDeck, gameLengthProblems, timePerProblem})
+        const newChosendeck = renameAttributes(chosenDeck)
+        this.setState({chosenDeck: newChosendeck, gameLengthProblems, timePerProblem})
         browserHistory.push('playgame')
     }
 
@@ -33,4 +34,15 @@ export default class SelectMode extends Component {
             </div>
             )
     }
+}
+
+function renameAttributes(deck) {
+    const tempRename = deck.flashcard
+    let flashcards = tempRename.map( row => {
+        return {problem: row.problem, solution: parseInt(row.answer), id: row.id}
+    })
+
+    delete deck.flashcard
+    deck.flashcards = flashcards
+    return deck
 }

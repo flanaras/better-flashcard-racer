@@ -3,16 +3,35 @@
  */
 import React, {Component} from 'react'
 import { PageHeader, Grid, Row, Col, Table } from 'react-bootstrap';
+import config from '../config.json';
+import LoadJson from './services/LoadJson';
 
 export default class SelectMode extends Component {
 
+  constructor() {
+    super();
+
+    this.state = { users : [] };
+
+    this.apiCall = this.apiCall.bind(this);
+  }
+
+  componentDidMount() {
+    this.apiCall('users');
+  }
+
+  async apiCall(endpoint) {
+    const url = `${config.mock_api_url}/${endpoint}`;
+    const users = await LoadJson(url);
+    this.setState({users})
+  }
+
   render() {
-    const users = this.props.users;
-    const userList = users.map((user) =>
-      <tr>
+    const userList = this.state.users.map((user) =>
+      <tr key={user.id}>
         <td>{user.id}</td>
-        <td>{user.name}</td>
-        <td>{user.auth_role}</td>
+        <td>{user.username}</td>
+        <td>{user.auth_level}</td>
       </tr>
     );
     return (

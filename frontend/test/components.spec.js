@@ -129,7 +129,7 @@ describe('UserList', () => {
 
   it('should display the correct number of elements in the table', () => {
     const wrapper = shallow(<UserList users={users} />);
-
+    wrapper.setState({users});
     const tableRows = wrapper.find('tr');
     expect(tableRows).to.have.length.of(3);
   });

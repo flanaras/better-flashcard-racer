@@ -38,7 +38,7 @@ export default class DeckConfig extends Component {
     }
 
     async apiCall(endpoint) {
-        const url = `${config.mock_api_url}/${endpoint}`
+        const url = `${config.base_url}/${endpoint}`
         let decks = await LoadJson(url)
         this.setState({decks})
         this.setState({chosenDeck: decks[0]})

@@ -30,3 +30,17 @@ create table deck_card_dep (
     FOREIGN KEY (deck_id) REFERENCES decks (id),
     FOREIGN KEY (card_id) REFERENCES card (id)
 );
+
+--
+-- Drop all users and add sample
+--
+
+DELETE FROM users;
+INSERT INTO users (username, password, authlevel) VALUES
+    ("foo", "lalala", 1),
+    ("miaTeacher", "123456", 1),
+    ("su", "123456", 2),
+    ("admin", "123456", 2),
+    ("philip", "123456", 0),
+    ("john", "123456", 0);
+

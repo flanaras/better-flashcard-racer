@@ -8,16 +8,16 @@ import se.uu.it.bfcr.inflector.springboot.models.User;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import se.uu.it.bfcr.inflector.springboot.controllers.DBConnect;
 import org.springframework.stereotype.Component;
 
+import static se.uu.it.bfcr.inflector.springboot.UserUtils.authenticateUser;
+
 /**
  * Created by Bartok on 2/9/17.
+ * @author Philip Lanaras
  */
 @Component
 public class UserController {
@@ -89,15 +89,10 @@ public class UserController {
         String password = body.get("password").asText();
         String username = body.get("username").asText();
 
-        if (username.equals(password)) {
+        LoginResponse loginResponse = authenticateUser(password, username);
+
+        if (loginResponse != null) {
             responseContext = new ResponseContext().status(Response.Status.OK);
-
-            //TODO: mockup response
-            LoginResponse loginResponse = new LoginResponse();
-            loginResponse.setUsername(username);
-            loginResponse.setUserid(99324);
-            loginResponse.setUserRole("GOD");
-
             responseContext.entity(loginResponse);
         } else {
             responseContext = new ResponseContext().status(Response.Status.FORBIDDEN);
@@ -105,4 +100,5 @@ public class UserController {
 
         return responseContext;
     }
+
 }

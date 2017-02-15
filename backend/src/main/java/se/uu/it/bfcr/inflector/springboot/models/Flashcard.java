@@ -22,13 +22,16 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
-public class Category {
+public class Flashcard{
 
     @JsonProperty
     private long id;
 
     @JsonProperty
-    private String name;
+    private String problem;
+
+    @JsonProperty
+    private String answer;
 
 
     public long getId() {
@@ -40,20 +43,29 @@ public class Category {
     }
 
 
-    public String getName() {
-        return name;
+    public String getProblem() {
+        return problem;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProblem(String problem) {
+        this.problem = problem;
     }
 
-    public Category() {
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public Flashcard() {
 
     }
 
-    public Category(long id, String name) {
+    public Flashcard(long id, String problem, String answer) {
         this.id = id;
-        this.name = name;
+        this.problem = problem;
+        this.answer = answer;
     }
 }

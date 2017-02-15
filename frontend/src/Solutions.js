@@ -26,7 +26,7 @@ export default class Solutions extends React.Component {
                         <Row className="show-grid">
                             <Col xs={1} md={3}></Col>
                             <Col xs={12} md={6}>
-                                <Panel style={{textAlign: "left"}}>
+                                <Panel style={{textAlign: "center"}}>
                                     <h4>Correct answers: {this.state.countCorrect}</h4>
                                     <h4>Incorrect answers: {this.state.countIncorrect}</h4>
                                     <ListGroup>
@@ -48,12 +48,14 @@ export default class Solutions extends React.Component {
                                                 )
                                             )
                                         }
-                                        <LinkContainer to={{ pathname: '/deckconfig'}}>
-                                            <Button>Play another deck</Button>
-                                        </LinkContainer>   <LinkContainer to={{ pathname: '/'}}>
-                                        <Button>Home</Button>
-                                    </LinkContainer>
                                     </ListGroup>
+                                        <LinkContainer to={{ pathname: '/deckconfig'}}>
+                                            <Button bsStyle="info">Play another deck</Button>
+                                        </LinkContainer>
+                                        {' '}
+                                        <LinkContainer to={{ pathname: '/'}}>
+                                            <Button bsStyle="info">Home</Button>
+                                        </LinkContainer>
                                 </Panel>
                             </Col>
                             <Col xs={1} md={3}></Col>

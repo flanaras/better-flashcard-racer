@@ -110,6 +110,7 @@ CREATE TABLE `users` (
 --
 -- Dumping data for table `users`
 --
+-- Drop all users and add sample
 
 DELETE FROM users;
 INSERT INTO users (username, password, authlevel) VALUES

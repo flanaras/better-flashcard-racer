@@ -83,6 +83,35 @@ public class UserController {
         return new ResponseContext().status(Status.OK).entity(users);
     }
 
+    public ResponseContext addUser(RequestContext requestContext, JsonNode body){
+        Connection con = null;
+        Statement stmnt = null;
+
+        String password = body.get("password").asText();
+        String username = body.get("username").asText();
+        Long auth_level = body.get("auth_level").asLong();
+
+        String query = "INSERT INTO users (username,password,authlevel) VALUES('" + username + "','" + password + "','" + auth_level + "')";
+
+        try{
+            con = DBConnect.connect();
+            stmnt = con.createStatement();
+            stmnt.executeUpdate(query);
+
+        }catch (SQLException ex){
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }finally {
+            try {
+                stmnt.close();
+                con.close();
+            } catch (SQLException ex) {/*ignore*/}
+        }
+
+        return new ResponseContext().status(Status.OK);
+    }
+
     public ResponseContext login(RequestContext requestContext, JsonNode body) {
         ResponseContext responseContext;
 

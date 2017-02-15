@@ -124,6 +124,23 @@ paths:
             $ref: "#/definitions/Users"
         500:
           $ref: "#/responses/Standard500ErrorResponse"
+    post:
+      tags:
+        - user
+      description: Add a user
+      operationId: addUser
+      parameters:
+        - name: Input
+          required: true
+          in: body
+          description: The information about the user to be added
+          schema:
+              $ref: "#/definitions/AddUserInput"
+      responses:
+        201:
+          $ref: "#/responses/Standard201CreatedResponse"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
   "/user/{id}":
     parameters:
       - $ref: "#/parameters/id"
@@ -176,6 +193,16 @@ definitions:
     type: array
     items:
       $ref: "#/definitions/User"
+  AddUserInput:
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+      auth_level:
+        type: integer
+    xml:
+      name: Input data for adding user
   Login:
     required:
       - username

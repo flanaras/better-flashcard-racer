@@ -15,12 +15,12 @@ public class User {
         this.auth_level = "Student";
     }
 
-    public User(int ID,String name, int authlevel){
+    public User(int ID,String name, int auth_level){
         this.id = ID;
         this.username = name;
-        if(authlevel == 2){
+        if(auth_level == 2){
             this.auth_level = "admin";
-        }else if(authlevel == 1){
+        }else if(auth_level == 1){
             this.auth_level = "teacher";
         } else{
             this.auth_level = "student";

@@ -8,29 +8,47 @@ export default class CreateUser extends Component {
         this.state = {
                 newUser: '',
                 newPassw: '',
-                newRole: 'admin' // should it be string also?
+                reNewPassw: '',
+                newRole: '',
+                newUserMsg: '',
+                newPassError: ''
         };
         this.handleChange = this.handleChange.bind(this);
         this.onCreateUser = this.onCreateUser.bind(this);
         this.apiCall = this.apiCall.bind(this);
     }
 
+    componentWillMount() {
+        let defNewRole;
+        if (this.props.userRole === 'superadmin')
+            defNewRole = 'admin';
+        else if (this.props.userRole === 'admin')
+            defNewRole = 'teacher';
+        this.setState({newRole: defNewRole});
+    }
+
     async apiCall(endpoint, newUser, newPassw, newRole) {
         const url = `${config.mock_api_url}/${endpoint}`;
-        const newUserConf = await LoadJson(url, 'POST', {newUser, newPassw, newRole});
-        console.log(newUserConf);
+        const newUserAck = await LoadJson(url, 'POST', {newUser, newPassw, newRole});
+        if (typeof(newUserAck.ok) !== 'undefined' && newUserAck.ok === 'userCreated') {
+            this.setState({newUserMsg: 'New user created successfully!'});
+        } else {
+            this.setState({newUserMsg: 'New user could not be created. Try again!'});
+        }
     }
 
     handleChange(e) {
         let value = e.target.value;
         const name = e.target.name;
-        this.setState({[name]: value});
-        // TODO: Add password matching validation
+        this.setState({[name]: value, newUserMsg: '', newPassError: ''});
     }
 
     onCreateUser(e) {
         e.preventDefault();
-        this.apiCall('users', this.state.newUser, this.state.newPassw, this.state.newRole);
+        if(this.state.newPassw!==this.state.reNewPassw)
+            this.setState({newPassError: 'Passwords does not match!'});
+        else
+            this.apiCall('users', this.state.newUser, this.state.newPassw, this.state.newRole);
     }
 
     render() {
@@ -41,14 +59,16 @@ export default class CreateUser extends Component {
                 }
                 <form onSubmit={this.onCreateUser} >
                     <select name="newRole" value={this.state.newRole} onChange={this.handleChange}>
-                        <option value="admin">Admin</option>
-                        <option value="teacher">Teacher</option>
-                        <option value="student">Student</option>
+                        {this.props.userRole === 'superadmin'?<option value="admin">Admin</option>:''}
+                        {this.props.userRole === 'admin'?<option value="teacher">Teacher</option>:''}
+                        {this.props.userRole !== 'student'?<option value="student">Student</option>:''}
                     </select>
-                    <input type="text" name="newUser" placeholder="Username" value={this.state.newUser} onChange={this.handleChange} />
-                    <input type="password" name="newPassw" placeholder="Password" value={this.state.newPassw} onChange={this.handleChange} />
-                    <input type="password" name="reNewPassw" placeholder="Repeat Password"/>
+                    <input type="text" name="newUser" placeholder="Username" value={this.state.newUser} onInput={this.handleChange} />
+                    <input type="password" name="newPassw" placeholder="Password" value={this.state.newPassw} onInput={this.handleChange} />
+                    <input type="password" name="reNewPassw" placeholder="Repeat Password" value={this.state.reNewPassw} onInput={this.handleChange}/>
                     <input type="submit" value="Create user"/>
+                    <p>{this.state.newUserMsg}</p>
+                    <p>{this.state.newPassError}</p>
                 </form>
             </div>
         )

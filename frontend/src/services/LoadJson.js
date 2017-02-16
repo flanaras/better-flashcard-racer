@@ -40,7 +40,9 @@ async function LoadJson(url, method, body) {
 		}
 		if (response.status == 204) {
 			return "ok"
-		}
+		} else if (response.status == 201) {
+		    return {"ok": "userCreated"}
+        }
 		return response.json();
 	} catch (e) {
 		console.error('The Fetch request of ' + myRequest.url + ' failed.', myRequest, e)

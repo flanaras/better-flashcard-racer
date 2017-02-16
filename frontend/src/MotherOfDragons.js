@@ -145,8 +145,8 @@ export default class SelectMode extends Component {
         this.setState({chosenDeck})
     }
 
-    login(username, auth) {
-        this.setState({username, auth});
+    login(username, userRole, auth) {
+        this.setState({username, userRole, auth});
         browserHistory.push('deckconfig');
     }
 
@@ -159,6 +159,7 @@ export default class SelectMode extends Component {
                     chosenDeck: this.state.chosenDeck,
                     login: this.login,
                     username: this.state.username,
+                    userRole: this.state.userRole,
                     auth: this.state.auth
                 })}
             </div>

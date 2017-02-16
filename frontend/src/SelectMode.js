@@ -27,7 +27,7 @@ export default class SelectMode extends Component {
             this.setState({loginErrorMsg: 'Wrong nickname and/or password. Try again!'});
         } else if (typeof(loginAck[0].id) !== 'undefined') {
             this.setState({userid: loginAck[0].id, username: loginAck[0].username, userRole: loginAck[0].auth_level});
-            this.props.login(this.state.username, true);
+            this.props.login(this.state.username, this.state.userRole, true);
         }
     }
 

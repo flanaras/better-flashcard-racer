@@ -8,9 +8,11 @@ export default class SelectMode extends Component {
         super(props);
         this.state = {nickname: '',
             password: '',
+            userid: NaN,
             username: '',
             userRole: '',
-            auth: false
+            auth: false,
+            loginErrorMsg: ''
         }
 
         this.onLoginChange = this.onLoginChange.bind(this);
@@ -20,20 +22,22 @@ export default class SelectMode extends Component {
 
     async apiCall(endpoint, nickname, password) {
         const url = `${config.mock_api_url}/${endpoint}`;
-        const userInfo = await LoadJson(url, 'POST', {nickname, password});
-        // TODO: Address login errors
-        this.setState({username: userInfo[0].username, userRole: userInfo[0].auth_level});
-        this.props.login(this.state.username, true);
+        const loginAck = await LoadJson(url, 'POST', {nickname, password});
+        if (typeof(loginAck.error) !== 'undefined' && loginAck.error === 'accessDenied') {
+            this.setState({loginErrorMsg: 'Wrong nickname and/or password. Try again!'});
+        } else if (typeof(loginAck[0].id) !== 'undefined') {
+            this.setState({userid: loginAck[0].id, username: loginAck[0].username, userRole: loginAck[0].auth_level});
+            this.props.login(this.state.username, true);
+        }
     }
 
     onLoginChange(e) {
         let value = e.target.value;
         const name = e.target.name;
-        this.setState({[name]: value});
+        this.setState({[name]: value, loginErrorMsg: ''});
     }
 
     onSubmitLogin(e) {
-        // TODO: Add login post
         e.preventDefault();
         this.apiCall('login', this.state.nickname, this.state.password);
     }
@@ -45,6 +49,7 @@ export default class SelectMode extends Component {
                 <form onSubmit={this.onSubmitLogin}>
                     <input type="text" name="nickname" placeholder="Nickname" value={this.state.nickname} onChange={this.onLoginChange} />
                     <input type="password" name="password" placeholder="Password" value={this.state.password} onChange={this.onLoginChange} />
+                    <p>{this.state.loginErrorMsg}</p>
                     <input type="submit" value="Log in"/>
                 </form>
                 <Link to="deckconfig" >Try practice mode</Link>

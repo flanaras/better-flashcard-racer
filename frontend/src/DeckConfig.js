@@ -107,7 +107,7 @@ export default class DeckConfig extends Component {
                     multi: this.state.generateDeck.operators.multi
                 }]
             }
-            const chosenDeck = await LoadJson(config.mock_api_url + '/generate-cards', 'POST', reqPayload)
+            const chosenDeck = await LoadJson(config.base_url + '/generate-cards', 'POST', reqPayload)
             this.props.onSubmitGameConfig(chosenDeck, this.state.gameLengthProblems, this.state.timePerProblem)
         }
     }

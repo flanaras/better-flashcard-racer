@@ -40,8 +40,20 @@ export default class DeckConfig extends Component {
     async apiCall(endpoint) {
         const url = `${config.base_url}/${endpoint}`
         let decks = await LoadJson(url)
-        this.setState({decks})
-        this.setState({chosenDeck: decks[0]})
+        const renamedDecks = decks.map(deck => this.renameAttributes(deck))
+        this.setState({renamedDecks})
+        this.setState({chosenDeck: renamedDecks[0]})
+    }
+
+    renameAttributes(deck) {
+        const tempRename = deck.flashcards
+        let flashcards = tempRename.map( row => {
+            return {problem: row.problem, solution: parseInt(row.answer), id: row.id}
+        })
+
+        delete deck.flashcard
+        deck.flashcards = flashcards
+        return deck
     }
 
     handleChange(e) {
@@ -61,7 +73,7 @@ export default class DeckConfig extends Component {
                 this.setState({gameLengthProblems, showTooBigInput})
             } else if(isDeckTypeChange && this.state.deckType === 'generateDeck') {
                 let gameLengthProblems, showTooBigInput
-                ({gameLengthProblems, showTooBigInput} = this.validateGameLength(this.state.chosenDeck.flashcard.length, this.state.chosenDeck, 'gameLengthProblems'))
+                ({gameLengthProblems, showTooBigInput} = this.validateGameLength(this.state.chosenDeck.flashcards.length, this.state.chosenDeck, 'gameLengthProblems'))
                 this.setState({[name]: value, gameLengthProblems, showTooBigInput})
             } else {
                 this.setState({[name]: value, showTooBigInput: false})
@@ -70,8 +82,8 @@ export default class DeckConfig extends Component {
     }
 
     validateGameLength(value, chosenDeck, name) {
-        const gameLengthState = value > chosenDeck.flashcard.length ?
-            {[name]: this.state.chosenDeck.flashcard.length, showTooBigInput: true} :
+        const gameLengthState = value > chosenDeck.flashcards.length ?
+            {[name]: this.state.chosenDeck.flashcards.length, showTooBigInput: true} :
             {[name]: value, showTooBigInput: false}
         return gameLengthState
     }
@@ -142,7 +154,7 @@ export default class DeckConfig extends Component {
                                         <FormControl type="text" style={{textAlign: "right", width: 80, display: 'inline'}} name="gameLengthProblems" value={this.state.gameLengthProblems} onChange={this.handleChange} />
                                         {
                                             this.state.showTooBigInput ?
-                                                <p>{this.state.gameLengthProblems} problems exceeds the number of cards in the deck which is {this.state.chosenDeck.flashcard.length}</p>
+                                                <p>{this.state.gameLengthProblems} problems exceeds the number of cards in the deck which is {this.state.chosenDeck.flashcards.length}</p>
                                                 : null
                                         }
                                         {' '}
@@ -184,8 +196,8 @@ export class SavedDeck extends Component {
                             </FormControl>
                             <p data-type="description"><i>{this.props.chosenDeck.description}</i></p>
                             <ControlLabel>Sample problem:</ControlLabel>
-                            <p>Problem: {this.props.chosenDeck.flashcard[0].problem}</p>
-                            <p>Solution: {this.props.chosenDeck.flashcard[0].answer}</p>
+                            <p>Problem: {this.props.chosenDeck.flashcards[0].problem}</p>
+                            <p>Solution: {this.props.chosenDeck.flashcards[0].answer}</p>
                         </FormGroup>
                     </Panel>
                 </div>

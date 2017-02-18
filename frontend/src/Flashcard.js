@@ -7,11 +7,12 @@ export default class Flashcard extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { solution : '', inputState: false };
+        this.state = { solution : '', checkSolution : false, inputState : false };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.disableInput = this.disableInput.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.isSolutionCorrect = this.isSolutionCorrect.bind(this);
     }
 
     componentDidMount() {
@@ -20,13 +21,14 @@ export default class Flashcard extends Component {
 
     componentWillReceiveProps(nextProps) {
       if(nextProps.flashcard !== this.props.flashcard) {
-        this.setState({solution : '' });
+        this.setState({solution : '', checkSolution : false });
+        this.props.sendAnswer('', false);
       }
     }
 
     handleInputChange(event) {
-        this.setState({solution: event.target.value});
-        this.props.sendAnswer(event.target.value);
+        this.setState({solution: event.target.value, checkSolution: this.isSolutionCorrect(event.target.value)});
+        this.props.sendAnswer(event.target.value, this.isSolutionCorrect(event.target.value));
     }
 
     isSolutionCorrect(solution) {
@@ -56,7 +58,7 @@ export default class Flashcard extends Component {
                                  ref="solutionInput"
                                  onKeyPress={this.handleKeyPress}
                                  onChange={this.handleInputChange} />
-                    <TimeCounter disableInput={this.disableInput} timePerProblem={this.props.timePerProblem} remProb={this.props.remProb} completeQuestion={this.props.completeQuestion} />
+                    <TimeCounter disableInput={this.disableInput} timePerProblem={this.props.timePerProblem} remProb={this.props.remProb} submitAnswer={this.props.submitAnswer} />
                 </FormGroup>
             </div>
         )

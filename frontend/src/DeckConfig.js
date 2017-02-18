@@ -30,7 +30,9 @@ export default class DeckConfig extends Component {
         this.handleChangeGenerateDeck = this.handleChangeGenerateDeck.bind(this)
         this.submitGameConfig = this.submitGameConfig.bind(this)
         this.apiCall = this.apiCall.bind(this)
-
+        this.savedDeckDropdownChange = this.savedDeckDropdownChange.bind(this)
+        this.gameLengthChange = this.gameLengthChange.bind(this)
+        this.deckTypeChange = this.deckTypeChange.bind(this)
     }
 
     componentDidMount() {
@@ -41,12 +43,12 @@ export default class DeckConfig extends Component {
         const url = `${config.base_url}/${endpoint}`
         let decks = await LoadJson(url)
         const renamedDecks = decks.map(deck => this.renameAttributes(deck))
-        this.setState({renamedDecks})
+        this.setState({decks: renamedDecks})
         this.setState({chosenDeck: renamedDecks[0]})
     }
 
     renameAttributes(deck) {
-        const tempRename = deck.flashcards
+        const tempRename = deck.flashcard
         let flashcards = tempRename.map( row => {
             return {problem: row.problem, solution: parseInt(row.answer), id: row.id}
         })
@@ -56,29 +58,40 @@ export default class DeckConfig extends Component {
         return deck
     }
 
+    deckTypeChange(e) {
+        let value = e.target.value
+        const name = e.target.name
+        if(this.state.deckType === 'generateDeck') {
+            let gameLengthProblems, showTooBigInput
+            ({gameLengthProblems, showTooBigInput} = this.validateGameLength(this.state.chosenDeck.flashcards.length, this.state.chosenDeck, 'gameLengthProblems'))
+            this.setState({[name]: value, gameLengthProblems, showTooBigInput})
+        } else {
+            this.setState({[name]: value, showTooBigInput: false})
+        }
+    }
+
+    gameLengthChange(e) {
+        let value = e.target.value
+        const name = e.target.name
+        if(this.state.deckType === 'savedDeck') {
+            let gameLengthProblems, showTooBigInput
+            ({gameLengthProblems, showTooBigInput} = this.validateGameLength(value, this.state.chosenDeck, name))
+            this.setState({gameLengthProblems, showTooBigInput})
+        } else {
+            this.setState({[name]: value, showTooBigInput: false})
+        }
+    }
+
+    savedDeckDropdownChange(e) {
+        let value = e.target.value
+        const chosenDeck = this.state.decks.find( deck => parseInt(deck.id) === parseInt(value))
+        this.setState({chosenDeck})
+    }
+
     handleChange(e) {
         let value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
         const name = e.target.name
-        const isGameLengthChange = name === 'gameLengthProblems'
-        const isSavedDeckChange = e.target.type === 'select-one'
-        const isDeckTypeChange = name === 'deckType'
-        // if dropdown being changed
-        if(isSavedDeckChange) {
-            const chosenDeck = this.state.decks.find( deck => parseInt(deck.id) === parseInt(value))
-            this.setState({chosenDeck})
-        } else {
-            if(isGameLengthChange && this.state.deckType === 'savedDeck') {
-                let gameLengthProblems, showTooBigInput
-                ({gameLengthProblems, showTooBigInput} = this.validateGameLength(value, this.state.chosenDeck, name))
-                this.setState({gameLengthProblems, showTooBigInput})
-            } else if(isDeckTypeChange && this.state.deckType === 'generateDeck') {
-                let gameLengthProblems, showTooBigInput
-                ({gameLengthProblems, showTooBigInput} = this.validateGameLength(this.state.chosenDeck.flashcards.length, this.state.chosenDeck, 'gameLengthProblems'))
-                this.setState({[name]: value, gameLengthProblems, showTooBigInput})
-            } else {
-                this.setState({[name]: value, showTooBigInput: false})
-            }
-        }
+        this.setState({[name]: value, showTooBigInput: false})
     }
 
     validateGameLength(value, chosenDeck, name) {
@@ -136,22 +149,22 @@ export default class DeckConfig extends Component {
                                 <Form onSubmit={this.submitGameConfig} >
                                     <Panel style={{textAlign: "left"}}>
                                         <ControlLabel>Options:</ControlLabel>
-                                        <Radio name="deckType" value="savedDeck" checked={this.state.deckType === 'savedDeck'} onChange={this.handleChange} >
+                                        <Radio name="deckType" value="savedDeck" checked={this.state.deckType === 'savedDeck'} onChange={this.deckTypeChange} >
                                             Choose a saved deck of flashcards
                                         </Radio>
-                                        <Radio name="deckType" value="generateDeck" checked={this.state.deckType === 'generateDeck'} onChange={this.handleChange} >
+                                        <Radio name="deckType" value="generateDeck" checked={this.state.deckType === 'generateDeck'} onChange={this.deckTypeChange} >
                                             Generate a deck
                                         </Radio>
                                     </Panel>
 
-                                    <SavedDeck handleChange={this.handleChange} decks={this.state.decks} deckType={this.state.deckType} chosenDeck={this.state.chosenDeck}/>
+                                    <SavedDeck handleChange={this.savedDeckDropdownChange} decks={this.state.decks} deckType={this.state.deckType} chosenDeck={this.state.chosenDeck}/>
                                     <GenerateDeckOptions handleChangeGenerateDeck={this.handleChangeGenerateDeck} deckType={this.state.deckType} generateDeck={this.state.generateDeck}/>
                                     <Panel style={{textAlign: "left"}}>
                                         <ControlLabel>Game length:</ControlLabel>
                                     <FormGroup controlId="gameLength">
                                         <ControlLabel>Number of problems:</ControlLabel>
                                         {' '}
-                                        <FormControl type="text" style={{textAlign: "right", width: 80, display: 'inline'}} name="gameLengthProblems" value={this.state.gameLengthProblems} onChange={this.handleChange} />
+                                        <FormControl type="text" style={{textAlign: "right", width: 80, display: 'inline'}} name="gameLengthProblems" value={this.state.gameLengthProblems} onChange={this.gameLengthChange} />
                                         {
                                             this.state.showTooBigInput ?
                                                 <p>{this.state.gameLengthProblems} problems exceeds the number of cards in the deck which is {this.state.chosenDeck.flashcards.length}</p>
@@ -160,7 +173,7 @@ export default class DeckConfig extends Component {
                                         {' '}
                                         <ControlLabel>Time per question (s):</ControlLabel>
                                         {' '}
-                                        <FormControl type="text" style={{textAlign: "right", width: 80, display: 'inline'}} name="timePerProblem" value={this.state.timePerProblem} onChange={this.handleChange} />
+                                        <FormControl type="text" style={{textAlign: "right", width: 80, display: 'inline'}} name="timePerProblem" value={this.state.timePerProblem} onChange={this.gameLengthChange} />
                                     </FormGroup>
                                 </Panel>
                                 <Button bsStyle="info" type="submit">

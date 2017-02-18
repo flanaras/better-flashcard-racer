@@ -43,11 +43,12 @@ describe('DeckConfig', () => {
     })
     it('choosing a deck should change the currently chosen deck', () => {
         const chosenDeck = {id:1, desc: 'Easy plus and minus'}
+
         const decks = [{id:1, desc: 'Easy plus and minus'}, {id:2, desc: 'Medium plus and minus'}, {id:3, desc: 'Hard pus and minus'}]
-        const wrapper = shallow(<DeckConfig />)
+        const wrapper = mount(<DeckConfig/>)
         wrapper.setState({decks})
         wrapper.setState({chosenDeck})
-        wrapper.instance().handleChange({target:{value: 2, type: 'select-one'}})
+        wrapper.instance().savedDeckDropdownChange({target:{value: 2, type: 'select-one'}})
         expect(wrapper.state('chosenDeck')).to.eql({id:2, desc: 'Medium plus and minus'})
     })
     it('user should be able to choose between generating a deck or selecting a already defined deck', () => {

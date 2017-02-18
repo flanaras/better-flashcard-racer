@@ -112,8 +112,11 @@ paths:
           $ref: "#/responses/ObjectDoesNotExistResponse"
         500:
           $ref: "#/responses/Standard500ErrorResponse"
-  /user:
+  /users:
     get:
+      tags:
+        - user
+        - mocked
       x-swagger-router-controller: UserController
       description: Return all set of decks
       operationId: getUsers
@@ -122,11 +125,23 @@ paths:
           description: successful operation
           schema:
             $ref: "#/definitions/Users"
-        500:
-          $ref: "#/responses/Standard500ErrorResponse"
+          examples:
+            application/json:
+              - id: 1
+                auth_level: admin
+                username: Astrid
+              - id: 2
+                auth_level: teacher
+                username: Teachername
+              - id: 3
+                auth_level: student
+                username: Studentname
+        #500:
+        #  $ref: "#/responses/Standard500ErrorResponse"
     post:
       tags:
         - user
+        - mocked
       description: Add a user
       operationId: addUser
       parameters:
@@ -139,14 +154,15 @@ paths:
       responses:
         201:
           $ref: "#/responses/Standard201CreatedResponse"
-        500:
-          $ref: "#/responses/Standard500ErrorResponse"
-  "/user/{id}":
+        #500:
+        #  $ref: "#/responses/Standard500ErrorResponse"
+  "/users/{id}":
     parameters:
       - $ref: "#/parameters/id"
     get:
       tags:
         - user
+        - mocked
       summary: Find a user by ID
       x-swagger-router-controller: UserController
       description: Return a user object identified by its id
@@ -156,12 +172,18 @@ paths:
           description: successful operation
           schema:
               $ref: "#/definitions/User"
-        500:
-          $ref: "#/responses/Standard500ErrorResponse"
+          examples:
+              application/json:
+                - id: 1
+                  auth_level: admin
+                  username: Astrid
+        #500:
+        #  $ref: "#/responses/Standard500ErrorResponse"
   /login:
     post:
       tags:
         - user
+        - mocked
       summary: login
       x-swagger-router-controller: UserController
       operationId: login
@@ -173,11 +195,17 @@ paths:
             $ref: "#/definitions/Login"
       responses:
         200:
-          $ref: "#/responses/Standard200ErrorResponse"
+          description: successful operation
           schema:
-            $ref: "#/definitions/User"
+              $ref: "#/definitions/User"
+          examples:
+            application/json:
+              - id: 1
+                auth_level: admin
+                username: Astrid
         403:
-          $ref: "#/responses/Standard403ErrorResponse"
+          description: unsuccessful login
+
 definitions:
   User:
     properties:
@@ -207,7 +235,7 @@ definitions:
     required:
       - username
       - password
-    properies:
+    properties:
       username:
         type: string
       password:

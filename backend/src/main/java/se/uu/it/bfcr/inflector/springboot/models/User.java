@@ -12,7 +12,7 @@ public class User {
     public User(){
         this.id = 0;
         this.username = "Default";
-        this.auth_level = "Student";
+        this.auth_level = "student";
     }
 
     public User(int ID,String name, int auth_level){

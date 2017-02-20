@@ -129,7 +129,6 @@ public class UserController {
         }finally {
             try {
                 stmnt.close();
-                res.close();
                 con.close();
             } catch (SQLException ex) {/*ignore*/}
         }

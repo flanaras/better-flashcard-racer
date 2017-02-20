@@ -205,6 +205,27 @@ paths:
                 username: Astrid
         403:
           description: unsuccessful login
+  /generate-cards:
+    post:
+      tags:
+        - generate
+      summary: To generate card by request
+      x-swagger-router-controller: DeckController
+      description: Return all set of decks
+      operationId: generateCards
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/Deck"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
+      parameters:
+        - name: generatesCard
+          in: body
+          description: The request from frontend
+          schema:
+            $ref: "#/definitions/GenerateCards"
 
 definitions:
   User:
@@ -250,7 +271,7 @@ definitions:
         type: string
     xml:
       name: Card
-  Deck:    
+  Deck:
     required:
       - user_id
     properties:
@@ -262,9 +283,9 @@ definitions:
         type: string
       description:
         type: string
-      user_id: 
+      user_id:
         type: integer
-      user_name: 
+      user_name:
         type: string
       created:
         type: string
@@ -280,6 +301,26 @@ definitions:
     type: array
     items:
       $ref: "#/definitions/Deck"
+  Operators:
+    properties:
+      minus:
+        type: boolean
+      add:
+        type: boolean
+      div:
+        type: boolean
+      multi:
+        type: boolean
+  GenerateCards:
+    properties:
+      min:
+        type: integer
+      max:
+        type: integer
+      numberSolution:
+        type: integer
+      operators:
+        $ref: "#/definitions/Operators"
 responses:
   Standard500ErrorResponse:
     description: An unexpected error occured.

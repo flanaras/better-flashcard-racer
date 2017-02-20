@@ -179,6 +179,16 @@ paths:
                   username: Astrid
         #500:
         #  $ref: "#/responses/Standard500ErrorResponse"
+    delete:
+      summary: Delete a user by ID
+      x-swagger-router-controller: UserController
+      description: Delete a user by it's ID
+      operationId: deleteUserById
+      responses:
+        200:
+          description: successful operation
+        #500:
+        #  $ref: "#/responses/Standard500ErrorResponse"
   /login:
     post:
       tags:

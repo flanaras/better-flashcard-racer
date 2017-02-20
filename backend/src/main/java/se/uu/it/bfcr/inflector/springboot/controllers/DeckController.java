@@ -39,6 +39,11 @@ import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Ilona Asa
+ * @author Philip Lanaras
+ */
+
 @Component
 public class DeckController {
     private Connection con = null;

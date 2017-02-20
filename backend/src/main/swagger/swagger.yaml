@@ -189,6 +189,26 @@ paths:
           description: successful operation
         #500:
         #  $ref: "#/responses/Standard500ErrorResponse"
+  /authlevel:
+      get:
+        tags:
+          - user
+        x-swagger-router-controller: UserController
+        description: Return all available user level of authorization
+        operationId: getUsersAuth
+        responses:
+          200:
+            description: successful operation
+            schema:
+              $ref: "#/definitions/AuthLevel"
+            examples:
+              application/json:
+                - id: 0
+                  auth: admin
+                - id: 1
+                  auth: teacher
+                - id: 2
+                  auth: student
   /login:
     post:
       tags:
@@ -238,6 +258,12 @@ paths:
             $ref: "#/definitions/GenerateCards"
 
 definitions:
+  AuthLevel:
+    properties:
+      id:
+        type: integer
+      auth:
+        type: string
   User:
     properties:
       id:

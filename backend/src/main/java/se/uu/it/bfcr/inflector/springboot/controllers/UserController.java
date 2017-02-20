@@ -3,6 +3,7 @@ package se.uu.it.bfcr.inflector.springboot.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.inflector.models.RequestContext;
 import io.swagger.inflector.models.ResponseContext;
+import se.uu.it.bfcr.inflector.springboot.models.AuthLevel;
 import se.uu.it.bfcr.inflector.springboot.models.LoginResponse;
 import se.uu.it.bfcr.inflector.springboot.models.User;
 
@@ -151,6 +152,45 @@ public class UserController {
         }
 
         return responseContext;
+    }
+
+    public ResponseContext getUsersAuth(RequestContext requestContext) throws SQLException{
+        ArrayList<AuthLevel> userAuth = new ArrayList<AuthLevel>();
+        AuthLevel auth = null;
+        Connection con = null;
+        Statement stmnt = null;
+        ResultSet res = null;
+        String query = "SELECT authlevel FROM users GROUP BY authlevel";
+
+        try{
+            con = DBConnect.connect();
+            stmnt = con.createStatement();
+            res = stmnt.executeQuery(query);
+
+            while(res.next()){
+                if(res.getInt("authlevel") == 0){
+                    auth = new AuthLevel(0, "Student");
+                } else if(res.getInt("authlevel") == 1){
+                    auth = new AuthLevel(1, "Teacher");
+                } else if(res.getInt("authlevel") == 2){
+                    auth = new AuthLevel(2, "Admin");
+                }
+                userAuth.add(auth);
+            }
+
+        }catch (SQLException ex){
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }finally {
+            try {
+                stmnt.close();
+                res.close();
+                con.close();
+            } catch (SQLException ex) {/*ignore*/}
+        }
+
+        return new ResponseContext().status(Status.OK).entity(userAuth);
     }
 
 }

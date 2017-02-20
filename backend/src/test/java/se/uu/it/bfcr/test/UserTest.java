@@ -1,7 +1,5 @@
 package backend.src.test.java.se.uu.it.bfcr.test;
 
-import com.sun.xml.internal.ws.client.RequestContext;
-import com.sun.xml.internal.ws.client.ResponseContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,9 +49,9 @@ public class UserTest {
     public void accessTests(){
         if(hasConnectedDatabase){
             User testUser = new User(12,"Johnsson",1);
-            RequestContext requestContext;
+            //RequestContext requestContext;
             //make em happens...
-            ResponseContext responseContext = UserController.addUser(requestContext);
+            //ResponseContext responseContext = UserController.addUser(requestContext);
             assertEquals(1,1);
             //...make tests...
         }

@@ -112,6 +112,30 @@ public class UserController {
         return new ResponseContext().status(Status.OK);
     }
 
+    public ResponseContext deleteUser(RequestContext requestContext, Long id){
+        Connection con = null;
+        Statement stmnt = null;
+        String query = "DELETE FROM users WHERE users.ID = " + id;
+
+        try{
+            con = DBConnect.connect();
+            stmnt = con.createStatement();
+            stmnt.executeUpdate(query);
+
+        }catch (SQLException ex){
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }finally {
+            try {
+                stmnt.close();
+                res.close();
+                con.close();
+            } catch (SQLException ex) {/*ignore*/}
+        }
+        return new ResponseContext().status(Status.OK);
+    }
+
     public ResponseContext login(RequestContext requestContext, JsonNode body) {
         ResponseContext responseContext;
 

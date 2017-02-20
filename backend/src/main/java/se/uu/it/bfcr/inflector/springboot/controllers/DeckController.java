@@ -163,10 +163,23 @@ public class DeckController {
 
                 if(hmap.get(randOperand).equals("/"))
                 {
+                    boolean flag = false;
 
-                        randNumber1 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
-                        randNumber2 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
-                        total = randNumber1 / randNumber2;
+                    do
+                    {
+                        randNumber1 = genCard.getMin() + (int) (Math.random() * genCard.getMax());
+                        randNumber2 = genCard.getMin() + (int) (Math.random() * genCard.getMax());
+                        //total = randNumber1 / randNumber2;
+                        flag = false;
+                        if(randNumber2 == 0)
+                            flag = true;
+                        else
+                        {
+                            if ((randNumber1 % randNumber2) > 0)
+                                flag = true;
+                        }
+                    }while(flag);
+                    total = randNumber1 / randNumber2;
 
                 }
                 else

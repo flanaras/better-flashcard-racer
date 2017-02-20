@@ -156,26 +156,33 @@ public class DeckController {
             List<Flashcard> cards = new ArrayList<Flashcard>();
             for(int i = 0; i<genCard.getNumberSolution();i++)
             {
-                int randNumber1 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
-                int randNumber2 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
+                int randNumber1 = 0;
+                int randNumber2 = 0;
                 int randOperand = 1 + (int)(Math.random()*hmap.size());
                 int total = 0;
-                if(hmap.get(randOperand).equals("+"))
+
+                if(hmap.get(randOperand).equals("/"))
                 {
-                    total = randNumber1 + randNumber2;
+
+                        randNumber1 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
+                        randNumber2 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
+                        total = randNumber1 / randNumber2;
+
                 }
-                else if(hmap.get(randOperand).equals("-"))
+                else
                 {
-                    total = randNumber1 - randNumber2;
+                    randNumber1 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
+                    randNumber2 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
+
+                    if (hmap.get(randOperand).equals("+")) {
+                        total = randNumber1 + randNumber2;
+                    } else if (hmap.get(randOperand).equals("-")) {
+                        total = randNumber1 - randNumber2;
+                    } else if (hmap.get(randOperand).equals("X")) {
+                        total = randNumber1 * randNumber2;
+                    }
                 }
-                else if(hmap.get(randOperand).equals("X"))
-                {
-                    total  =  randNumber1 * randNumber2;
-                }
-                else if(hmap.get(randOperand).equals("/"))
-                {
-                    total = randNumber1 / randNumber2;
-                }
+
 
                 String problems = randNumber1+" "+hmap.get(randOperand)+" "+randNumber2;
                 cards.add(new Flashcard(999999, problems, String.valueOf(total)));

@@ -7,7 +7,8 @@ import java.sql.SQLException;
 /**
  * @author Philip Lanaras
  */
-public class DBConnect {
+public class
+DBConnect {
 
     public static Connection connect() throws SQLException {
         Connection conn = null;

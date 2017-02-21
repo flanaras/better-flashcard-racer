@@ -1,11 +1,13 @@
 package backend.src.test.java.se.uu.it.bfcr.test;
 
+import com.sun.xml.internal.ws.client.RequestContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import se.uu.it.bfcr.inflector.springboot.models.User;
 import se.uu.it.bfcr.inflector.springboot.controllers.DBConnect;
 import se.uu.it.bfcr.inflector.springboot.controllers.UserController;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -48,10 +50,17 @@ public class UserTest {
     @Test
     public void accessTests(){
         if(hasConnectedDatabase){
-            User testUser = new User(12,"Johnsson",1);
-            //RequestContext requestContext;
-            //make em happens...
+            /*
+
+            JsonNode body = new JsonNode;
+            RequestContext Req;
+            ((ObjectNode)body).put("username", "testUser1337");
+            ((ObjectNode)body).put("password", "testUserpassword");
+            ((ObjectNode)body).put("username", 0);
+            UserController.addUser(Req, body);
             //ResponseContext responseContext = UserController.addUser(requestContext);
+
+            */
             assertEquals(1,1);
             //...make tests...
         }

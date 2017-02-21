@@ -12,6 +12,7 @@ public class DBConnect {
         String username = "java";
         String password = "lordofgeese1997";
 
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (Exception ex) {

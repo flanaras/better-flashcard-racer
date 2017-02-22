@@ -1,0 +1,10 @@
+controllerPackage: se.uu.it.bfcr.inflector.springboot.controllers
+modelPackage: se.uu.it.bfcr.inflector.springboot.models
+swaggerUrl: ./src/main/swagger/swagger.yaml
+modelMappings:
+  Pet: se.uu.it.bfcr.inflector.springboot.models.Pet
+# loads all by default, or pick and choose
+entityProcessors:
+  - json
+#  - xml
+#  - yaml

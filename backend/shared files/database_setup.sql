@@ -2,7 +2,7 @@ create database flashcardracer;
 use flashcardracer;
 
 CREATE USER 'java'@'localhost' IDENTIFIED BY 'lordofgeese1997';
-GRANT SELECT, DELETE, INSERT ON flashcardracer.* TO 'java'@'localhost';
+GRANT SELECT, DELETE, INSERT,UPDATE ON flashcardracer.* TO 'java'@'localhost';
 
 -- --------------------------------------------------------
 
@@ -186,3 +186,7 @@ ALTER TABLE `decks`
 ALTER TABLE `deck_card_dep`
   ADD CONSTRAINT `deck_card_dep_ibfk_1` FOREIGN KEY (`deck_id`) REFERENCES `decks` (`id`),
   ADD CONSTRAINT `deck_card_dep_ibfk_2` FOREIGN KEY (`card_id`) REFERENCES `card` (`id`);
+--
+-- Grant update to user JAVA
+--
+grant UPDATE on flashcardracer.* TO 'java'@'localhost'

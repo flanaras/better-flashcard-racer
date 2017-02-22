@@ -6,12 +6,12 @@ export default class CreateUser extends Component {
     constructor(props) {
         super(props);
         this.state = {
-                newUser: '',
-                newPassw: '',
-                reNewPassw: '',
-                newRole: '',
-                newUserMsg: '',
-                newPassError: ''
+            newUser: '',
+            newPassw: '',
+            reNewPassw: '',
+            newRole: '',
+            newUserMsg: '',
+            newPassError: ''
         };
         this.handleChange = this.handleChange.bind(this);
         this.onCreateUser = this.onCreateUser.bind(this);
@@ -53,24 +53,26 @@ export default class CreateUser extends Component {
 
     render() {
         return (
-            <div>
-                {
-                    <h1>{this.props.auth?this.props.username+', w':'W'}elcome!</h1>
-                }
-                <form onSubmit={this.onCreateUser} >
-                    <select name="newRole" value={this.state.newRole} onChange={this.handleChange}>
-                        {this.props.userRole === 'superadmin'?<option value="admin">Admin</option>:''}
-                        {this.props.userRole === 'admin'?<option value="teacher">Teacher</option>:''}
-                        {this.props.userRole !== 'student'?<option value="student">Student</option>:''}
-                    </select>
-                    <input type="text" name="newUser" placeholder="Username" value={this.state.newUser} onInput={this.handleChange} />
-                    <input type="password" name="newPassw" placeholder="Password" value={this.state.newPassw} onInput={this.handleChange} />
-                    <input type="password" name="reNewPassw" placeholder="Repeat Password" value={this.state.reNewPassw} onInput={this.handleChange}/>
-                    <input type="submit" value="Create user"/>
-                    <p>{this.state.newUserMsg}</p>
-                    <p>{this.state.newPassError}</p>
-                </form>
-            </div>
+            this.props.auth?
+                <div>
+                    {
+                        <h1>{this.props.username}, welcome!</h1>
+                    }
+                    <form onSubmit={this.onCreateUser} >
+                        <select name="newRole" value={this.state.newRole} onChange={this.handleChange}>
+                            {this.props.userRole === 'superadmin'?<option value="admin">Admin</option>:''}
+                            {(this.props.userRole === 'superadmin'||this.props.userRole === 'admin')?<option value="teacher">Teacher</option>:''}
+                            {this.props.userRole !== 'student'?<option value="student">Student</option>:''}
+                        </select>
+                        <input type="text" name="newUser" placeholder="Nickname" value={this.state.newUser} onInput={this.handleChange} />
+                        <input type="password" ref="newUser" name="newPassw" placeholder="Password" value={this.state.newPassw} onInput={this.handleChange} />
+                        <input type="password" name="reNewPassw" placeholder="Repeat Password" value={this.state.reNewPassw} onInput={this.handleChange}/>
+                        <input type="submit" value="Create user"/>
+                        <p>{this.state.newUserMsg}</p>
+                        <p>{this.state.newPassError}</p>
+                    </form>
+                </div>
+                :''
         )
     }
 }

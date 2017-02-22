@@ -41,7 +41,7 @@ export default class DeckConfig extends Component {
                 </div>
                 <div>
                     {
-                        this.props.auth?<Link to="createuser">Create new user</Link>:''
+                        (this.props.auth && this.props.userRole!=='student')?<Link to="createuser">Create new user</Link>:''
                     }
                 </div>
 

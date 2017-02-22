@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 /**
  * @author Philip Lanaras
+ * @author Asa
  */
 public class UserUtils {
     public static LoginResponse authenticateUser(String password, String username) {
@@ -32,6 +33,7 @@ public class UserUtils {
                 loginResponse.setUsername(res.getString("username"));
                 loginResponse.setUserid(res.getInt("id"));
                 loginResponse.setUserRole(UserUtils.authLevelToString(res.getInt("authlevel")));
+                loginResponse.setAuthId(res.getInt("authlevel"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

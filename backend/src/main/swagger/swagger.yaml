@@ -128,12 +128,15 @@ paths:
           examples:
             application/json:
               - id: 1
+                auth_id: 2
                 auth_level: admin
                 username: Astrid
               - id: 2
+                auth_id: 1
                 auth_level: teacher
                 username: Teachername
               - id: 3
+                auth_id: 0
                 auth_level: student
                 username: Studentname
         #500:
@@ -175,6 +178,7 @@ paths:
           examples:
               application/json:
                 - id: 1
+                  auth_id: 2
                   auth_level: admin
                   username: Astrid
         #500:
@@ -255,6 +259,7 @@ paths:
           examples:
             application/json:
               - id: 1
+                auth_id: 2
                 auth_level: admin
                 username: Astrid
         401:
@@ -294,6 +299,8 @@ definitions:
         type: integer
       username:
         type: string
+      auth_id:
+        type: integer
       auth_level:
         type: string
     xml:

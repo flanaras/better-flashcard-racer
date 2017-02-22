@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Created by philip on 14/02/17.
+ * @author Asa 22/01/2017
  */
 public class LoginResponse {
 
@@ -12,6 +13,9 @@ public class LoginResponse {
 
     @JsonProperty("auth_level")
     private String userRole;
+
+    @JsonProperty("auth_id")
+    private int authId;
 
     @JsonProperty("id")
     private int userid;
@@ -38,5 +42,13 @@ public class LoginResponse {
 
     public void setUserid(int userid) {
         this.userid = userid;
+    }
+
+    public int getAuthId() {
+        return authId;
+    }
+
+    public void setAuthId(int authId) {
+        this.authId = authId;
     }
 }

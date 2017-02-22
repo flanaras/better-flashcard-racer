@@ -157,13 +157,21 @@ public class UserController {
         return responseContext;
     }
 
-    public ResponseContext getUsersAuth(RequestContext requestContext) throws SQLException {
+    public ResponseContext getUsersAuth(RequestContext requestContext, Long id) throws SQLException {
         ArrayList<AuthLevel> userAuth = new ArrayList<AuthLevel>();
         AuthLevel auth = null;
         Connection con = null;
         Statement stmnt = null;
         ResultSet res = null;
-        String query = "SELECT authlevel FROM users GROUP BY authlevel";
+        String query = null;
+        if(id == 2){
+            query = "SELECT authlevel FROM users GROUP BY authlevel";
+        } else if(id == 1){
+            query = "SELECT authlevel FROM users WHERE authlevel < 1 GROUP BY authlevel";
+        } else{
+            return new ResponseContext().status(Status.NO_CONTENT);
+        }
+
 
         try {
             con = DBConnect.connect();
@@ -194,6 +202,7 @@ public class UserController {
         }
 
         return new ResponseContext().status(Status.OK).entity(userAuth);
+
     }
 
     public ResponseContext updateUserById(RequestContext requestContext,Long id,JsonNode users) throws SQLException {

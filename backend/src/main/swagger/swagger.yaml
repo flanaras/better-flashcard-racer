@@ -205,17 +205,19 @@ paths:
       description: Delete a user by it's ID
       operationId: deleteUserById
       responses:
-        200:
+        204:
           description: successful operation
         #500:
         #  $ref: "#/responses/Standard500ErrorResponse"
-  /authlevel:
+  /authlevel/{id}:
       get:
         tags:
           - user
         x-swagger-router-controller: UserController
         description: Return all available user level of authorization
         operationId: getUsersAuth
+        parameters:
+          - $ref: "#/parameters/id"
         responses:
           200:
             description: successful operation
@@ -224,11 +226,13 @@ paths:
             examples:
               application/json:
                 - id: 0
-                  auth: admin
+                  auth: student
                 - id: 1
                   auth: teacher
                 - id: 2
-                  auth: student
+                  auth: admin
+          204:
+            description: no content available
   /login:
     post:
       tags:
@@ -253,7 +257,7 @@ paths:
               - id: 1
                 auth_level: admin
                 username: Astrid
-        403:
+        401:
           description: unsuccessful login
   /generate-cards:
     post:

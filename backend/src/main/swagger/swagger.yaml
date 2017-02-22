@@ -4,7 +4,7 @@ info:
   description: "This is a Flashcard server.  You can find out more about Swagger at\
     \ <a href=\"http://swagger.io\">http://swagger.io</a> or on irc.freenode.net,\
     \ #swagger.  You can use the api key \"special-key\" to test the authorization\
-    \ filters. Test Change"
+    \ filters"
   version: "1.0.0"
   title: "Swagger Flashcard YAML"
   license:
@@ -23,6 +23,27 @@ consumes:
 produces:
 - "application/json"
 paths:
+  /authlevel:
+    get:
+      tags:
+      - "user"
+      description: "Return all available user level of authorization"
+      operationId: "getUsersAuth"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/AuthLevel"
+          examples:
+            application/json:
+            - id: 0
+              auth: "admin"
+            - id: 1
+              auth: "teacher"
+            - id: 2
+              auth: "student"
+      x-swagger-router-controller: "UserController"
   /decks:
     get:
       tags:
@@ -30,7 +51,13 @@ paths:
       summary: "Find all decks available"
       description: "Return all set of decks"
       operationId: "getDecks"
-      parameters: []
+      parameters:
+      - name: "user_id"
+        in: "query"
+        description: "The id for the user"
+        required: false
+        type: "integer"
+        x-example: 1
       responses:
         200:
           description: "successful operation"
@@ -145,12 +172,186 @@ paths:
         500:
           description: "An unexpected error occured."
       x-swagger-router-controller: "DeckController"
+  /login:
+    post:
+      tags:
+      - "user"
+      - "mocked"
+      summary: "login"
+      operationId: "login"
+      parameters:
+      - in: "body"
+        name: "loginInfo"
+        description: "Login attempt"
+        required: false
+        schema:
+          $ref: "#/definitions/Login"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/User"
+          examples:
+            application/json:
+            - id: 1
+              auth_level: "admin"
+              username: "Astrid"
+        403:
+          description: "unsuccessful login"
+      x-swagger-router-controller: "UserController"
+  /users:
+    get:
+      tags:
+      - "user"
+      - "mocked"
+      description: "Return all set of decks"
+      operationId: "getUsers"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Users"
+          examples:
+            application/json:
+            - id: 1
+              auth_level: "admin"
+              username: "Astrid"
+            - id: 2
+              auth_level: "teacher"
+              username: "Teachername"
+            - id: 3
+              auth_level: "student"
+              username: "Studentname"
+      x-swagger-router-controller: "UserController"
+    post:
+      tags:
+      - "user"
+      - "mocked"
+      description: "Add a user"
+      operationId: "addUser"
+      parameters:
+      - in: "body"
+        name: "Input"
+        description: "The information about the user to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/AddUserInput"
+      responses:
+        201:
+          description: "Created entity"
+  /users/{id}:
+    get:
+      tags:
+      - "user"
+      - "mocked"
+      summary: "Find a user by ID"
+      description: "Return a user object identified by its id"
+      operationId: "getUserById"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The identifier of the object"
+        required: true
+        type: "integer"
+        x-example: 1
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/User"
+          examples:
+            application/json:
+            - id: 1
+              auth_level: "admin"
+              username: "Astrid"
+      x-swagger-router-controller: "UserController"
+    put:
+      summary: "Update a user by ID"
+      description: "Update a user by ID"
+      operationId: "updateUserById"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The identifier of the object"
+        required: true
+        type: "integer"
+        x-example: 1
+      - in: "body"
+        name: "users"
+        description: "The information about the user to be update"
+        required: true
+        schema:
+          $ref: "#/definitions/AddUserInput"
+      responses:
+        200:
+          description: "Update Successfull"
+          examples:
+            application/json:
+            - username: "Astrid"
+              password: "12345"
+              auth_level: "admin"
+      x-swagger-router-controller: "UserController"
+    delete:
+      summary: "Delete a user by ID"
+      description: "Delete a user by it's ID"
+      operationId: "deleteUserById"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The identifier of the object"
+        required: true
+        type: "integer"
+        x-example: 1
+      responses:
+        200:
+          description: "successful operation"
+      x-swagger-router-controller: "UserController"
 securityDefinitions:
   api_key:
     type: "apiKey"
     name: "api_key"
     in: "header"
 definitions:
+  AuthLevel:
+    properties:
+      id:
+        type: "integer"
+      auth:
+        type: "string"
+  User:
+    properties:
+      id:
+        type: "integer"
+      username:
+        type: "string"
+      auth_level:
+        type: "string"
+    xml:
+      name: "User"
+  Users:
+    type: "array"
+    items:
+      $ref: "#/definitions/User"
+  AddUserInput:
+    properties:
+      username:
+        type: "string"
+      password:
+        type: "string"
+      auth_level:
+        type: "integer"
+    xml:
+      name: "Input data for adding user"
+  Login:
+    required:
+    - "password"
+    - "username"
+    properties:
+      username:
+        type: "string"
+      password:
+        type: "string"
   Card:
     properties:
       id:
@@ -187,7 +388,10 @@ definitions:
         $ref: "#/definitions/Card"
     xml:
       name: "Deck"
-  Decks: {}
+  Decks:
+    type: "array"
+    items:
+      $ref: "#/definitions/Deck"
   Operators:
     properties:
       minus:
@@ -216,6 +420,13 @@ parameters:
     required: true
     type: "integer"
     x-example: 1
+  user_id:
+    name: "user_id"
+    in: "query"
+    description: "The id for the user"
+    required: false
+    type: "integer"
+    x-example: 1
 responses:
   Standard500ErrorResponse:
     description: "An unexpected error occured."
@@ -223,4 +434,3 @@ responses:
     description: "The object was not found in"
   Standard201CreatedResponse:
     description: "Created entity"
-x-example: 1

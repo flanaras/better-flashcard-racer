@@ -207,34 +207,27 @@ public class UserController {
 
     public ResponseContext updateUserById(RequestContext requestContext,Long id,JsonNode users) throws SQLException {
         Connection con = null;
-        Statement stmnt = null;
-        ResultSet res = null;
         User user = new User();
+
         int i = 0;
-        //System.out.println(id);
-        //System.out.println(users.get("password").asText());
+
         try
         {
 
+            PreparedStatement updateUsers = null;
             ObjectMapper mapper = new ObjectMapper();
             user = mapper.treeToValue(users,User.class);
-            String query = "Update users set username = '"+user.getUsername()+"', password = '"+user.getPassword()+"', authlevel = '"+user.getAuth_level()+"' WHERE users.ID = " + id;
-           /* System.out.println(users.get("password").asText());
-            String auth_level = "";
-            if(users.get("auth_level").asText().equals("admin")){
-                auth_level = "2";
-            }else if(users.get("auth_level").asText().equals("teacher")){
-                auth_level = "1";
-            } else{
-                auth_level = "0";
-            }
-            String query = "Update user set username = '"+users.get("username").asText()+"', password = '"+users.get("password").asText()+"', authlevel = '"+auth_level+"' WHERE users.ID = " + id;*/
+
+
             con = DBConnect.connect();
-            stmnt = con.createStatement();
-            i  = stmnt.executeUpdate(query) ;
-            System.out.println(i);
+            String updatesUserStrings = "UPDATE users set username = ?, password = ?, authlevel = ? where users.ID = ?";
+            updateUsers = con.prepareStatement(updatesUserStrings);
+            updateUsers.setString(1,user.getUsername());
+            updateUsers.setString(2,user.getPassword());
+            updateUsers.setInt(3,Integer.parseInt(user.getAuth_level()));
+            updateUsers.setLong(4,id);
 
-
+            i  = updateUsers.executeUpdate() ; 
         }
         catch (SQLException ex)
         {
@@ -245,7 +238,6 @@ public class UserController {
             e.printStackTrace();
         } finally
         {
-            stmnt.close();
             con.close();
         }
 

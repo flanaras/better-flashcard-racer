@@ -190,7 +190,7 @@ paths:
           in: body
           description: The information about the user to be update
           schema:
-              $ref: "#/definitions/AddUserInput"
+              $ref: "#/definitions/UpdateUser"
       responses:
         200:
           description: "Update Successfull"
@@ -307,6 +307,17 @@ definitions:
       username:
         type: string
       password:
+        type: string
+      auth_level:
+        type: integer
+    xml:
+      name: Input data for adding user
+  UpdateUser:
+    properties:
+      username:
+        type: string
+      password:
+        required: false
         type: string
       auth_level:
         type: integer

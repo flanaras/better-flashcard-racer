@@ -217,15 +217,28 @@ public class UserController {
             PreparedStatement updateUsers = null;
             ObjectMapper mapper = new ObjectMapper();
             user = mapper.treeToValue(users,User.class);
-
+            String updatesUserStrings = "";
 
             con = DBConnect.connect();
-            String updatesUserStrings = "UPDATE users set username = ?, password = ?, authlevel = ? where users.ID = ?";
-            updateUsers = con.prepareStatement(updatesUserStrings);
-            updateUsers.setString(1,user.getUsername());
-            updateUsers.setString(2,user.getPassword());
-            updateUsers.setInt(3,Integer.parseInt(user.getAuth_level()));
-            updateUsers.setLong(4,id);
+            if(user.getPassword() != null)
+            {
+                System.out.println("Test1");
+                updatesUserStrings = "UPDATE users set username = ?, password = ?, authlevel = ? where users.ID = ?";
+                updateUsers = con.prepareStatement(updatesUserStrings);
+                updateUsers.setString(1, user.getUsername());
+                updateUsers.setString(2, user.getPassword());
+                updateUsers.setInt(3, Integer.parseInt(user.getAuth_level()));
+                updateUsers.setLong(4, id);
+            }
+            else
+            {
+                System.out.println("Test2");
+                updatesUserStrings = "UPDATE users set username = ?,authlevel = ? where users.ID = ?";
+                updateUsers = con.prepareStatement(updatesUserStrings);
+                updateUsers.setString(1, user.getUsername());
+                updateUsers.setInt(2, Integer.parseInt(user.getAuth_level()));
+                updateUsers.setLong(3, id);
+            }
 
             i  = updateUsers.executeUpdate() ; 
         }

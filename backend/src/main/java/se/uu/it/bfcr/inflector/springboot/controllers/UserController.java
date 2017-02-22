@@ -196,17 +196,19 @@ public class UserController {
         return new ResponseContext().status(Status.OK).entity(userAuth);
     }
 
-    public ResponseContext updateUserByID(RequestContext requestContext, Long id, JsonNode body) throws SQLException {
+    public ResponseContext updateUserById(RequestContext requestContext,Long id,JsonNode users) throws SQLException {
         Connection con = null;
         Statement stmnt = null;
         ResultSet res = null;
         User user = new User();
         int i = 0;
+        //System.out.println(id);
+        //System.out.println(users.get("password").asText());
         try
         {
 
             ObjectMapper mapper = new ObjectMapper();
-            user = mapper.treeToValue(body,User.class);
+            user = mapper.treeToValue(users,User.class);
             String auth_level = "";
             if(user.getAuth_level().equals("admin")){
                 auth_level = "2";
@@ -215,10 +217,21 @@ public class UserController {
             } else{
                 auth_level = "0";
             }
-            String query = "Update user set username = '"+user.getUsername()+"', password = '"+user.getPassword()+"', authlevel = '"+auth_level+"' WHERE users.ID = " + id;
+            String query = "Update users set username = '"+user.getUsername()+"', password = '"+user.getPassword()+"', authlevel = '"+auth_level+"' WHERE users.ID = " + id;
+           /* System.out.println(users.get("password").asText());
+            String auth_level = "";
+            if(users.get("auth_level").asText().equals("admin")){
+                auth_level = "2";
+            }else if(users.get("auth_level").asText().equals("teacher")){
+                auth_level = "1";
+            } else{
+                auth_level = "0";
+            }
+            String query = "Update user set username = '"+users.get("username").asText()+"', password = '"+users.get("password").asText()+"', authlevel = '"+auth_level+"' WHERE users.ID = " + id;*/
             con = DBConnect.connect();
             stmnt = con.createStatement();
             i  = stmnt.executeUpdate(query) ;
+            System.out.println(i);
 
 
         }
@@ -232,12 +245,16 @@ public class UserController {
         } finally
         {
             stmnt.close();
-            res.close();
             con.close();
         }
-        if(i < 0)
-            return new ResponseContext().status(Status.OK).entity(user);
+
+
+        if(i > 0) {
+           return new ResponseContext().status(Status.OK);
+        }
         else
+        {
             return new ResponseContext().status(Status.NOT_MODIFIED);
+        }
     }
 }

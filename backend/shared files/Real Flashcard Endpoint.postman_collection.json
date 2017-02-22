@@ -1,607 +1,192 @@
 {
-	"variables": [],
-	"info": {
-		"name": "Real Flashcard Endpoint",
-		"_postman_id": "cc748076-54c0-31cc-b1db-2e685f7fdf91",
-		"description": "",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
-	},
-	"item": [
+	"id": "788ccc6a-5ad0-95a0-cbf5-178349fda32d",
+	"name": "Real Flashcard Endpoint",
+	"description": "",
+	"order": [
+		"686a5b35-8605-ca2e-049d-382f4fd1973f",
+		"e9185c24-ad03-3da7-cb76-5f9e804e5de7",
+		"a1d5e545-e0d6-20eb-5173-85e04adcbadc",
+		"b2967d96-9dc1-9add-f20c-cdd4fa828150",
+		"806e76a4-897f-ba5f-aa5b-d07443f27ed2",
+		"99c39059-d380-2e78-ba9d-7f338a9a5fba",
+		"a646180c-d814-b9d2-7d3f-f2c4c43114c6",
+		"16b2abdc-d834-ccc9-3427-53c7cc349afd"
+	],
+	"folders": [],
+	"timestamp": 0,
+	"owner": "1533697",
+	"public": false,
+	"requests": [
 		{
-			"name": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/decks/1",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"var responseJson = JSON.parse(responseBody);\r",
-							"\r",
-							"let referenceJson = \r",
-							"    [\r",
-							"  {\r",
-							"    \"id\": 1,\r",
-							"    \"numProblems\": 10,\r",
-							"    \"name\": \"easy all operator\",\r",
-							"    \"description\": \"test deck for frontend\",\r",
-							"    \"created\": \"2017-01-25T20:17:45.000Z\",\r",
-							"    \"changed\": \"2017-01-25T20:17:45.000Z\",\r",
-							"    \"userName\": \"asa\",\r",
-							"    \"userId\": 1,\r",
-							"    \"isPrivate\": true,\r",
-							"    \"flashcard\": [\r",
-							"      {\r",
-							"        \"id\": 1,\r",
-							"        \"problem\": \"1 + 2\",\r",
-							"        \"answer\": \"3\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 2,\r",
-							"        \"problem\": \"2 - 1\",\r",
-							"        \"answer\": \"1\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 3,\r",
-							"        \"problem\": \"4 / 2\",\r",
-							"        \"answer\": \"2\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 4,\r",
-							"        \"problem\": \"2 * 3\",\r",
-							"        \"answer\": \"6\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 5,\r",
-							"        \"problem\": \"4 + 6\",\r",
-							"        \"answer\": \"10\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 6,\r",
-							"        \"problem\": \"10 - 4\",\r",
-							"        \"answer\": \"6\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 7,\r",
-							"        \"problem\": \"3 / 1\",\r",
-							"        \"answer\": \"3\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 8,\r",
-							"        \"problem\": \"2 * 0\",\r",
-							"        \"answer\": \"0\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 9,\r",
-							"        \"problem\": \"0 + 5\",\r",
-							"        \"answer\": \"5\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 10,\r",
-							"        \"problem\": \"8 - 6\",\r",
-							"        \"answer\": \"2\"\r",
-							"      }\r",
-							"    ]\r",
-							"  }\r",
-							"];\r",
-							"\r",
-							"function foundCorrectObj(responseJson, referenceJson) {\r",
-							"    return JSON.stringify(responseJson) === JSON.stringify(referenceJson) \r",
-							"}\r",
-							"\r",
-							"tests[\"Status code is 200\"] = responseCode.code; \r",
-							"\r",
-							"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson, referenceJson);\r",
-							"\r",
-							"tests[\"Response time is less than 200ms\"] = responseTime < 500;"
-						]
-					}
-				}
-			],
-			"request": {
-				"url": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/decks/1",
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "petId",
-							"value": "1",
-							"type": "text",
-							"enabled": true
-						}
-					]
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/decks",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"var responseJson = JSON.parse(responseBody);\r",
-							"\r",
-							"let referenceJson = \r",
-							"    [\r",
-							"  {\r",
-							"    \"id\": 1,\r",
-							"    \"numProblems\": 10,\r",
-							"    \"name\": \"easy all operator\",\r",
-							"    \"description\": \"test deck for frontend\",\r",
-							"    \"created\": \"2017-01-25T20:17:45.000Z\",\r",
-							"    \"changed\": \"2017-01-25T20:17:45.000Z\",\r",
-							"    \"userName\": \"asa\",\r",
-							"    \"userId\": 1,\r",
-							"    \"isPrivate\": true,\r",
-							"    \"flashcard\": [\r",
-							"      {\r",
-							"        \"id\": 1,\r",
-							"        \"problem\": \"1 + 2\",\r",
-							"        \"answer\": \"3\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 2,\r",
-							"        \"problem\": \"2 - 1\",\r",
-							"        \"answer\": \"1\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 3,\r",
-							"        \"problem\": \"4 / 2\",\r",
-							"        \"answer\": \"2\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 4,\r",
-							"        \"problem\": \"2 * 3\",\r",
-							"        \"answer\": \"6\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 5,\r",
-							"        \"problem\": \"4 + 6\",\r",
-							"        \"answer\": \"10\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 6,\r",
-							"        \"problem\": \"10 - 4\",\r",
-							"        \"answer\": \"6\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 7,\r",
-							"        \"problem\": \"3 / 1\",\r",
-							"        \"answer\": \"3\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 8,\r",
-							"        \"problem\": \"2 * 0\",\r",
-							"        \"answer\": \"0\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 9,\r",
-							"        \"problem\": \"0 + 5\",\r",
-							"        \"answer\": \"5\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 10,\r",
-							"        \"problem\": \"8 - 6\",\r",
-							"        \"answer\": \"2\"\r",
-							"      }\r",
-							"    ]\r",
-							"  },\r",
-							"  {\r",
-							"    \"id\": 2,\r",
-							"    \"numProblems\": 5,\r",
-							"    \"name\": \"easy all operator v2\",\r",
-							"    \"description\": \"test deck for frontend\",\r",
-							"    \"created\": \"2017-02-09T20:17:45.000Z\",\r",
-							"    \"changed\": \"2017-02-09T20:17:45.000Z\",\r",
-							"    \"userName\": \"asa\",\r",
-							"    \"userId\": 1,\r",
-							"    \"isPrivate\": true,\r",
-							"    \"flashcard\": [\r",
-							"      {\r",
-							"        \"id\": 11,\r",
-							"        \"problem\": \"1 + 1\",\r",
-							"        \"answer\": \"2\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 12,\r",
-							"        \"problem\": \"3 - 1\",\r",
-							"        \"answer\": \"2\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 13,\r",
-							"        \"problem\": \"9 / 3\",\r",
-							"        \"answer\": \"3\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 14,\r",
-							"        \"problem\": \"2 * 5\",\r",
-							"        \"answer\": \"10\"\r",
-							"      },\r",
-							"      {\r",
-							"        \"id\": 15,\r",
-							"        \"problem\": \"5 - 3\",\r",
-							"        \"answer\": \"2\"\r",
-							"      }\r",
-							"    ]\r",
-							"  }\r",
-							"]\r",
-							"  \r",
-							"function foundCorrectObj(responseJson, referenceJson) {\r",
-							"    return JSON.stringify(responseJson) === JSON.stringify(referenceJson) \r",
-							"}\r",
-							"\r",
-							"tests[\"Status code is 200\"] = responseCode.code \r",
-							"\r",
-							"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson, referenceJson)\r",
-							"\r",
-							"tests[\"Response time is less than 200ms\"] = responseTime < 500;"
-						]
-					}
-				}
-			],
-			"request": {
-				"url": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/decks",
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "username",
-							"value": "asa",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "password",
-							"value": "asa",
-							"type": "text",
-							"enabled": true
-						}
-					]
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/generate-cards ",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"tests[\"Status code is 200\"] = responseCode.code \r",
-							"\r",
-							"tests[\"Response time is less than 200ms\"] = responseTime < 1000;\r",
-							"\r",
-							"tests[\"Response has deck id or flashcard id\"] = responseBody.has(\"id\");\r",
-							"tests[\"Response has number of problems\"] = responseBody.has(\"numProblems\");\r",
-							"tests[\"Response has deck name\"] = responseBody.has(\"name\");\r",
-							"tests[\"Response has deck description\"] = responseBody.has(\"description\");\r",
-							"tests[\"Response has created time\"] = responseBody.has(\"created\");\r",
-							"tests[\"Response has changed time\"] = responseBody.has(\"changed\");\r",
-							"tests[\"Response has user name\"] = responseBody.has(\"userName\");\r",
-							"tests[\"Response has user id\"] = responseBody.has(\"userId\");\r",
-							"tests[\"Response has privacy control\"] = responseBody.has(\"isPrivate\");\r",
-							"tests[\"Response has flashcard\"] = responseBody.has(\"flashcard\");\r",
-							"tests[\"Response has at least 1 answer\"] = responseBody.has(\"answer\");\r",
-							"tests[\"Response has at least 1 problem\"] = responseBody.has(\"problem\");\r",
-							""
-						]
-					}
-				}
-			],
-			"request": {
-				"url": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/generate-cards ",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n\"min\": 10,\r\n\"max\": 10,\r\n\"numberSolution\": 10,\r\n\"operators\": [{\r\n\"minus\": false,\r\n\"add\": false,\r\n\"div\": false,\r\n\"multi\": true\r\n}]\r\n\r\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/users",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"var responseJson = JSON.parse(responseBody);\r",
-							"\r",
-							"let referenceJson = \r",
-							"    [\r",
-							"  {\r",
-							"    \"id\": 1,\r",
-							"    \"username\": \"foo\",\r",
-							"    \"auth_level\": \"teacher\"\r",
-							"  },\r",
-							"  {\r",
-							"    \"id\": 2,\r",
-							"    \"username\": \"miaTeacher\",\r",
-							"    \"auth_level\": \"teacher\"\r",
-							"  },\r",
-							"  {\r",
-							"    \"id\": 3,\r",
-							"    \"username\": \"su\",\r",
-							"    \"auth_level\": \"admin\"\r",
-							"  },\r",
-							"  {\r",
-							"    \"id\": 4,\r",
-							"    \"username\": \"admin\",\r",
-							"    \"auth_level\": \"admin\"\r",
-							"  },\r",
-							"  {\r",
-							"    \"id\": 5,\r",
-							"    \"username\": \"philip\",\r",
-							"    \"auth_level\": \"student\"\r",
-							"  },\r",
-							"  {\r",
-							"    \"id\": 6,\r",
-							"    \"username\": \"john\",\r",
-							"    \"auth_level\": \"student\"\r",
-							"  }\r",
-							"]\r",
-							"  \r",
-							"function foundCorrectObj(responseJson, referenceJson) {\r",
-							"    return JSON.stringify(responseJson) === JSON.stringify(referenceJson) \r",
-							"}\r",
-							"\r",
-							"tests[\"Status code is 200\"] = responseCode.code \r",
-							"\r",
-							"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson, referenceJson)\r",
-							"\r",
-							"tests[\"Response time is less than 200ms\"] = responseTime < 500;"
-						]
-					}
-				}
-			],
-			"request": {
-				"url": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/users",
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "username",
-							"value": "asa",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "password",
-							"value": "asa",
-							"type": "text",
-							"enabled": true
-						}
-					]
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/users",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"var responseJson = JSON.parse(responseBody);\r",
-							"\r",
-							"let referenceJson = \r",
-							"    [\r",
-							"  {\r",
-							"    \"id\": 1,\r",
-							"    \"username\": \"foo\",\r",
-							"    \"auth_level\": \"teacher\"\r",
-							"  },\r",
-							"  {\r",
-							"    \"id\": 2,\r",
-							"    \"username\": \"miaTeacher\",\r",
-							"    \"auth_level\": \"teacher\"\r",
-							"  },\r",
-							"  {\r",
-							"    \"id\": 3,\r",
-							"    \"username\": \"su\",\r",
-							"    \"auth_level\": \"admin\"\r",
-							"  },\r",
-							"  {\r",
-							"    \"id\": 4,\r",
-							"    \"username\": \"admin\",\r",
-							"    \"auth_level\": \"admin\"\r",
-							"  },\r",
-							"  {\r",
-							"    \"id\": 5,\r",
-							"    \"username\": \"philip\",\r",
-							"    \"auth_level\": \"student\"\r",
-							"  },\r",
-							"  {\r",
-							"    \"id\": 6,\r",
-							"    \"username\": \"john\",\r",
-							"    \"auth_level\": \"student\"\r",
-							"  }\r",
-							"]\r",
-							"  \r",
-							"function foundCorrectObj(responseJson, referenceJson) {\r",
-							"    return JSON.stringify(responseJson) === JSON.stringify(referenceJson) \r",
-							"}\r",
-							"\r",
-							"tests[\"Status code is 200\"] = responseCode.code \r",
-							"\r",
-							"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson, referenceJson)\r",
-							"\r",
-							"tests[\"Response time is less than 200ms\"] = responseTime < 500;"
-						]
-					}
-				}
-			],
-			"request": {
-				"url": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/users",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"username\": \"asa\",\n\t\"password\": \"123456\",\n\t\"auth_level\": 0\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/users",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"var responseJson = JSON.parse(responseBody);\r",
-							"\r",
-							"let referenceJson = \r",
-							"    [\r",
-							"  {\r",
-							"    \"id\": 1,\r",
-							"    \"username\": \"foo\",\r",
-							"    \"auth_level\": \"teacher\"\r",
-							"  },\r",
-							"  {\r",
-							"    \"id\": 2,\r",
-							"    \"username\": \"miaTeacher\",\r",
-							"    \"auth_level\": \"teacher\"\r",
-							"  },\r",
-							"  {\r",
-							"    \"id\": 3,\r",
-							"    \"username\": \"su\",\r",
-							"    \"auth_level\": \"admin\"\r",
-							"  },\r",
-							"  {\r",
-							"    \"id\": 4,\r",
-							"    \"username\": \"admin\",\r",
-							"    \"auth_level\": \"admin\"\r",
-							"  },\r",
-							"  {\r",
-							"    \"id\": 5,\r",
-							"    \"username\": \"philip\",\r",
-							"    \"auth_level\": \"student\"\r",
-							"  },\r",
-							"  {\r",
-							"    \"id\": 6,\r",
-							"    \"username\": \"john\",\r",
-							"    \"auth_level\": \"student\"\r",
-							"  }\r",
-							"]\r",
-							"  \r",
-							"function foundCorrectObj(responseJson, referenceJson) {\r",
-							"    return JSON.stringify(responseJson) === JSON.stringify(referenceJson) \r",
-							"}\r",
-							"\r",
-							"tests[\"Status code is 200\"] = responseCode.code \r",
-							"\r",
-							"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson, referenceJson)\r",
-							"\r",
-							"tests[\"Response time is less than 200ms\"] = responseTime < 500;"
-						]
-					}
-				}
-			],
-			"request": {
-				"url": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/login",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"username\": \"john\",\n\t\"password\": \"123456\"\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
+			"id": "16b2abdc-d834-ccc9-3427-53c7cc349afd",
+			"headers": "Content-Type: application/json\n",
+			"url": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/users/1",
+			"preRequestScript": null,
+			"pathVariables": {},
+			"method": "PUT",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": "tests[\"Status code is 200\"] = responseCode.code; \r\n\r\ntests[\"Response time is less than 200ms\"] = responseTime < 500;",
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1487771709108,
 			"name": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/users/1",
-			"event": [
+			"description": "",
+			"collectionId": "788ccc6a-5ad0-95a0-cbf5-178349fda32d",
+			"responses": [],
+			"rawModeData": "{\n\t\"username\": \"fooo\",\n\t\"password\": \"12345617\",\n\t\"auth_level\": \"2\"\n}"
+		},
+		{
+			"id": "686a5b35-8605-ca2e-049d-382f4fd1973f",
+			"name": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/decks/1",
+			"description": "",
+			"collectionId": "788ccc6a-5ad0-95a0-cbf5-178349fda32d",
+			"method": "GET",
+			"headers": "",
+			"dataMode": "urlencoded",
+			"data": [
 				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"var responseJson = JSON.parse(responseBody);\r",
-							"\r",
-							"let referenceJson = \r",
-							"    {\r",
-							"  \"id\": 1,\r",
-							"  \"username\": \"foo\",\r",
-							"  \"auth_level\": \"teacher\"\r",
-							"}\r",
-							"  \r",
-							"function foundCorrectObj(responseJson, referenceJson) {\r",
-							"    return JSON.stringify(responseJson) === JSON.stringify(referenceJson) \r",
-							"}\r",
-							"\r",
-							"tests[\"Status code is 200\"] = responseCode.code \r",
-							"\r",
-							"tests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson, referenceJson)\r",
-							"\r",
-							"tests[\"Response time is less than 200ms\"] = responseTime < 500;"
-						]
-					}
+					"key": "petId",
+					"value": "1",
+					"type": "text",
+					"enabled": true
 				}
 			],
-			"request": {
-				"url": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/users/1",
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "username",
-							"value": "asa",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "password",
-							"value": "asa",
-							"type": "text",
-							"enabled": true
-						}
-					]
+			"rawModeData": "",
+			"tests": "var responseJson = JSON.parse(responseBody);\r\n\r\nlet referenceJson = \r\n    [\r\n  {\r\n    \"id\": 1,\r\n    \"numProblems\": 10,\r\n    \"name\": \"easy all operator\",\r\n    \"description\": \"test deck for frontend\",\r\n    \"created\": \"2017-01-25T20:17:45.000Z\",\r\n    \"changed\": \"2017-01-25T20:17:45.000Z\",\r\n    \"userName\": \"asa\",\r\n    \"userId\": 1,\r\n    \"isPrivate\": true,\r\n    \"flashcard\": [\r\n      {\r\n        \"id\": 1,\r\n        \"problem\": \"1 + 2\",\r\n        \"answer\": \"3\"\r\n      },\r\n      {\r\n        \"id\": 2,\r\n        \"problem\": \"2 - 1\",\r\n        \"answer\": \"1\"\r\n      },\r\n      {\r\n        \"id\": 3,\r\n        \"problem\": \"4 / 2\",\r\n        \"answer\": \"2\"\r\n      },\r\n      {\r\n        \"id\": 4,\r\n        \"problem\": \"2 * 3\",\r\n        \"answer\": \"6\"\r\n      },\r\n      {\r\n        \"id\": 5,\r\n        \"problem\": \"4 + 6\",\r\n        \"answer\": \"10\"\r\n      },\r\n      {\r\n        \"id\": 6,\r\n        \"problem\": \"10 - 4\",\r\n        \"answer\": \"6\"\r\n      },\r\n      {\r\n        \"id\": 7,\r\n        \"problem\": \"3 / 1\",\r\n        \"answer\": \"3\"\r\n      },\r\n      {\r\n        \"id\": 8,\r\n        \"problem\": \"2 * 0\",\r\n        \"answer\": \"0\"\r\n      },\r\n      {\r\n        \"id\": 9,\r\n        \"problem\": \"0 + 5\",\r\n        \"answer\": \"5\"\r\n      },\r\n      {\r\n        \"id\": 10,\r\n        \"problem\": \"8 - 6\",\r\n        \"answer\": \"2\"\r\n      }\r\n    ]\r\n  }\r\n];\r\n\r\nfunction foundCorrectObj(responseJson, referenceJson) {\r\n    return JSON.stringify(responseJson) === JSON.stringify(referenceJson) \r\n}\r\n\r\ntests[\"Status code is 200\"] = responseCode.code; \r\n\r\ntests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson, referenceJson);\r\n\r\ntests[\"Response time is less than 200ms\"] = responseTime < 500;",
+			"preRequestScript": "",
+			"url": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/decks/1",
+			"responses": []
+		},
+		{
+			"id": "806e76a4-897f-ba5f-aa5b-d07443f27ed2",
+			"name": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/users",
+			"description": "",
+			"collectionId": "788ccc6a-5ad0-95a0-cbf5-178349fda32d",
+			"method": "POST",
+			"headers": "Content-Type: application/json",
+			"dataMode": "raw",
+			"data": [],
+			"rawModeData": "{\n\t\"username\": \"asa\",\n\t\"password\": \"123456\",\n\t\"auth_level\": 0\n}",
+			"tests": "var responseJson = JSON.parse(responseBody);\r\n\r\nlet referenceJson = \r\n    [\r\n  {\r\n    \"id\": 1,\r\n    \"username\": \"foo\",\r\n    \"auth_level\": \"teacher\"\r\n  },\r\n  {\r\n    \"id\": 2,\r\n    \"username\": \"miaTeacher\",\r\n    \"auth_level\": \"teacher\"\r\n  },\r\n  {\r\n    \"id\": 3,\r\n    \"username\": \"su\",\r\n    \"auth_level\": \"admin\"\r\n  },\r\n  {\r\n    \"id\": 4,\r\n    \"username\": \"admin\",\r\n    \"auth_level\": \"admin\"\r\n  },\r\n  {\r\n    \"id\": 5,\r\n    \"username\": \"philip\",\r\n    \"auth_level\": \"student\"\r\n  },\r\n  {\r\n    \"id\": 6,\r\n    \"username\": \"john\",\r\n    \"auth_level\": \"student\"\r\n  }\r\n]\r\n  \r\nfunction foundCorrectObj(responseJson, referenceJson) {\r\n    return JSON.stringify(responseJson) === JSON.stringify(referenceJson) \r\n}\r\n\r\ntests[\"Status code is 200\"] = responseCode.code \r\n\r\ntests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson, referenceJson)\r\n\r\ntests[\"Response time is less than 200ms\"] = responseTime < 500;",
+			"preRequestScript": "",
+			"url": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/users",
+			"responses": []
+		},
+		{
+			"id": "99c39059-d380-2e78-ba9d-7f338a9a5fba",
+			"name": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/users",
+			"description": "",
+			"collectionId": "788ccc6a-5ad0-95a0-cbf5-178349fda32d",
+			"method": "POST",
+			"headers": "Content-Type: application/json",
+			"dataMode": "raw",
+			"data": [],
+			"rawModeData": "{\n\t\"username\": \"john\",\n\t\"password\": \"123456\"\n}",
+			"tests": "var responseJson = JSON.parse(responseBody);\r\n\r\nlet referenceJson = \r\n    [\r\n  {\r\n    \"id\": 1,\r\n    \"username\": \"foo\",\r\n    \"auth_level\": \"teacher\"\r\n  },\r\n  {\r\n    \"id\": 2,\r\n    \"username\": \"miaTeacher\",\r\n    \"auth_level\": \"teacher\"\r\n  },\r\n  {\r\n    \"id\": 3,\r\n    \"username\": \"su\",\r\n    \"auth_level\": \"admin\"\r\n  },\r\n  {\r\n    \"id\": 4,\r\n    \"username\": \"admin\",\r\n    \"auth_level\": \"admin\"\r\n  },\r\n  {\r\n    \"id\": 5,\r\n    \"username\": \"philip\",\r\n    \"auth_level\": \"student\"\r\n  },\r\n  {\r\n    \"id\": 6,\r\n    \"username\": \"john\",\r\n    \"auth_level\": \"student\"\r\n  }\r\n]\r\n  \r\nfunction foundCorrectObj(responseJson, referenceJson) {\r\n    return JSON.stringify(responseJson) === JSON.stringify(referenceJson) \r\n}\r\n\r\ntests[\"Status code is 200\"] = responseCode.code \r\n\r\ntests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson, referenceJson)\r\n\r\ntests[\"Response time is less than 200ms\"] = responseTime < 500;",
+			"preRequestScript": "",
+			"url": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/login",
+			"responses": []
+		},
+		{
+			"id": "a1d5e545-e0d6-20eb-5173-85e04adcbadc",
+			"name": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/generate-cards ",
+			"description": "",
+			"collectionId": "788ccc6a-5ad0-95a0-cbf5-178349fda32d",
+			"method": "POST",
+			"headers": "Content-Type: application/json",
+			"dataMode": "raw",
+			"data": [],
+			"rawModeData": "{\r\n\"min\": 10,\r\n\"max\": 10,\r\n\"numberSolution\": 10,\r\n\"operators\": [{\r\n\"minus\": false,\r\n\"add\": false,\r\n\"div\": false,\r\n\"multi\": true\r\n}]\r\n\r\n}",
+			"tests": "tests[\"Status code is 200\"] = responseCode.code \r\n\r\ntests[\"Response time is less than 200ms\"] = responseTime < 1000;\r\n\r\ntests[\"Response has deck id or flashcard id\"] = responseBody.has(\"id\");\r\ntests[\"Response has number of problems\"] = responseBody.has(\"numProblems\");\r\ntests[\"Response has deck name\"] = responseBody.has(\"name\");\r\ntests[\"Response has deck description\"] = responseBody.has(\"description\");\r\ntests[\"Response has created time\"] = responseBody.has(\"created\");\r\ntests[\"Response has changed time\"] = responseBody.has(\"changed\");\r\ntests[\"Response has user name\"] = responseBody.has(\"userName\");\r\ntests[\"Response has user id\"] = responseBody.has(\"userId\");\r\ntests[\"Response has privacy control\"] = responseBody.has(\"isPrivate\");\r\ntests[\"Response has flashcard\"] = responseBody.has(\"flashcard\");\r\ntests[\"Response has at least 1 answer\"] = responseBody.has(\"answer\");\r\ntests[\"Response has at least 1 problem\"] = responseBody.has(\"problem\");\r\n",
+			"preRequestScript": "",
+			"url": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/generate-cards ",
+			"responses": []
+		},
+		{
+			"id": "a646180c-d814-b9d2-7d3f-f2c4c43114c6",
+			"name": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/users/1",
+			"description": "",
+			"collectionId": "788ccc6a-5ad0-95a0-cbf5-178349fda32d",
+			"method": "GET",
+			"headers": "",
+			"dataMode": "urlencoded",
+			"data": [
+				{
+					"key": "username",
+					"value": "asa",
+					"type": "text",
+					"enabled": true
 				},
-				"description": ""
-			},
-			"response": []
+				{
+					"key": "password",
+					"value": "asa",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"rawModeData": "",
+			"tests": "var responseJson = JSON.parse(responseBody);\r\n\r\nlet referenceJson = \r\n    {\r\n  \"id\": 1,\r\n  \"username\": \"foo\",\r\n  \"auth_level\": \"teacher\"\r\n}\r\n  \r\nfunction foundCorrectObj(responseJson, referenceJson) {\r\n    return JSON.stringify(responseJson) === JSON.stringify(referenceJson) \r\n}\r\n\r\ntests[\"Status code is 200\"] = responseCode.code \r\n\r\ntests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson, referenceJson)\r\n\r\ntests[\"Response time is less than 200ms\"] = responseTime < 500;",
+			"preRequestScript": "",
+			"url": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/users/1",
+			"responses": []
+		},
+		{
+			"id": "b2967d96-9dc1-9add-f20c-cdd4fa828150",
+			"name": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/users",
+			"description": "",
+			"collectionId": "788ccc6a-5ad0-95a0-cbf5-178349fda32d",
+			"method": "GET",
+			"headers": "",
+			"dataMode": "urlencoded",
+			"data": [
+				{
+					"key": "username",
+					"value": "asa",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "asa",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"rawModeData": "",
+			"tests": "var responseJson = JSON.parse(responseBody);\r\n\r\nlet referenceJson = \r\n    [\r\n  {\r\n    \"id\": 1,\r\n    \"username\": \"foo\",\r\n    \"auth_level\": \"teacher\"\r\n  },\r\n  {\r\n    \"id\": 2,\r\n    \"username\": \"miaTeacher\",\r\n    \"auth_level\": \"teacher\"\r\n  },\r\n  {\r\n    \"id\": 3,\r\n    \"username\": \"su\",\r\n    \"auth_level\": \"admin\"\r\n  },\r\n  {\r\n    \"id\": 4,\r\n    \"username\": \"admin\",\r\n    \"auth_level\": \"admin\"\r\n  },\r\n  {\r\n    \"id\": 5,\r\n    \"username\": \"philip\",\r\n    \"auth_level\": \"student\"\r\n  },\r\n  {\r\n    \"id\": 6,\r\n    \"username\": \"john\",\r\n    \"auth_level\": \"student\"\r\n  }\r\n]\r\n  \r\nfunction foundCorrectObj(responseJson, referenceJson) {\r\n    return JSON.stringify(responseJson) === JSON.stringify(referenceJson) \r\n}\r\n\r\ntests[\"Status code is 200\"] = responseCode.code \r\n\r\ntests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson, referenceJson)\r\n\r\ntests[\"Response time is less than 200ms\"] = responseTime < 500;",
+			"preRequestScript": "",
+			"url": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/users",
+			"responses": []
+		},
+		{
+			"id": "e9185c24-ad03-3da7-cb76-5f9e804e5de7",
+			"name": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/decks",
+			"description": "",
+			"collectionId": "788ccc6a-5ad0-95a0-cbf5-178349fda32d",
+			"method": "GET",
+			"headers": "",
+			"dataMode": "urlencoded",
+			"data": [
+				{
+					"key": "username",
+					"value": "asa",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "asa",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"rawModeData": "",
+			"tests": "var responseJson = JSON.parse(responseBody);\r\n\r\nlet referenceJson = \r\n    [\r\n  {\r\n    \"id\": 1,\r\n    \"numProblems\": 10,\r\n    \"name\": \"easy all operator\",\r\n    \"description\": \"test deck for frontend\",\r\n    \"created\": \"2017-01-25T20:17:45.000Z\",\r\n    \"changed\": \"2017-01-25T20:17:45.000Z\",\r\n    \"userName\": \"asa\",\r\n    \"userId\": 1,\r\n    \"isPrivate\": true,\r\n    \"flashcard\": [\r\n      {\r\n        \"id\": 1,\r\n        \"problem\": \"1 + 2\",\r\n        \"answer\": \"3\"\r\n      },\r\n      {\r\n        \"id\": 2,\r\n        \"problem\": \"2 - 1\",\r\n        \"answer\": \"1\"\r\n      },\r\n      {\r\n        \"id\": 3,\r\n        \"problem\": \"4 / 2\",\r\n        \"answer\": \"2\"\r\n      },\r\n      {\r\n        \"id\": 4,\r\n        \"problem\": \"2 * 3\",\r\n        \"answer\": \"6\"\r\n      },\r\n      {\r\n        \"id\": 5,\r\n        \"problem\": \"4 + 6\",\r\n        \"answer\": \"10\"\r\n      },\r\n      {\r\n        \"id\": 6,\r\n        \"problem\": \"10 - 4\",\r\n        \"answer\": \"6\"\r\n      },\r\n      {\r\n        \"id\": 7,\r\n        \"problem\": \"3 / 1\",\r\n        \"answer\": \"3\"\r\n      },\r\n      {\r\n        \"id\": 8,\r\n        \"problem\": \"2 * 0\",\r\n        \"answer\": \"0\"\r\n      },\r\n      {\r\n        \"id\": 9,\r\n        \"problem\": \"0 + 5\",\r\n        \"answer\": \"5\"\r\n      },\r\n      {\r\n        \"id\": 10,\r\n        \"problem\": \"8 - 6\",\r\n        \"answer\": \"2\"\r\n      }\r\n    ]\r\n  },\r\n  {\r\n    \"id\": 2,\r\n    \"numProblems\": 5,\r\n    \"name\": \"easy all operator v2\",\r\n    \"description\": \"test deck for frontend\",\r\n    \"created\": \"2017-02-09T20:17:45.000Z\",\r\n    \"changed\": \"2017-02-09T20:17:45.000Z\",\r\n    \"userName\": \"asa\",\r\n    \"userId\": 1,\r\n    \"isPrivate\": true,\r\n    \"flashcard\": [\r\n      {\r\n        \"id\": 11,\r\n        \"problem\": \"1 + 1\",\r\n        \"answer\": \"2\"\r\n      },\r\n      {\r\n        \"id\": 12,\r\n        \"problem\": \"3 - 1\",\r\n        \"answer\": \"2\"\r\n      },\r\n      {\r\n        \"id\": 13,\r\n        \"problem\": \"9 / 3\",\r\n        \"answer\": \"3\"\r\n      },\r\n      {\r\n        \"id\": 14,\r\n        \"problem\": \"2 * 5\",\r\n        \"answer\": \"10\"\r\n      },\r\n      {\r\n        \"id\": 15,\r\n        \"problem\": \"5 - 3\",\r\n        \"answer\": \"2\"\r\n      }\r\n    ]\r\n  }\r\n]\r\n  \r\nfunction foundCorrectObj(responseJson, referenceJson) {\r\n    return JSON.stringify(responseJson) === JSON.stringify(referenceJson) \r\n}\r\n\r\ntests[\"Status code is 200\"] = responseCode.code \r\n\r\ntests[\"Returns correct object from DB\"] = foundCorrectObj(responseJson, referenceJson)\r\n\r\ntests[\"Response time is less than 200ms\"] = responseTime < 500;",
+			"preRequestScript": "",
+			"url": "http://snf-568573.vm.okeanos.grnet.gr:8080/api/v1/decks",
+			"responses": []
 		}
 	]
 }

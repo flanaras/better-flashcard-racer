@@ -63,6 +63,58 @@ paths:
           description: "successful operation"
           schema:
             $ref: "#/definitions/Decks"
+          examples:
+            application/json:
+            - id: 1
+              numProblems: 5
+              name: "A test deck"
+              description: "Description for a test deck"
+              user_id: 2
+              user_name: "John"
+              created: "2017-01-25T20:17:45.000Z"
+              changed: "2017-01-25T20:17:45.000Z"
+              private: false
+              flashcards:
+              - id: 1
+                problem: "1+1"
+                solution: 2
+              - id: 2
+                problem: "2+2"
+                solution: 4
+              - id: 3
+                problem: "3+3"
+                solution: 6
+              - id: 4
+                problem: "4+4"
+                solution: 8
+              - id: 5
+                problem: "5+5"
+                solution: 10
+            - id: 2
+              numProblems: 5
+              name: "Another test deck"
+              description: "Description for a test deck2"
+              user_id: 2
+              user_name: "John"
+              created: "2017-01-25T20:17:45.000Z"
+              changed: "2017-01-25T20:17:45.000Z"
+              private: false
+              flashcards:
+              - id: 12
+                problem: "1-1"
+                solution: 0
+              - id: 23
+                problem: "2-2"
+                solution: 0
+              - id: 33
+                problem: "4-3"
+                solution: 1
+              - id: 44
+                problem: "5-2"
+                solution: 3
+              - id: 55
+                problem: "7-3"
+                solution: 4
         500:
           description: "An unexpected error occured."
       x-swagger-router-controller: "DeckController"

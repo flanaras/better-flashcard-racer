@@ -1,17 +1,13 @@
-package backend.src.test.java.se.uu.it.bfcr.test;
+package se.uu.it.bfcr.test;
 
-import com.sun.xml.internal.ws.client.RequestContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import se.uu.it.bfcr.inflector.springboot.models.User;
 import se.uu.it.bfcr.inflector.springboot.controllers.DBConnect;
-import se.uu.it.bfcr.inflector.springboot.controllers.UserController;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import static org.junit.Assert.*;
 

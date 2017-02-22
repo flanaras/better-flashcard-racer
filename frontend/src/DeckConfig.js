@@ -119,7 +119,8 @@ export default class DeckConfig extends Component {
         e.preventDefault()
         const deckType = this.state.deckType
         if(deckType === 'savedDeck') {
-            this.props.onSubmitGameConfig(this.state.chosenDeck, this.state.gameLengthProblems, this.state.timePerProblem)
+            const trimmedDeck = this.trimDeckToGameLength(this.state.chosenDeck, this.state.gameLengthProblems);
+            this.props.onSubmitGameConfig(trimmedDeck, this.state.gameLengthProblems, this.state.timePerProblem)
         } else {
             const reqPayload = {
                 min: this.state.generateDeck.operandRange.min,
@@ -135,6 +136,11 @@ export default class DeckConfig extends Component {
             const chosenDeck = await LoadJson(config.base_url + '/generate-cards', 'POST', reqPayload)
             this.props.onSubmitGameConfig(chosenDeck, this.state.gameLengthProblems, this.state.timePerProblem)
         }
+    }
+
+    trimDeckToGameLength(chosenDeck, gameLengthProblems) {
+        chosenDeck.flashcards.length = gameLengthProblems
+        return chosenDeck
     }
 
     render() {

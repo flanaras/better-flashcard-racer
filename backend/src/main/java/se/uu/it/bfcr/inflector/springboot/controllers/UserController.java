@@ -209,15 +209,7 @@ public class UserController {
 
             ObjectMapper mapper = new ObjectMapper();
             user = mapper.treeToValue(users,User.class);
-            String auth_level = "";
-            if(user.getAuth_level().equals("admin")){
-                auth_level = "2";
-            }else if(user.getAuth_level().equals("teacher")){
-                auth_level = "1";
-            } else{
-                auth_level = "0";
-            }
-            String query = "Update users set username = '"+user.getUsername()+"', password = '"+user.getPassword()+"', authlevel = '"+auth_level+"' WHERE users.ID = " + id;
+            String query = "Update users set username = '"+user.getUsername()+"', password = '"+user.getPassword()+"', authlevel = '"+user.getAuth_level()+"' WHERE users.ID = " + id;
            /* System.out.println(users.get("password").asText());
             String auth_level = "";
             if(users.get("auth_level").asText().equals("admin")){

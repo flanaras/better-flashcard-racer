@@ -179,6 +179,26 @@ paths:
                   username: Astrid
         #500:
         #  $ref: "#/responses/Standard500ErrorResponse"
+    put:
+      summary: Update a user by ID
+      x-swagger-router-controller: UserController
+      description: Update a user by ID
+      operationId: updateUserById
+      parameters:
+        - name: user
+          required: true
+          in: body
+          description: The information about the user to be added
+          schema:
+              $ref: "#/definitions/AddUserInput"
+      responses:
+        200:
+          description: successful operation
+          examples:
+            application/json:
+              - username: Astrid
+                password: 12345
+                auth_level: admin
     delete:
       summary: Delete a user by ID
       x-swagger-router-controller: UserController

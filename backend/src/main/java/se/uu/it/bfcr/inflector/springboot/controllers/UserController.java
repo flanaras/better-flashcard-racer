@@ -1,6 +1,8 @@
 package se.uu.it.bfcr.inflector.springboot.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.inflector.models.RequestContext;
 import io.swagger.inflector.models.ResponseContext;
 import se.uu.it.bfcr.inflector.springboot.models.AuthLevel;
@@ -19,17 +21,18 @@ import static se.uu.it.bfcr.inflector.springboot.UserUtils.authenticateUser;
 /**
  * Created by Bartok on 2/9/17.
  * @author Philip Lanaras
+ * @author Michael Wijaya Saputra
  */
 @Component
 public class UserController {
-    public ResponseContext getUserById(RequestContext requestContext, Long id) throws SQLException{
+    public ResponseContext getUserById(RequestContext requestContext, Long id) throws SQLException {
         User user = new User();
         Connection con = null;
         Statement stmnt = null;
         ResultSet res = null;
         String query = "SELECT * FROM users WHERE users.ID = " + id;
 
-        try{
+        try {
             con = DBConnect.connect();
             stmnt = con.createStatement();
             res = stmnt.executeQuery(query);
@@ -37,11 +40,11 @@ public class UserController {
             res.first();
             user = new User(res.getInt("id"), res.getString("username"), res.getInt("authlevel"));
 
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-        }finally {
+        } finally {
             try {
                 stmnt.close();
                 res.close();
@@ -51,7 +54,7 @@ public class UserController {
         return new ResponseContext().status(Status.OK).entity(user);
     }
 
-    public ResponseContext getUsers(RequestContext requestContext) throws SQLException{
+    public ResponseContext getUsers(RequestContext requestContext) throws SQLException {
         ArrayList<User> users = new ArrayList<User>();
         User user = new User();
         Connection con = null;
@@ -59,21 +62,21 @@ public class UserController {
         ResultSet res = null;
         String query = "SELECT * FROM users";
 
-        try{
+        try {
             con = DBConnect.connect();
             stmnt = con.createStatement();
             res = stmnt.executeQuery(query);
 
-            while(res.next()){
-                user = new User(res.getInt("id"),res.getString("username"),res.getInt("authlevel"));
+            while (res.next()) {
+                user = new User(res.getInt("id"), res.getString("username"), res.getInt("authlevel"));
                 users.add(user);
             }
 
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-        }finally {
+        } finally {
             try {
                 stmnt.close();
                 res.close();
@@ -84,7 +87,7 @@ public class UserController {
         return new ResponseContext().status(Status.OK).entity(users);
     }
 
-    public ResponseContext addUser(RequestContext requestContext, JsonNode body){
+    public ResponseContext addUser(RequestContext requestContext, JsonNode body) {
         Connection con = null;
         Statement stmnt = null;
 
@@ -94,16 +97,16 @@ public class UserController {
 
         String query = "INSERT INTO users (username,password,authlevel) VALUES('" + username + "','" + password + "','" + auth_level + "')";
 
-        try{
+        try {
             con = DBConnect.connect();
             stmnt = con.createStatement();
             stmnt.executeUpdate(query);
 
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-        }finally {
+        } finally {
             try {
                 stmnt.close();
                 con.close();
@@ -113,21 +116,21 @@ public class UserController {
         return new ResponseContext().status(Status.OK);
     }
 
-    public ResponseContext deleteUser(RequestContext requestContext, Long id){
+    public ResponseContext deleteUser(RequestContext requestContext, Long id) {
         Connection con = null;
         Statement stmnt = null;
         String query = "DELETE FROM users WHERE users.ID = " + id;
 
-        try{
+        try {
             con = DBConnect.connect();
             stmnt = con.createStatement();
             stmnt.executeUpdate(query);
 
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-        }finally {
+        } finally {
             try {
                 stmnt.close();
                 con.close();
@@ -154,7 +157,7 @@ public class UserController {
         return responseContext;
     }
 
-    public ResponseContext getUsersAuth(RequestContext requestContext) throws SQLException{
+    public ResponseContext getUsersAuth(RequestContext requestContext) throws SQLException {
         ArrayList<AuthLevel> userAuth = new ArrayList<AuthLevel>();
         AuthLevel auth = null;
         Connection con = null;
@@ -162,27 +165,27 @@ public class UserController {
         ResultSet res = null;
         String query = "SELECT authlevel FROM users GROUP BY authlevel";
 
-        try{
+        try {
             con = DBConnect.connect();
             stmnt = con.createStatement();
             res = stmnt.executeQuery(query);
 
-            while(res.next()){
-                if(res.getInt("authlevel") == 0){
+            while (res.next()) {
+                if (res.getInt("authlevel") == 0) {
                     auth = new AuthLevel(0, "Student");
-                } else if(res.getInt("authlevel") == 1){
+                } else if (res.getInt("authlevel") == 1) {
                     auth = new AuthLevel(1, "Teacher");
-                } else if(res.getInt("authlevel") == 2){
+                } else if (res.getInt("authlevel") == 2) {
                     auth = new AuthLevel(2, "Admin");
                 }
                 userAuth.add(auth);
             }
 
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-        }finally {
+        } finally {
             try {
                 stmnt.close();
                 res.close();
@@ -193,4 +196,48 @@ public class UserController {
         return new ResponseContext().status(Status.OK).entity(userAuth);
     }
 
+    public ResponseContext updateUserByID(RequestContext requestContext, Long id, JsonNode body) throws SQLException {
+        Connection con = null;
+        Statement stmnt = null;
+        ResultSet res = null;
+        User user = new User();
+        int i = 0;
+        try
+        {
+
+            ObjectMapper mapper = new ObjectMapper();
+            user = mapper.treeToValue(body,User.class);
+            String auth_level = "";
+            if(user.getAuth_level().equals("admin")){
+                auth_level = "2";
+            }else if(user.getAuth_level().equals("teacher")){
+                auth_level = "1";
+            } else{
+                auth_level = "0";
+            }
+            String query = "Update user set username = '"+user.getUsername()+"', password = '"+user.getPassword()+"', authlevel = '"+auth_level+"' WHERE users.ID = " + id;
+            con = DBConnect.connect();
+            stmnt = con.createStatement();
+            i  = stmnt.executeUpdate(query) ;
+
+
+        }
+        catch (SQLException ex)
+        {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } finally
+        {
+            stmnt.close();
+            res.close();
+            con.close();
+        }
+        if(i < 0)
+            return new ResponseContext().status(Status.OK).entity(user);
+        else
+            return new ResponseContext().status(Status.NOT_MODIFIED);
+    }
 }

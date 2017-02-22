@@ -101,7 +101,7 @@ INSERT INTO `deck_card_dep` (`deck_id`, `card_id`) VALUES
 --
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO INCREMENT,
   `username` varchar(20) DEFAULT NULL,
   `password` VARCHAR(30),
   `authlevel` INTEGER

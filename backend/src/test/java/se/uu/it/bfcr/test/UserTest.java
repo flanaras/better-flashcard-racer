@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
  * Created by Bartok on 2/19/17.
  */
 public class UserTest {
-    public boolean hasConnectedDatabase;
+   public boolean hasConnectedDatabase;
 
     @Before
     public void setUp() throws SQLException{

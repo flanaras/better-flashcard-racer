@@ -35,7 +35,7 @@ describe('SelectMode', () => {
         password.simulate('change', {target: {name: 'password', value: 'some pass'}});
         expect(wrapper.state('password')).to.equal('some pass');
     });
-    it('should call apiCall when form is submitted', () => {
+    it('should call apiCall when login form is submitted', () => {
         const apiCallSpy = spy(SelectMode.prototype, "apiCall");
         expect(apiCallSpy.notCalled).to.equal(true);
         const wrapper = mount(<SelectMode />);
@@ -88,6 +88,19 @@ describe('DeckConfig', () => {
     // Radio button, either generate deck or select existing deck
     // Choosing generate, should only show generate and not existing deck dropdown
     // And the other way around
+    it('link to create user should be available only if the user is authenticated and his userRole is admin or teacher', () => {
+        const decks = ['Easy plus and minus', 'Medium plus and minus', 'Hard pus and minus'];
+
+        let wrapper = shallow(<DeckConfig decks={decks} auth={true} userRole='admin'/>);
+        expect(wrapper.containsAllMatchingElements([
+            <Link name="createUserLink" to="createuser">Create new user</Link>
+        ])).to.equal(true);
+
+        wrapper = shallow(<DeckConfig decks={decks} auth={false} userRole=''/>);
+        expect(wrapper.containsAllMatchingElements([
+            <Link name="createUserLink" to="createuser">Create new user</Link>
+        ])).to.equal(false);
+    });
 });
 
 describe('Flashcards', () => {
@@ -183,17 +196,19 @@ describe('UserList', () => {
 
 describe('CreateUser', () => {
     it('should not render if user is not authenticated', () => {
-        const username = '';
-        const userRole = '';
-        const auth = true;
-        const wrapper = shallow(<CreateUser username={username} userRole={userRole} auth={auth}/>);
-        expect(wrapper.containsAllMatchingElements([''])).to.equal(true);
+        const wrapper = shallow(<CreateUser username='' userRole='' auth={false}/>);
+        expect(wrapper.containsAllMatchingElements()).to.equal(false);
     });
-    it('for an authenticated user should render role dropdown, nickname and password input texts and also create user button', () => {
+    it('for an authenticated user should render role dropdown, username and password input texts and also create user button', () => {
         const username = 'Aron';
         const userRole = 'teacher';
         const auth = true;
-        const wrapper = shallow(<CreateUser username={username} userRole={userRole} auth={auth}/>);
+        const authLevel = [{
+            "id": 0,
+            "auth": "Student"
+        }];
+        const wrapper = mount(<CreateUser username={username} userRole={userRole} auth={auth}/>);
+        wrapper.setState({authLevel})
         expect(wrapper.containsAllMatchingElements([
             <h1>{"Aron"}
                 {", welcome!"}</h1>
@@ -208,52 +223,81 @@ describe('CreateUser', () => {
             <p>{''}</p>
         ])).to.equal(true);
     });
-    it('should accept inputs',() => {
+    it('dropdown options should be consistent with the user authentication level', () => {
         const username = 'Aron';
-        const userRole = 'teacher';
         const auth = true;
-        const wrapper = mount(<CreateUser username={username} userRole={userRole} auth={auth}/>);
+
+        let userRole = 'admin';
+        let authLevel = [{
+            "id": 0,
+            "auth": "Student"
+        },
+            {
+                "id": 1,
+                "auth": "Teacher"
+            },
+            {
+                "id": 2,
+                "auth": "Admin"
+            }];
+        const apiGetCallSpy = spy(CreateUser.prototype, "apiGetCall");
+        let wrapper = mount(<CreateUser username={username} userRole={userRole} auth={auth}/>);
+        expect(apiGetCallSpy.calledOnce).to.equal(true);
+        wrapper.setState({authLevel});
+        expect(wrapper.find('option').length).to.equal(3);
+
+        userRole = 'teacher';
+        authLevel = [{
+            "id": 0,
+            "auth": "Student"
+        }];
+        wrapper = mount(<CreateUser username={username} userRole={userRole} auth={auth}/>);
+        wrapper.setState({authLevel});
+        expect(wrapper.find('option').length).to.equal(1);
+    });
+    it('should accept inputs and changes in dropdown', () => {
+
+        const wrapper = mount(<CreateUser username='Aron' userRole='admin' auth={true}/>);
         const newUser = wrapper.find("[name='newUser']");
-        newUser.simulate('change', {target: {value: 'sara10'}});
-        //expect(wrapper.state('newUser')).to.equal('sara10');
+        newUser.simulate('change', {target: {name: 'newUser', value: 'sara10'}});
+        expect(wrapper.state('newUser')).to.equal('sara10');
 
-        /*const password = wrapper.find("[name='newPassw']");
-         password.simulate('change', {target: {value: 'some pass'}});
-         expect(wrapper.state('newPassw')).to.equal('some pass');*/
+        const newPassw = wrapper.find("[name='newPassw']");
+        newPassw.simulate('change', {target: {name: 'newPassw', value: 'some pass'}});
+        expect(wrapper.state('newPassw')).to.equal('some pass');
+
+        const reNewPassw = wrapper.find("[name='reNewPassw']");
+        reNewPassw.simulate('change', {target: {name: 'reNewPassw', value: 'some pass'}});
+        expect(wrapper.state('reNewPassw')).to.equal('some pass');
+
+        const newRole = wrapper.find("[name='newRole']");
+        newRole.simulate('change', {target: {name: 'newRole', value: 'student'}});
+        expect(wrapper.state('newRole')).to.equal('student');
     });
-    it('should enable login to right user',() => {
-        const nickname = 'test';
-        const password = 'some pass';
+    it('should show password unmatched in case they are different', () => {
+        const username = 'Aron';
+        const userRole = 'admin';
+        const auth = true;
+        const newPassw = '123456';
+        const reNewPassw = '654321';
 
-        const wrapper = mount(<SelectMode />);
-        wrapper.setState({nickname, password});
-
+        const wrapper = mount(<CreateUser username={username} userRole={userRole} auth={auth}/>);
+        expect(wrapper.state('newPassError')).to.equal('');
+        wrapper.setState({newPassw, reNewPassw});
         const form = wrapper.find('form');
         form.simulate('submit');
-        //expect(wrapper.state('auth')).to.equal(true);
-        //expect(wrapper.props({username})).to.equal('');
+        expect(wrapper.state('newPassError')).to.equal('Passwords does not match!');
     });
-    it('should not enable login to wrong user', () => {
-        const nickname = 'test';
-        const password = 'some no pass';
+    it('should call apiCall when create user form is submitted', () => {
+        const username = 'Aron';
+        let userRole = 'admin';
+        const auth = true;
 
-        const wrapper = mount(<SelectMode />);
-        wrapper.setState({nickname, password});
-
+        const apiCallSpy = spy(CreateUser.prototype, "apiCall");
+        expect(apiCallSpy.notCalled).to.equal(true);
+        const wrapper = mount(<CreateUser username={username} userRole={userRole} auth={auth}/>);
         const form = wrapper.find('form');
         form.simulate('submit');
-        expect(wrapper.state('auth')).to.equal(false);
-        //expect(wrapper.state('loginErrorMsg')).to.equal('Wrong nickname and/or password. Try again!');
-    });
-    it('test mother of dragons call', () => {
-        const loginSpy = spy();
-        const nickname = 'test';
-        const password = 'some pass';
-        const wrapper = mount(<SelectMode login={loginSpy} />);
-        wrapper.setState({nickname, password});
-
-        const form = wrapper.find('form');
-        form.simulate('submit');
-        //expect(loginSpy.calledOnce).to.equal(true);
+        expect(apiCallSpy.calledOnce).to.equal(true);
     });
 });

@@ -6,25 +6,40 @@ export default class CreateUser extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            authLevel: [],
             newUser: '',
             newPassw: '',
             reNewPassw: '',
-            newRole: '',
+            newRole: NaN,
             newUserMsg: '',
             newPassError: ''
         };
         this.handleChange = this.handleChange.bind(this);
         this.onCreateUser = this.onCreateUser.bind(this);
+        this.apiGetCall = this.apiGetCall.bind(this);
         this.apiCall = this.apiCall.bind(this);
     }
 
     componentWillMount() {
+        if (this.props.userRole==='admin')
+            this.apiGetCall('authlevel/2');
+        else if (this.props.userRole==='teacher')
+            this.apiGetCall('authlevel/1');
+    }
+
+    componentDidMount() {
         let defNewRole;
-        if (this.props.userRole === 'superadmin')
+        if (this.props.userRole === 'admin')
             defNewRole = 'admin';
-        else if (this.props.userRole === 'admin')
-            defNewRole = 'teacher';
+        else if (this.props.userRole === 'teacher')
+            defNewRole = 'student';
         this.setState({newRole: defNewRole});
+    }
+
+    async apiGetCall(endpoint) {
+        const url = `${config.mock_api_url}/${endpoint}`;
+        const authLevel = await LoadJson(url);
+        this.setState({authLevel});
     }
 
     async apiCall(endpoint, newUser, newPassw, newRole) {
@@ -59,22 +74,25 @@ export default class CreateUser extends Component {
                         <h1>{this.props.username}, welcome!</h1>
                     }
                     <form onSubmit={this.onCreateUser} >
-                        <select name="newRole" value={this.state.newRole} onChange={this.handleChange}>
-                            {this.props.userRole === 'superadmin'?<option value="admin">Admin</option>:''}
-                            {(this.props.userRole === 'superadmin'||this.props.userRole === 'admin')?<option value="teacher">Teacher</option>:''}
-                            {this.props.userRole !== 'student'?<option value="student">Student</option>:''}
+
+                        <select name="newRole" onChange={event => this.handleChange(event)}>
+                            {
+                                this.state.authLevel.map((authLevel, index) => (
+                                        <option key={index} value={authLevel.id}>{authLevel.auth}</option>
+                                    )
+                                )
+                            }
                         </select>
-                        <input type="text" name="newUser" placeholder="Nickname" value={this.state.newUser} onInput={this.handleChange} />
-                        <input type="password" ref="newUser" name="newPassw" placeholder="Password" value={this.state.newPassw} onInput={this.handleChange} />
-                        <input type="password" name="reNewPassw" placeholder="Repeat Password" value={this.state.reNewPassw} onInput={this.handleChange}/>
+
+                        <input type="text" name="newUser" placeholder="Nickname" value={this.state.newUser} onChange={this.handleChange} />
+                        <input type="password" ref="newUser" name="newPassw" placeholder="Password" value={this.state.newPassw} onChange={this.handleChange} />
+                        <input type="password" name="reNewPassw" placeholder="Repeat Password" value={this.state.reNewPassw} onChange={this.handleChange}/>
                         <input type="submit" value="Create user"/>
                         <p>{this.state.newUserMsg}</p>
                         <p>{this.state.newPassError}</p>
                     </form>
                 </div>
-                :''
+                :<div/>
         )
     }
 }
-
-

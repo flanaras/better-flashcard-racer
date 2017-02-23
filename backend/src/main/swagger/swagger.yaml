@@ -268,12 +268,12 @@ paths:
             - id: 1
               name: "Lars room"
               host:
-              - id: 1
+                id: 1
                 auth_level: "admin"
                 username: "Astrid"
                 examples: ""
               deck:
-              - id: 1
+                id: 1
                 numProblems: 5
                 name: "A test deck"
                 description: "Description for a test deck"

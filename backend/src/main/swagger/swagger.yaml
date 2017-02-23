@@ -345,7 +345,63 @@ paths:
           $ref: "#/definitions/Room"
       responses:
         201:
-          description: "Created entity"
+          description: "successful operation"
+          examples:
+            application/json:
+              url: "virtserver.swaggerhub.com/better-flashcard-racer/testar/1.0.0/rooms/1"
+  /rooms/{id}:
+    get:
+      tags:
+      - "room"
+      - "mocked"
+      description: "Return a room"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The identifier of the object"
+        required: true
+        type: "integer"
+        x-example: 1
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Room"
+          examples:
+            application/json:
+              id: 1
+              name: "Lars room"
+              host:
+                id: 1
+                auth_level: "admin"
+                username: "Astrid"
+                examples: ""
+              deck:
+                id: 1
+                numProblems: 5
+                name: "A test deck"
+                description: "Description for a test deck"
+                user_id: 2
+                user_name: "John"
+                created: "2017-01-25T20:17:45.000Z"
+                changed: "2017-01-25T20:17:45.000Z"
+                private: false
+                flashcard:
+                - id: 1
+                  problem: "1+1"
+                  answer: 2
+                - id: 2
+                  problem: "2+2"
+                  answer: 4
+                - id: 3
+                  problem: "3+3"
+                  answer: 6
+                - id: 4
+                  problem: "4+4"
+                  answer: 8
+                - id: 5
+                  problem: "5+5"
+                  answer: 10
   /users:
     get:
       tags:

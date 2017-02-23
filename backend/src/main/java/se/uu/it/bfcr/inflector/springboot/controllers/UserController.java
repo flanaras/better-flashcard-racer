@@ -222,7 +222,6 @@ public class UserController {
             con = DBConnect.connect();
             if(user.getPassword() != null)
             {
-                System.out.println("Test1");
                 updatesUserStrings = "UPDATE users set username = ?, password = ?, authlevel = ? where users.ID = ?";
                 updateUsers = con.prepareStatement(updatesUserStrings);
                 updateUsers.setString(1, user.getUsername());
@@ -232,7 +231,6 @@ public class UserController {
             }
             else
             {
-                System.out.println("Test2");
                 updatesUserStrings = "UPDATE users set username = ?,authlevel = ? where users.ID = ?";
                 updateUsers = con.prepareStatement(updatesUserStrings);
                 updateUsers.setString(1, user.getUsername());

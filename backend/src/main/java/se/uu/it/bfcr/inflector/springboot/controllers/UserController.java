@@ -113,10 +113,10 @@ public class UserController {
             } catch (SQLException ex) {/*ignore*/}
         }
 
-        return new ResponseContext().status(Status.OK);
+        return new ResponseContext().status(Status.NO_CONTENT);
     }
 
-    public ResponseContext deleteUser(RequestContext requestContext, Long id) {
+    public ResponseContext deleteUserById(RequestContext requestContext, Long id) {
         Connection con = null;
         Statement stmnt = null;
         String query = "DELETE FROM users WHERE users.ID = " + id;
@@ -136,7 +136,7 @@ public class UserController {
                 con.close();
             } catch (SQLException ex) {/*ignore*/}
         }
-        return new ResponseContext().status(Status.OK);
+        return new ResponseContext().status(Status.NO_CONTENT);
     }
 
     public ResponseContext login(RequestContext requestContext, JsonNode body) {

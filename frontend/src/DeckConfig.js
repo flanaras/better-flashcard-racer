@@ -92,6 +92,9 @@ export default class DeckConfig extends Component {
 
     async submitGameConfig(e) {
         e.preventDefault()
+        if(this.props.createRoomSubmitter !== undefined) {
+            this.props.createRoomSubmitter()
+        }
         const deckType = this.state.deckType
         if(deckType === 'savedDeck') {
             this.props.onSubmitGameConfig(this.state.chosenDeck, this.state.gameLengthProblems, this.state.timePerProblem)
@@ -115,7 +118,6 @@ export default class DeckConfig extends Component {
     render() {
         return (
             <div>
-                <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Game Configuration</small></PageHeader>
                 <Grid>
                     <Row className="show-grid">
                         <Col xs={1} md={3}></Col>

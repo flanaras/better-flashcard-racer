@@ -40,7 +40,7 @@ export default class DeckConfig extends Component {
     }
 
     async apiCall(endpoint) {
-        const url = `${config.base_url}/${endpoint}`
+        const url = `${config.mock_url}/${endpoint}`
         let decks = await LoadJson(url)
         const renamedDecks = decks.map(deck => this.renameAttributes(deck))
         this.setState({decks: renamedDecks})
@@ -117,9 +117,6 @@ export default class DeckConfig extends Component {
 
     async submitGameConfig(e) {
         e.preventDefault()
-        if(this.props.createRoomSubmitter !== undefined) {
-            this.props.createRoomSubmitter()
-        }
         const deckType = this.state.deckType
         if(deckType === 'savedDeck') {
             const trimmedDeck = this.trimDeckToGameLength(this.state.chosenDeck, this.state.gameLengthProblems);
@@ -136,7 +133,7 @@ export default class DeckConfig extends Component {
                     multi: this.state.generateDeck.operators.multi
                 }]
             }
-            const chosenDeck = await LoadJson(config.base_url + '/generate-cards', 'POST', reqPayload)
+            const chosenDeck = await LoadJson(config.mock_url + '/generate-cards', 'POST', reqPayload)
             this.props.onSubmitGameConfig(chosenDeck, this.state.gameLengthProblems, this.state.timePerProblem)
         }
     }

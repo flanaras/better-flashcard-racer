@@ -4,6 +4,7 @@ import LoadJson from "./services/LoadJson";
 import {Link} from "react-router";
 import DeckConfig from './DeckConfig'
 import { PageHeader, Form, Grid, Row, Col, Panel, Button, FormGroup, ControlLabel, FormControl, Radio, Checkbox } from 'react-bootstrap';
+import {browserHistory} from "react-router";
 
 export default class CreateRoom extends Component {
     constructor(){
@@ -11,12 +12,24 @@ export default class CreateRoom extends Component {
         this.state = {
             roomName: ''
         }
-        this.submitHandler = this.submitHandler.bind(this)
+        this.submitCreateRoom = this.submitCreateRoom.bind(this)
         this.roomNameChange = this.roomNameChange.bind(this)
     }
 
-    submitHandler() {
+    async submitCreateRoom(chosenDeck, gameLengthProblems, timePerProblem) {
         console.log('submitted!')
+        const roomPayload = {
+            name: this.state.roomName,
+            //:TODO replace with state.user object when user-management done
+            host: {
+                "id": 2,
+                "auth_level": "teacher",
+                "username": "Teachername"
+            },
+            deck: chosenDeck
+        }
+        let response = await LoadJson(`${config.mock_url}/rooms`, 'POST', roomPayload)
+        browserHistory.push('/');
     }
 
     roomNameChange(e) {
@@ -42,7 +55,7 @@ export default class CreateRoom extends Component {
                         <Col xs={1} md={4}></Col>
                     </Row>
                 </Grid>
-                <DeckConfig createRoomSubmitter={this.submitHandler}/>
+                <DeckConfig onSubmitGameConfig={this.submitCreateRoom} chosenDeck={this.props.chosenDeck}/>
             </div>
             )
     }

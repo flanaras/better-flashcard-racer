@@ -7,12 +7,18 @@ export default class SelectMode extends Component {
         this.state = {}
         this.onSubmitGameConfig = this.onSubmitGameConfig.bind(this)
         this.submitAnswers = this.submitAnswers.bind(this)
+        this.submitCreateRoom = this.submitCreateRoom.bind(this)
     }
 
 
     onSubmitGameConfig(chosenDeck, gameLengthProblems, timePerProblem) {
         this.setState({chosenDeck, gameLengthProblems, timePerProblem})
         browserHistory.push('playgame')
+    }
+
+    submitCreateRoom() {
+
+        browserHistory.push('/');
     }
 
     submitAnswers(chosenDeck) {
@@ -28,7 +34,8 @@ export default class SelectMode extends Component {
                     onSubmitGameConfig: this.onSubmitGameConfig,
                     submitAnswers: this.submitAnswers,
                     gameLengthProblems: this.state.gameLengthProblems,
-                    timePerProblem: this.state.timePerProblem
+                    timePerProblem: this.state.timePerProblem,
+                    submitCreateRoom: this.state.submitCreateRoom
                 })}
             </div>
             )

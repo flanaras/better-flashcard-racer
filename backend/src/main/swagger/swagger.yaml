@@ -38,15 +38,11 @@ paths:
       x-swagger-router-controller: DeckController
       description: Return all set of decks
       operationId: getDecks
-      parameters:
-        - $ref: "#/parameters/user_id"
       responses:
         200:
           description: successful operation
           schema:
             $ref: "#/definitions/Decks"
-        500:
-          $ref: "#/responses/Standard500ErrorResponse"  
     post:
       tags:
         - deck

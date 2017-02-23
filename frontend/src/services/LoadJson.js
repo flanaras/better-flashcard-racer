@@ -6,10 +6,8 @@ import "whatwg-fetch";
 async function LoadJson(url, method, body) {
 
 	method = method || 'GET';
-
 	let myHeaders = new Headers();
 	myHeaders.append('Accept', 'application/json');
-
 	let myInit = {
 		method,
 		headers: myHeaders,

@@ -7,7 +7,7 @@ export default class FlashcardPractice extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { questionsAnswered : 0, answers : [], currentAnswer : '' };
+    this.state = { questionsAnswered : 0, answers : [], currentAnswer : '', checkAnswer : false };
 
     this.updateAnswer = this.updateAnswer.bind(this);
     this.completeQuestion = this.completeQuestion.bind(this);
@@ -16,8 +16,7 @@ export default class FlashcardPractice extends Component {
   completeQuestion() {
     let flashcard = this.props.chosenDeck.flashcards[this.state.questionsAnswered];
     flashcard.answer = this.state.currentAnswer;
-
-    flashcard.check = parseInt(flashcard.answer) === flashcard.solution;
+    flashcard.check = this.state.checkAnswer;
 
     this.state.answers.push(flashcard);
 
@@ -29,8 +28,8 @@ export default class FlashcardPractice extends Component {
     }
   }
 
-  updateAnswer(answer) {
-    this.setState({currentAnswer : answer});
+  updateAnswer(answer, check) {
+    this.setState({currentAnswer : answer, checkAnswer : check});
   }
 
   render() {
@@ -43,7 +42,11 @@ export default class FlashcardPractice extends Component {
             <Col xs={4} md={4}>
               <FormControl type="text" disabled style={{textAlign: "center", width: 60}} placeholder={(this.state.questionsAnswered+1) + '/' + this.props.gameLengthProblems} />
               <Panel collapsible style={{textAlign: "center"}} expanded={true}>
-                <Flashcard flashcard={this.props.chosenDeck.flashcards[this.state.questionsAnswered]} sendAnswer={this.updateAnswer} submitAnswer={this.completeQuestion} timePerProblem={this.props.timePerProblem} remProb={this.props.gameLengthProblems-this.state.questionsAnswered-1} completeQuestion={this.completeQuestion}/>
+                <Flashcard flashcard={this.props.chosenDeck.flashcards[this.state.questionsAnswered]}
+                           sendAnswer={this.updateAnswer}
+                           submitAnswer={this.completeQuestion}
+                           timePerProblem={this.props.timePerProblem}
+                           remProb={this.props.gameLengthProblems-this.state.questionsAnswered-1}/>
                 <Button bsStyle="info" onClick={this.completeQuestion}>{(this.state.questionsAnswered !== this.props.chosenDeck.flashcards.length - 1) ? 'Next Question' : 'Complete Session'}</Button>
               </Panel>
             </Col>

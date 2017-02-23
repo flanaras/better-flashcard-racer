@@ -5,7 +5,11 @@ export default class TimeCounter extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { elapsed: 0, backRemProb: this.props.remProb, remTime: this.props.timePerProblem, barPerc: 100, barStyle: 'success'};
+    this.state = { elapsed : 0,
+        backRemProb : this.props.remProb,
+        remTime : this.props.timePerProblem,
+        barPerc : 100,
+        barStyle : 'success'};
 
     this.tick = this.tick.bind(this);
   }
@@ -40,7 +44,7 @@ export default class TimeCounter extends Component {
         clearInterval(this.timer);
         this.props.disableInput();
       } else {
-        this.props.completeQuestion();
+        this.props.submitAnswer();
       }
     }
   }

@@ -8,7 +8,7 @@ import MotherOfDragons from '../src/MotherOfDragons'
 import Flashcard from './../src/Flashcard'
 import FlashcardPractice from './../src/FlashcardPractice';
 import Solutions from '../src/Solutions'
-import {ControlLabel, FormControl, Button, ListGroup} from 'react-bootstrap'
+import {ControlLabel, FormControl, Button, ListGroup, Form} from 'react-bootstrap'
 
 describe('SelectMode', () => {
     it('should be able to select mode: Login or practice mode', () => {
@@ -22,12 +22,14 @@ describe('SelectMode', () => {
 describe('DeckConfig', () => {
     it('should display decks in a dropdown', () => {
         const decks = [{id:1, name: "The name of my deck", description:"A short description of the deck",
+            flashcards:[{problem: 1+1, solution: 2}]}, {id:2, name: "The name of my deck", description:"A short description of the deck",
             flashcards:[{problem: 1+1, solution: 2}]}]
         const wrapper = mount(<DeckConfig />)
         wrapper.setState({decks})
         wrapper.setState({deckType: 'savedDeck'})
         wrapper.setState({chosenDeck: decks[0]})
-        expect(wrapper.find('option').length).to.equal(1)
+        console.log(wrapper.find('option').length)
+        expect(wrapper.find('option').length).to.equal(2)
     })
     it('handleChange should be called when the selected deck is changed', () => {
         const handleChangeSpy = spy()
@@ -41,11 +43,12 @@ describe('DeckConfig', () => {
     })
     it('choosing a deck should change the currently chosen deck', () => {
         const chosenDeck = {id:1, desc: 'Easy plus and minus'}
+
         const decks = [{id:1, desc: 'Easy plus and minus'}, {id:2, desc: 'Medium plus and minus'}, {id:3, desc: 'Hard pus and minus'}]
-        const wrapper = shallow(<DeckConfig />)
+        const wrapper = mount(<DeckConfig/>)
         wrapper.setState({decks})
         wrapper.setState({chosenDeck})
-        wrapper.instance().handleChange({target:{value: 2, type: 'select-one'}})
+        wrapper.instance().savedDeckDropdownChange({target:{value: 2, type: 'select-one'}})
         expect(wrapper.state('chosenDeck')).to.eql({id:2, desc: 'Medium plus and minus'})
     })
     it('user should be able to choose between generating a deck or selecting a already defined deck', () => {
@@ -78,19 +81,20 @@ describe('DeckConfig', () => {
         expect(wrapper.find('select').length).to.equal(1)
     })
     it('when a user press submit, the submitGameConfig method should be called', () => {
-        const submitGameConfigSpy = spy()
-        const wrapper = mount(<DeckConfig onSubmitGameConfig={submitGameConfigSpy}/>)
-        const form = wrapper.find('form')
+        const submitGameConfigSpy = spy(DeckConfig.prototype, "submitGameConfig")
+        const wrapper = mount(<DeckConfig />)
+        const form = wrapper.find(Form)
         const generateDeckRadio = wrapper.find("[value='generateDeck']")
         generateDeckRadio.simulate('click')
         form.simulate('submit')
         expect(submitGameConfigSpy.calledOnce).to.equal(true)
+        submitGameConfigSpy.restore()
     })
     it('when a user submits a savedDeck config, the config should be submitted successfully', () => {
-        const onSubmitGameConfigSpy = spy()
+        const submitGameConfigSpy = spy(DeckConfig.prototype, "submitGameConfig")
         const chosenDeck = {id:1, name: "The name of my deck", description:"A short description of the deck",
             flashcards:[{problem: 1+1, solution: 2}]}
-        const wrapper = mount(<DeckConfig onSubmitGameConfig={onSubmitGameConfigSpy} />)
+        const wrapper = mount(<DeckConfig />)
         wrapper.setState({chosenDeck})
 
         const form = wrapper.find('form')
@@ -103,36 +107,15 @@ describe('DeckConfig', () => {
         wrapper.setState({chosenDeck})
         form.simulate('submit')
 
-        expect(onSubmitGameConfigSpy.calledOnce).to.equal(true)
-        expect(onSubmitGameConfigSpy.getCall(0).args[0]).to.equal(chosenDeck)
-        expect(onSubmitGameConfigSpy.getCall(0).args[1]).to.equal('20')
-        expect(onSubmitGameConfigSpy.getCall(0).args[2]).to.equal('10')
-        expect(onSubmitGameConfigSpy.calledWith(chosenDeck, '20', '10')).to.equal(true)
+        expect(submitGameConfigSpy.calledOnce).to.equal(true)
+        submitGameConfigSpy.restore()
     })
     it('when the component gets rendered, the component should call our API', () => {
         const apiCallSpy = spy(DeckConfig.prototype, "apiCall")
         expect(apiCallSpy.notCalled).to.equal(true)
         const wrapper = mount(<DeckConfig/>)
         expect(apiCallSpy.calledOnce).to.equal(true)
-    })
 
-    it.skip('when a user submits a generatedDeck config, all the options should be added to the submit object', () => {
-        //TODO: Implement test when API in place
-        /*const addBox = generateWrapper.find("[name='add']")
-         const subBox = generateWrapper.find("[name='sub']")
-         const multBox = generateWrapper.find("[name='mult']")
-         const divBox = generateWrapper.find("[name='div']")
-         const minInput = generateWrapper.find("[name='min']")
-         const maxInput = generateWrapper.find("[name='max']")
-         */
-
-        /*addBox.simulate('click')
-         subBox.simulate('click')
-         multBox.simulate('click')
-         divBox.simulate('click')
-         minInput.simulate('change',{target:{value:'-10'}})
-         maxInput.simulate('change',{target:{value:'20'}})
-         */
     })
 });
 

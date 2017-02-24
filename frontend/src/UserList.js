@@ -49,7 +49,9 @@ export default class UserList extends Component {
   }
 
   handleEditUser(e) {
-    const user = this.state.users[e.target.value];
+    const userid = e.target.value;
+    const index = this.state.users.findIndex(user => user.id==userid);
+    const user = this.state.users[index];
     this.props.editUser(user.id, user.username, user.auth_id);
   }
 

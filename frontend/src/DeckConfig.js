@@ -39,15 +39,6 @@ export default class DeckConfig extends Component {
                 <div>
                     <Link to="playgame" >Play game</Link>
                 </div>
-                <div>
-                    {
-                        (this.props.auth && this.props.userRole!=='student')?
-                            <div>
-                                <Link name="listUsersLink" to="users">List users</Link>
-                            </div>
-                            :''
-                    }
-                </div>
             </div>
         )
     }

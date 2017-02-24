@@ -148,7 +148,7 @@ export default class SelectMode extends Component {
 
     login(username, userRole, userRoleId, auth) {
         this.setState({username, userRole, userRoleId, auth});
-        browserHistory.push('deckconfig');
+        browserHistory.push('dashboard');
     }
 
     editUser(newUserId, newUser, newUserRoleId) {

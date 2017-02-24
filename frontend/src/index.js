@@ -7,6 +7,7 @@ import { FlashcardPractice } from './Flashcard'
 import UserList from './UserList';
 import CreateUser from './CreateUser';
 import EditUser from './EditUser';
+import Dashboard from './Dashboard';
 import { Router, Route, browserHistory } from 'react-router'
 
 ReactDOM.render((
@@ -18,6 +19,7 @@ ReactDOM.render((
             <Route path="users" component={UserList} />
             <Route path="createuser" component={CreateUser} />
             <Route path="edituser" component={EditUser} />
+            <Route path="dashboard" component={Dashboard} />
         </Route>
     </Router>
 ), document.getElementById('root'));

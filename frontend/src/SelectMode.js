@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {Link} from "react-router";
 import config from "./../config.json";
 import LoadJson from "./services/LoadJson";
+import { Button, PageHeader, FormGroup, ControlLabel, FormControl, Panel, Grid, Col, Row } from 'react-bootstrap';
 
 export default class SelectMode extends Component {
     constructor(props) {
@@ -49,14 +50,36 @@ export default class SelectMode extends Component {
     render() {
         return (
             <div>
-                <h1>Welcome to the (better) flashcard racer!</h1>
-                <form onSubmit={this.onSubmitLogin}>
-                    <input type="text" id="username" name="username" placeholder="Username" value={this.state.username} onChange={this.onLoginChange} />
-                    <input type="password" name="password" placeholder="Password" value={this.state.password} onChange={this.onLoginChange} />
-                    <p>{this.state.loginErrorMsg}</p>
-                    <input type="submit" value="Log in"/>
-                </form>
-                <Link to="deckconfig" >Try practice mode</Link>
+                <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Welcome</small></PageHeader>
+                <Grid>
+                    <Row className="show-grid">
+                        <Col xs={1} md={4}></Col>
+                        <Col xs={4} md={4}>
+                            <Panel style={{textAlign: "center"}}>
+                                <form onSubmit={this.onSubmitLogin}>
+                                    <FormGroup controlId="username">
+                                        <ControlLabel>Username:</ControlLabel>
+                                        {' '}
+                                        <FormControl type="text" style={{textAlign: "center"}} id="username" name="username" placeholder="Username" value={this.state.username} onChange={this.onLoginChange} />
+                                    </FormGroup>
+                                    {' '}
+                                    <FormGroup controlId="password">
+                                        <ControlLabel>Password:</ControlLabel>
+                                        {' '}
+                                        <FormControl type="password" style={{textAlign: "center"}}  name="password" placeholder="Password" value={this.state.password} onChange={this.onLoginChange} />
+                                    </FormGroup>
+                                    <p>{this.state.loginErrorMsg}</p>
+                                    {' '}
+                                    <Button bsStyle="info" type="submit">
+                                        Sign in
+                                    </Button>
+                                </form>
+                                <Link to="deckconfig" >Try practice mode</Link>
+                            </Panel>
+                        </Col>
+                        <Col xs={1} md={4}></Col>
+                    </Row>
+                </Grid>
             </div>
         )
     }

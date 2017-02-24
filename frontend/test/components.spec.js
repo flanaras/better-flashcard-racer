@@ -9,16 +9,23 @@ import { Flashcard, FlashcardPractice } from './../src/Flashcard'
 import UserList from '../src/UserList';
 import CreateUser from '../src/CreateUser';
 import EditUser from '../src/EditUser';
+import Dashboard from '../src/Dashboard';
 import {Link} from "react-router";
+import {FormControl, Button} from 'react-bootstrap'
 
 describe('SelectMode', () => {
     it('should render username and password input texts, login button and try practice mode link', () => {
         const wrapper = shallow(<SelectMode />);
         expect(wrapper.containsAllMatchingElements([
-            <input type="text" name="username"/>,
-            <input type="password" name="password"/>,
-            <p>{''}</p>,
-            <input type="submit" value="Log in"/>
+            <FormControl type="text" name="username"/>
+        ])).to.equal(true);
+        expect(wrapper.containsAllMatchingElements([
+            <FormControl type="password" name="password"/>
+        ])).to.equal(true);
+        expect(wrapper.containsAllMatchingElements([
+            <Button bsStyle="info" type="submit">
+                Sign in
+            </Button>
         ])).to.equal(true);
         expect(wrapper.find('Link').length).to.equal(1);
     });
@@ -43,6 +50,26 @@ describe('SelectMode', () => {
         const form = wrapper.find('form');
         form.simulate('submit');
         expect(apiCallSpy.calledOnce).to.equal(true);
+    });
+});
+
+describe('Dashboard', () => {
+    it('Dashboard should be available only if the user is authenticated and his userRole is admin or teacher', () => {
+        let wrapper = shallow(<Dashboard auth={true} userRole='admin'/>);
+        expect(wrapper.containsAllMatchingElements([
+            <Link style={{color: "#ffffff"}} to="deckconfig" >Try practice mode</Link>
+        ])).to.equal(true);
+        expect(wrapper.containsAllMatchingElements([
+            <Link style={{color: "#ffffff"}} to="users">User management</Link>
+        ])).to.equal(true);
+
+        wrapper = shallow(<Dashboard auth={false} userRole=''/>);
+        expect(wrapper.containsAllMatchingElements([
+            <Link style={{color: "#ffffff"}} to="deckconfig" >Try practice mode</Link>
+        ])).to.equal(false);
+        expect(wrapper.containsAllMatchingElements([
+            <Link style={{color: "#ffffff"}} to="users">User management</Link>
+        ])).to.equal(false);
     });
 });
 
@@ -88,19 +115,6 @@ describe('DeckConfig', () => {
     // Radio button, either generate deck or select existing deck
     // Choosing generate, should only show generate and not existing deck dropdown
     // And the other way around
-    it('links to create user and list users should be available only if the user is authenticated and his userRole is admin or teacher', () => {
-        const decks = ['Easy plus and minus', 'Medium plus and minus', 'Hard pus and minus'];
-
-        let wrapper = shallow(<DeckConfig decks={decks} auth={true} userRole='admin'/>);
-        expect(wrapper.containsAllMatchingElements([
-            <Link name="listUsersLink" to="users">List users</Link>
-        ])).to.equal(true);
-
-        wrapper = shallow(<DeckConfig decks={decks} auth={false} userRole=''/>);
-        expect(wrapper.containsAllMatchingElements([
-            <Link name="listUsersLink" to="users">List users</Link>
-        ])).to.equal(false);
-    });
 });
 
 describe('Flashcards', () => {
@@ -224,19 +238,21 @@ describe('CreateUser', () => {
             "auth": "Student"
         }];
         const wrapper = mount(<CreateUser username={username} userRole={userRole} auth={auth}/>);
-        wrapper.setState({authLevel})
-        expect(wrapper.containsAllMatchingElements([
-            <h1>{"Aron"}
-                {", welcome!"}</h1>
-        ])).to.equal(true);
+        wrapper.setState({authLevel});
         expect(wrapper.find('option').length).to.equal(1);
         expect(wrapper.containsAllMatchingElements([
-            <input type="text" name="newUser"/>,
-            <input type="password" name="newPassw"/>,
-            <input type="password" name="reNewPassw"/>,
-            <input type="submit" value="Create user"/>,
-            <p>{''}</p>,
-            <p>{''}</p>
+            <FormControl type="text" name="newUser"/>
+        ])).to.equal(true);
+        expect(wrapper.containsAllMatchingElements([
+            <FormControl type="password" name="newPassw"/>
+        ])).to.equal(true);
+        expect(wrapper.containsAllMatchingElements([
+            <FormControl type="password" name="reNewPassw"/>
+        ])).to.equal(true);
+        expect(wrapper.containsAllMatchingElements([
+            <Button bsStyle="info" type="submit">
+                Create user
+            </Button>
         ])).to.equal(true);
     });
     it('dropdown options should be consistent with the user authentication level', () => {
@@ -334,15 +350,14 @@ describe('EditUser', () => {
         }];
         const wrapper = mount(<EditUser username={username} userRole={userRole} userRoleId={userRoleId} auth={auth}/>);
         wrapper.setState({authLevel})
-        expect(wrapper.containsAllMatchingElements([
-            <h1>{"Aron"}
-                {", welcome!"}</h1>
-        ])).to.equal(true);
         expect(wrapper.find('option').length).to.equal(1);
         expect(wrapper.containsAllMatchingElements([
-            <input type="text" name="newUser"/>,
-            <input type="submit" value="Update user"/>,
-            <p>{''}</p>
+            <FormControl type="text" name="newUser"/>
+        ])).to.equal(true);
+        expect(wrapper.containsAllMatchingElements([
+            <Button bsStyle="info" type="submit">
+                Update user
+            </Button>
         ])).to.equal(true);
     });
     it('dropdown options should be consistent with the user authentication level', () => {

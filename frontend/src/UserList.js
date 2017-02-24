@@ -2,7 +2,7 @@
  * Created by Fabian Schöndorff on 13.02.17.
  */
 import React, {Component} from 'react'
-import { PageHeader, Grid, Row, Col, Table } from 'react-bootstrap';
+import { PageHeader, Grid, Row, Col, Table, Button } from 'react-bootstrap';
 import config from '../config.json';
 import {Link} from "react-router";
 import LoadJson from './services/LoadJson';
@@ -62,9 +62,9 @@ export default class UserList extends Component {
         <td>{user.username}</td>
         <td>{user.auth_level}</td>
         <td>
-            <button name={"editButton"+index} value={user.id} onClick={this.handleEditUser}>Edit</button>
+            <Button bsStyle="link" name={"editButton"+index} value={user.id} onClick={this.handleEditUser}>Edit</Button>
             {' '}
-            <button name={"deleteButton"+index} value={user.id} onClick={this.handleDeleteUser}>Delete</button>
+            <Button bsStyle="link" name={"deleteButton"+index} value={user.id} onClick={this.handleDeleteUser}>Delete</Button>
         </td>
       </tr>
     );

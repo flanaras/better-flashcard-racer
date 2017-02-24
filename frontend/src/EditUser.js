@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import config from './../config.json'
 import LoadJson from "./services/LoadJson";
+import { Button, PageHeader, FormGroup, ControlLabel, FormControl, Panel, Grid, Col, Row } from 'react-bootstrap';
 
 export default class EditUser extends Component {
     constructor(props) {
@@ -50,29 +51,47 @@ export default class EditUser extends Component {
     }
 
     render() {
-        var authLevels = <select name="newRoleId" onChange={event => this.handleChange(event)}>
+        var authLevels = <FormControl componentClass="select" name="newRoleId" onChange={event => this.handleChange(event)} >
                             { this.state.authLevel.map((authLevel, index) => {
                                 if (authLevel.id === this.props.newUserRoleId)
                                     return <option selected='selected' key={index}
-                                            value={authLevel.id}>{authLevel.auth}</option>
+                                                   value={authLevel.id}>{authLevel.auth}</option>
                                 else
                                     return <option key={index} value={authLevel.id}>{authLevel.auth}</option>
                             })}
-                        </select>;
+                        </FormControl>
         return (
             this.props.auth?
                 <div>
-                    {
-                        <h1>{this.props.username}, welcome!</h1>
-                    }
-                    <form onSubmit={this.onEditUser} >
-
-                        {authLevels}
-
-                        <input type="text" name="newUser" value={this.state.newUser} onChange={this.handleChange} />
-                        <input type="submit" value="Update user"/>
-                        <p>{this.state.newUserMsg}</p>
-                    </form>
+                    <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Edit user</small></PageHeader>
+                    <Grid>
+                        <Row className="show-grid">
+                            <Col xs={1} md={4}></Col>
+                            <Col xs={4} md={4}>
+                                <Panel style={{textAlign: "center"}}>
+                                    <form onSubmit={this.onEditUser}>
+                                        <FormGroup controlId="username">
+                                            <ControlLabel>Username:</ControlLabel>
+                                            {' '}
+                                            <FormControl type="text" style={{textAlign: "center"}} name="newUser" value={this.state.newUser} onChange={this.handleChange} />
+                                        </FormGroup>
+                                        {' '}
+                                        <FormGroup controlId="username">
+                                            <ControlLabel>Role:</ControlLabel>
+                                            {' '}
+                                            {authLevels}
+                                        </FormGroup>
+                                        {' '}
+                                        <Button bsStyle="info" type="submit">
+                                            Update user
+                                        </Button>
+                                        <p>{this.state.newUserMsg}</p>
+                                    </form>
+                                </Panel>
+                            </Col>
+                            <Col xs={1} md={4}></Col>
+                        </Row>
+                    </Grid>
                 </div>
                 :<div/>
         )

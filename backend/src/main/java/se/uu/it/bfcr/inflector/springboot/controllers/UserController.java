@@ -151,7 +151,7 @@ public class UserController {
             responseContext = new ResponseContext().status(Response.Status.OK);
             responseContext.entity(loginResponse);
         } else {
-            responseContext = new ResponseContext().status(Response.Status.FORBIDDEN);
+            responseContext = new ResponseContext().status(Response.Status.UNAUTHORIZED);
         }
 
         return responseContext;

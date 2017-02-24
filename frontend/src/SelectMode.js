@@ -24,7 +24,7 @@ export default class SelectMode extends Component {
     async apiCall(endpoint, username, password) {
         const url = `${config.mock_api_url}/${endpoint}`;
         const loginAck = await LoadJson(url, 'POST', {username, password});
-        if (typeof(loginAck.error) !== 'undefined' && loginAck.error === 'accessDenied') {
+        if (typeof(loginAck.error) !== 'undefined') {
             this.setState({loginErrorMsg: 'Wrong username and/or password. Try again!'});
         } else if (typeof(loginAck.id) !== 'undefined') {
             this.setState({userid: loginAck.id,

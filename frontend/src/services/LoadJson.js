@@ -32,8 +32,6 @@ async function LoadJson(url, method, body) {
 		if (!response.ok) {
 			if (response.status == 401) {
 				return {"error": response.statusText};
-			} else if (response.status == 403) {
-				return {"error": "accessDenied"}
 			} else {
 				console.error('The Fetch request of ' + myRequest.url + ' failed.', myRequest, response);
 			}

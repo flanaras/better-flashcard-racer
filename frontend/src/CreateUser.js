@@ -10,7 +10,7 @@ export default class CreateUser extends Component {
             newUser: '',
             newPassw: '',
             reNewPassw: '',
-            newRole: NaN,
+            newRoleId: 0,
             newUserMsg: '',
             newPassError: ''
         };
@@ -21,19 +21,7 @@ export default class CreateUser extends Component {
     }
 
     componentWillMount() {
-        if (this.props.userRole==='admin')
-            this.apiGetCall('authlevel/2');
-        else if (this.props.userRole==='teacher')
-            this.apiGetCall('authlevel/1');
-    }
-
-    componentDidMount() {
-        let defNewRole;
-        if (this.props.userRole === 'admin')
-            defNewRole = 'admin';
-        else if (this.props.userRole === 'teacher')
-            defNewRole = 'student';
-        this.setState({newRole: defNewRole});
+        this.apiGetCall('authlevel/'+this.props.userRoleId);
     }
 
     async apiGetCall(endpoint) {
@@ -42,9 +30,9 @@ export default class CreateUser extends Component {
         this.setState({authLevel});
     }
 
-    async apiCall(endpoint, newUser, newPassw, newRole) {
+    async apiCall(endpoint, newUser, newPassw, newRoleId) {
         const url = `${config.mock_api_url}/${endpoint}`;
-        const newUserAck = await LoadJson(url, 'POST', {newUser, newPassw, newRole});
+        const newUserAck = await LoadJson(url, 'POST', {username: newUser, password: newPassw, auth_level: newRoleId});
         if (typeof(newUserAck.ok) !== 'undefined' && newUserAck.ok === 'userCreated') {
             this.setState({newUserMsg: 'New user created successfully!'});
         } else {
@@ -63,7 +51,7 @@ export default class CreateUser extends Component {
         if(this.state.newPassw!==this.state.reNewPassw)
             this.setState({newPassError: 'Passwords does not match!'});
         else
-            this.apiCall('users', this.state.newUser, this.state.newPassw, this.state.newRole);
+            this.apiCall('users', this.state.newUser, this.state.newPassw, this.state.newRoleId);
     }
 
     render() {
@@ -75,7 +63,7 @@ export default class CreateUser extends Component {
                     }
                     <form onSubmit={this.onCreateUser} >
 
-                        <select name="newRole" onChange={event => this.handleChange(event)}>
+                        <select name="newRoleId" onChange={event => this.handleChange(event)}>
                             {
                                 this.state.authLevel.map((authLevel, index) => (
                                         <option key={index} value={authLevel.id}>{authLevel.auth}</option>
@@ -84,7 +72,7 @@ export default class CreateUser extends Component {
                             }
                         </select>
 
-                        <input type="text" name="newUser" placeholder="Nickname" value={this.state.newUser} onChange={this.handleChange} />
+                        <input type="text" name="newUser" placeholder="Username" value={this.state.newUser} onChange={this.handleChange} />
                         <input type="password" ref="newUser" name="newPassw" placeholder="Password" value={this.state.newPassw} onChange={this.handleChange} />
                         <input type="password" name="reNewPassw" placeholder="Repeat Password" value={this.state.reNewPassw} onChange={this.handleChange}/>
                         <input type="submit" value="Create user"/>

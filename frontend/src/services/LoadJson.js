@@ -17,7 +17,7 @@ async function LoadJson(url, method, body) {
 		cache: 'default'
 	};
 
-	if (method === 'POST') {
+	if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
 		myHeaders.set('Content-Type', 'application/json'); // body parsing does not work without correct content type
 	}
 
@@ -42,7 +42,9 @@ async function LoadJson(url, method, body) {
 			return "ok"
 		} else if (response.status == 201) {
 		    return {"ok": "userCreated"}
-        }
+        } else if (response.status == 200 && method == "PUT") {
+        return {"ok": "userEdited"}
+    }
 		return response.json();
 	} catch (e) {
 		console.error('The Fetch request of ' + myRequest.url + ' failed.', myRequest, e)

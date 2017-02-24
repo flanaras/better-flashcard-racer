@@ -113,7 +113,7 @@ public class UserController {
             } catch (SQLException ex) {/*ignore*/}
         }
 
-        return new ResponseContext().status(Status.NO_CONTENT);
+        return new ResponseContext().status(Status.CREATED);
     }
 
     public ResponseContext deleteUserById(RequestContext requestContext, Long id) {

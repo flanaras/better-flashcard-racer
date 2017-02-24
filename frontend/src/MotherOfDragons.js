@@ -137,6 +137,7 @@ export default class SelectMode extends Component {
 
         this.onDeckChange = this.onDeckChange.bind(this)
         this.login = this.login.bind(this)
+        this.editUser = this.editUser.bind(this)
     }
 
     onDeckChange(deckId) {
@@ -145,9 +146,14 @@ export default class SelectMode extends Component {
         this.setState({chosenDeck})
     }
 
-    login(username, userRole, auth) {
-        this.setState({username, userRole, auth});
+    login(username, userRole, userRoleId, auth) {
+        this.setState({username, userRole, userRoleId, auth});
         browserHistory.push('deckconfig');
+    }
+
+    editUser(newUserId, newUser, newUserRoleId) {
+        this.setState({newUserId, newUser, newUserRoleId});
+        browserHistory.push('edituser');
     }
 
     render() {
@@ -160,9 +166,15 @@ export default class SelectMode extends Component {
                     login: this.login,
                     username: this.state.username,
                     userRole: this.state.userRole,
-                    auth: this.state.auth
+                    userRoleId: this.state.userRoleId,
+                    auth: this.state.auth,
+                    editUser: this.editUser,
+                    newUserId: this.state.newUserId,
+                    newUser: this.state.newUser,
+                    newUserRoleId: this.state.newUserRoleId
                 })}
             </div>
         )
     }
 }
+

@@ -10,6 +10,7 @@ export default class SelectMode extends Component {
             password: '',
             userid: NaN,
             userRole: '',
+            userRoleId: NaN,
             auth: false,
             loginErrorMsg: ''
         }
@@ -25,8 +26,12 @@ export default class SelectMode extends Component {
         if (typeof(loginAck.error) !== 'undefined' && loginAck.error === 'accessDenied') {
             this.setState({loginErrorMsg: 'Wrong username and/or password. Try again!'});
         } else if (typeof(loginAck.id) !== 'undefined') {
-            this.setState({userid: loginAck.id, username: loginAck.username, userRole: loginAck.auth_level, auth: true});
-            this.props.login(this.state.username, this.state.userRole, this.state.auth);
+            this.setState({userid: loginAck.id,
+                        username: loginAck.username,
+                        userRole: loginAck.auth_level,
+                        userRoleId: loginAck.auth_id,
+                        auth: true});
+            this.props.login(this.state.username, this.state.userRole, this.state.userRoleId, this.state.auth);
         }
     }
 

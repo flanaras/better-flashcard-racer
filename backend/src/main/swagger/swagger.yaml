@@ -207,8 +207,8 @@ paths:
       responses:
         204:
           description: successful operation
-        #500:
-        #  $ref: "#/responses/Standard500ErrorResponse"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
   /authlevel/{id}:
       get:
         tags:

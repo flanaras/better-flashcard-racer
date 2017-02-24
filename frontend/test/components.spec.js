@@ -229,7 +229,7 @@ describe('CreateUser', () => {
         const wrapper = shallow(<CreateUser username='' userRole='' auth={false}/>);
         expect(wrapper.containsAllMatchingElements()).to.equal(false);
     });
-    it('for an authenticated user should render role dropdown, username and password input texts and also create user button', () => {
+    it('for an authenticated user should render role dropdown, username and password input texts also create user and go back buttons', () => {
         const username = 'Aron';
         const userRole = 'teacher';
         const auth = true;
@@ -252,6 +252,11 @@ describe('CreateUser', () => {
         expect(wrapper.containsAllMatchingElements([
             <Button bsStyle="info" type="submit">
                 Create user
+            </Button>
+        ])).to.equal(true);
+        expect(wrapper.containsAllMatchingElements([
+            <Button bsStyle="info" >
+                <Link style={{color: "#ffffff"}} to="users">Go back</Link>
             </Button>
         ])).to.equal(true);
     });
@@ -339,7 +344,7 @@ describe('EditUser', () => {
         const wrapper = shallow(<EditUser auth={false}/>);
         expect(wrapper.containsAllMatchingElements()).to.equal(false);
     });
-    it('for an authenticated user should render role dropdown, username and password input texts and also update user button', () => {
+    it('for an authenticated user should render role dropdown, username and password input texts also update user and go back buttons', () => {
         const username = 'Aron';
         const userRole = 'teacher';
         const userRoleId = 1;
@@ -357,6 +362,11 @@ describe('EditUser', () => {
         expect(wrapper.containsAllMatchingElements([
             <Button bsStyle="info" type="submit">
                 Update user
+            </Button>
+        ])).to.equal(true);
+        expect(wrapper.containsAllMatchingElements([
+            <Button bsStyle="info" >
+                <Link style={{color: "#ffffff"}} to="users">Go back</Link>
             </Button>
         ])).to.equal(true);
     });

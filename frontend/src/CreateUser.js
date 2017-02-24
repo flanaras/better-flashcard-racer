@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import config from './../config.json'
 import LoadJson from "./services/LoadJson";
+import {Link} from "react-router";
 import { Button, PageHeader, FormGroup, ControlLabel, FormControl, Panel, Grid, Col, Row } from 'react-bootstrap';
 
 export default class CreateUser extends Component {
@@ -96,6 +97,10 @@ export default class CreateUser extends Component {
                                                 }
                                             </FormControl>
                                         </FormGroup>
+                                        {' '}
+                                        <Button bsStyle="info" >
+                                            <Link style={{color: "#ffffff"}} to="users">Go back</Link>
+                                        </Button>
                                         {' '}
                                         <Button bsStyle="info" type="submit">
                                             Create user

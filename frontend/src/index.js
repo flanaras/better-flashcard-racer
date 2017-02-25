@@ -7,6 +7,7 @@ import FlashcardPractice  from './FlashcardPractice'
 import Solutions from './Solutions'
 import { Router, Route, browserHistory } from 'react-router'
 import CreateRoom from './CreateRoom'
+import RoomList from './RoomList'
 
 ReactDOM.render((
     <Router history={browserHistory}>
@@ -16,6 +17,7 @@ ReactDOM.render((
             <Route path="playgame" component={FlashcardPractice} />
             <Route path="solutions" component={Solutions} />
             <Route path="createroom" component={CreateRoom} />
+            <Route path="roomlist" component={RoomList} />
         </Route>
     </Router>
 ), document.getElementById('root'));

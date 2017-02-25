@@ -301,14 +301,14 @@ paths:
             - id: 2
               name: "Kalles room"
               host:
-                id: 1
-                auth_level: "admin"
-                username: "Astrid"
+                id: 2
+                auth_level: "teacher"
+                username: "Olle"
                 examples: ""
               deck:
                 id: 1
                 numProblems: 5
-                name: "A test deck"
+                name: "Another test deck"
                 description: "Description for a test deck"
                 user_id: 2
                 user_name: "John"

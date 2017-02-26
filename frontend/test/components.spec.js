@@ -8,6 +8,7 @@ import MotherOfDragons from '../src/MotherOfDragons'
 import Flashcard from './../src/Flashcard'
 import FlashcardPractice from './../src/FlashcardPractice';
 import Solutions from '../src/Solutions'
+import Room from '../src/Room';
 import {ControlLabel, FormControl, Button, ListGroup, Form} from 'react-bootstrap'
 
 describe('SelectMode', () => {
@@ -253,4 +254,50 @@ describe('Solutions', () => {
         ])).to.equal(true);
         expect(wrapper.find('ListGroupItem').length).to.equal(2);
     });
+});
+
+describe('Room', () => {
+
+  //TODO: is there a good way to mock the socket connection?
+  var userList = [
+    {
+      id: 1,
+      username : 'Test'
+    },
+    {
+      id : 2,
+      username : 'Test'
+    }
+  ];
+
+  it('should display the correct number of users in the list', () => {
+    const wrapper = shallow(<Room />);
+    wrapper.setState({userList});
+
+    const tableRows = wrapper.find('tr');
+    expect(tableRows).to.have.length.of(2+1);
+  });
+
+  it('should be able to add a user to the list', () => {
+    const wrapper = shallow(<Room />);
+    wrapper.setState({userList});
+
+    wrapper.instance().addUserToList({id : 3, username : 'Test'});
+
+    expect(wrapper.state('userList').length).to.equal(3);
+    const tableRows = wrapper.find('tr');
+    expect(tableRows).to.have.length.of(3+1);
+  });
+
+  it('should be able to remove a user from the list', () => {
+    const wrapper = shallow(<Room />);
+    wrapper.setState({userList});
+
+    wrapper.instance().removeUserFromList({id : 1, username : 'Test'});
+
+    expect(wrapper.state('userList').length).to.equal(1);
+    const tableRows = wrapper.find('tr');
+    expect(tableRows).to.have.length.of(1+1);
+  })
+
 });

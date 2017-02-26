@@ -8,6 +8,7 @@ import Solutions from './Solutions'
 import { Router, Route, browserHistory } from 'react-router'
 import CreateRoom from './CreateRoom'
 import RoomList from './RoomList'
+import Room from './Room';
 
 ReactDOM.render((
     <Router history={browserHistory}>
@@ -18,6 +19,7 @@ ReactDOM.render((
             <Route path="solutions" component={Solutions} />
             <Route path="createroom" component={CreateRoom} />
             <Route path="roomlist" component={RoomList} />
+            <Route path="room" component={Room} />
         </Route>
     </Router>
 ), document.getElementById('root'));

@@ -73,41 +73,10 @@ paths:
           description: successful operation
           schema:
             $ref: "#/definitions/Deck"
-        404:
-          description: Deck not found
-        500:
-          $ref: "#/responses/Standard500ErrorResponse"  
-    put:
-      tags:
-        - deck
-      summary: Updates a deck in the store with form data
-      description: "Update a deck by ID"
-      operationId: updateDeck
-      parameters:
-        - name: deck
-          in: body
-          description: Deck object that will be changed
-          required: true
-          schema:
-            $ref: "#/definitions/Deck"
-      responses:
-        204:
-          description: Deck sucessfully updated.
-        500:
-          $ref: "#/responses/Standard500ErrorResponse"  
-    delete:
-      tags:
-        - deck
-      summary: Delete a deck
-      description: "deleting deck by id and using teacher account"
-      operationId: deleteDeck
-      responses:
-        204:
-          description: Deck successfully deleted.
-        404:
-          $ref: "#/responses/ObjectDoesNotExistResponse"
-        500:
-          $ref: "#/responses/Standard500ErrorResponse"
+#        404:
+#          description: Deck not found
+#        500:
+#          $ref: "#/responses/Standard500ErrorResponse"
   /users:
     get:
       tags:
@@ -153,6 +122,8 @@ paths:
       responses:
         201:
           $ref: "#/responses/Standard201CreatedResponse"
+          schema:
+            $ref: "#/definitions/User"
         #500:
         #  $ref: "#/responses/Standard500ErrorResponse"
   "/users/{id}":

@@ -117,7 +117,7 @@ public class DeckController {
                                     .entity(decksList);
     }
 
-    public ResponseContext getDecksById(RequestContext requestContext, Long id) throws SQLException {
+    public ResponseContext getDeckById(RequestContext requestContext, Long id) throws SQLException {
         PreparedStatement preparedStm1 = null;
 
         try {

@@ -13,6 +13,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import se.uu.it.bfcr.inflector.springboot.controllers.DBConnect;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +24,7 @@ import static se.uu.it.bfcr.inflector.springboot.UserUtils.authenticateUser;
  * Created by Bartok on 2/9/17.
  * @author Philip Lanaras
  * @author Michael Wijaya Saputra
+ * @author Ilona Asa
  */
 @Component
 public class UserController {
@@ -89,7 +92,9 @@ public class UserController {
 
     public ResponseContext addUser(RequestContext requestContext, JsonNode body) {
         Connection con = null;
-        Statement stmnt = null;
+        PreparedStatement stmnt = null;
+        User newUser = null;
+        int userId = 0;
 
         String password = body.get("password").asText();
         String username = body.get("username").asText();
@@ -99,8 +104,20 @@ public class UserController {
 
         try {
             con = DBConnect.connect();
-            stmnt = con.createStatement();
-            stmnt.executeUpdate(query);
+            stmnt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            stmnt.executeUpdate();
+
+            try (ResultSet generatedKeys = stmnt
+                    .getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    userId = generatedKeys.getInt(1);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(UserController.class.getName()).log(
+                        Level.SEVERE, null, ex);
+            }
+
+            newUser = new User(userId, username, auth_level.intValue());
 
         } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
@@ -113,7 +130,7 @@ public class UserController {
             } catch (SQLException ex) {/*ignore*/}
         }
 
-        return new ResponseContext().status(Status.CREATED);
+        return new ResponseContext().status(Status.CREATED).entity(newUser);
     }
 
     public ResponseContext deleteUserById(RequestContext requestContext, Long id) {

@@ -60,9 +60,7 @@ export default class Solutions extends React.Component {
                             </Col>
                             <Col xs={1} md={3}></Col>
                         </Row>
-
                     </Grid>
-
             </div>
         );
     }

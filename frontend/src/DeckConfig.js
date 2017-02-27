@@ -264,4 +264,3 @@ export class GenerateDeckOptions extends Component {
             ) : null
     }
 }
-

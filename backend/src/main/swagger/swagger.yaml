@@ -1,48 +1,35 @@
 swagger: "2.0"
 info:
-  description: "This is a Flashcard server.  You can find out more about Swagger at\
-    \ <a href=\"http://swagger.io\">http://swagger.io</a> or on irc.freenode.net,\
-    \ #swagger.  You can use the api key \"special-key\" to test the authorization\
-    \ filters"
-  version: "1.0.0"
-  title: "Swagger Flashcard YAML"
+  description: "This is a Flashcard server.  You can find out more about Swagger at <a href=\"http://swagger.io\">http://swagger.io</a> or on irc.freenode.net, #swagger.  You can use the api key \"special-key\" to test the authorization filters"
+  version: 1.0.0
+  title: Swagger Flashcard YAML
   license:
-    name: "Apache 2.0"
+    name: Apache 2.0
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "virtserver.swaggerhub.com"
-basePath: "/better-flashcard-racer/testar/1.0.0"
+basePath: /v1
 tags:
-- name: "decks"
-  description: "All about decks data"
+  - name: decks
+    description: All about decks data
+#  - name: user
+#    description: Access to Petstore orders
+#    externalDocs:
+#      description: Find out more about our store
+#      url: "http://swagger.io"
 schemes:
-- "https"
-- "http"
+  - http
+  - https
 consumes:
-- "application/json"
+  - application/json
 produces:
-- "application/json"
+  - application/json
+securityDefinitions:
+  api_key:
+    type: apiKey
+    in: header
+    name: api_key
+security:
+  - api_key: []
 paths:
-  /authlevel:
-    get:
-      tags:
-      - "user"
-      description: "Return all available user level of authorization"
-      operationId: "getUsersAuth"
-      parameters: []
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/AuthLevel"
-          examples:
-            application/json:
-            - id: 0
-              auth: "admin"
-            - id: 1
-              auth: "teacher"
-            - id: 2
-              auth: "student"
-      x-swagger-router-controller: "UserController"
   /decks:
     get:
       tags:
@@ -108,7 +95,6 @@ paths:
               - id: 55
                 problem: "7-3"
                 answer: 4
-      x-swagger-router-controller: "DeckController"
     post:
       tags:
       - "deck"
@@ -149,104 +135,104 @@ paths:
 #        500:
 #          $ref: "#/responses/Standard500ErrorResponse"
   /rooms:
-      get:
-        tags:
-        - "room"
-        - "mocked"
-        description: "Return all rooms"
-        parameters: []
-        responses:
-          200:
-            description: "successful operation"
-            schema:
-              $ref: "#/definitions/Rooms"
-            examples:
-              application/json:
-              - id: 1
-                name: "Lars room"
-                host:
-                  id: 1
-                  auth_level: "admin"
-                  username: "Astrid"
-                  examples: ""
-                deck:
-                  id: 1
-                  numProblems: 5
-                  name: "A test deck"
-                  description: "Description for a test deck"
-                  user_id: 2
-                  user_name: "John"
-                  created: "2017-01-25T20:17:45.000Z"
-                  changed: "2017-01-25T20:17:45.000Z"
-                  private: false
-                  flashcard:
-                  - id: 1
-                    problem: "1+1"
-                    answer: 2
-                  - id: 2
-                    problem: "2+2"
-                    answer: 4
-                  - id: 3
-                    problem: "3+3"
-                    answer: 6
-                  - id: 4
-                    problem: "4+4"
-                    answer: 8
-                  - id: 5
-                    problem: "5+5"
-                    answer: 10
-              - id: 2
-                name: "Kalles room"
-                host:
-                  id: 2
-                  auth_level: "teacher"
-                  username: "Olle"
-                  examples: ""
-                deck:
-                  id: 1
-                  numProblems: 5
-                  name: "Another test deck"
-                  description: "Description for a test deck"
-                  user_id: 2
-                  user_name: "John"
-                  created: "2017-01-25T20:17:45.000Z"
-                  changed: "2017-01-25T20:17:45.000Z"
-                  private: false
-                  flashcard:
-                  - id: 1
-                    problem: "1+1"
-                    answer: 2
-                  - id: 2
-                    problem: "2+2"
-                    answer: 4
-                  - id: 3
-                    problem: "3+3"
-                    answer: 6
-                  - id: 4
-                    problem: "4+4"
-                    answer: 8
-                  - id: 5
-                    problem: "5+5"
-                    answer: 10
-      post:
-        tags:
-        - "room"
-        - "mocked"
-        description: "Add a new room"
-        parameters:
-        - in: "body"
-          name: "Input"
-          description: "The information about the user to be added"
-          required: true
+    get:
+      tags:
+      - "room"
+      - "mocked"
+      description: "Return all rooms"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
           schema:
-            $ref: "#/definitions/Room"
-        responses:
-          201:
-            description: "successful operation"
-            examples:
-              application/json:
-                url: "virtserver.swaggerhub.com/better-flashcard-racer/testar/1.0.0/rooms/1"
-    /rooms/{id}:
+            $ref: "#/definitions/Rooms"
+          examples:
+            application/json:
+            - id: 1
+              name: "Lars room"
+              host:
+                id: 1
+                auth_level: "admin"
+                username: "Astrid"
+                examples: ""
+              deck:
+                id: 1
+                numProblems: 5
+                name: "A test deck"
+                description: "Description for a test deck"
+                user_id: 2
+                user_name: "John"
+                created: "2017-01-25T20:17:45.000Z"
+                changed: "2017-01-25T20:17:45.000Z"
+                private: false
+                flashcard:
+                - id: 1
+                  problem: "1+1"
+                  answer: 2
+                - id: 2
+                  problem: "2+2"
+                  answer: 4
+                - id: 3
+                  problem: "3+3"
+                  answer: 6
+                - id: 4
+                  problem: "4+4"
+                  answer: 8
+                - id: 5
+                  problem: "5+5"
+                  answer: 10
+            - id: 2
+              name: "Kalles room"
+              host:
+                id: 2
+                auth_level: "teacher"
+                username: "Olle"
+                examples: ""
+              deck:
+                id: 1
+                numProblems: 5
+                name: "Another test deck"
+                description: "Description for a test deck"
+                user_id: 2
+                user_name: "John"
+                created: "2017-01-25T20:17:45.000Z"
+                changed: "2017-01-25T20:17:45.000Z"
+                private: false
+                flashcard:
+                - id: 1
+                  problem: "1+1"
+                  answer: 2
+                - id: 2
+                  problem: "2+2"
+                  answer: 4
+                - id: 3
+                  problem: "3+3"
+                  answer: 6
+                - id: 4
+                  problem: "4+4"
+                  answer: 8
+                - id: 5
+                  problem: "5+5"
+                  answer: 10
+    post:
+      tags:
+      - "room"
+      - "mocked"
+      description: "Add a new room"
+      parameters:
+      - in: "body"
+        name: "Input"
+        description: "The information about the user to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/Room"
+      responses:
+        201:
+          description: "successful operation"
+          examples:
+            application/json:
+              url: "virtserver.swaggerhub.com/better-flashcard-racer/testar/1.0.0/rooms/1"
+  /rooms/{id}:
       get:
         tags:
         - "room"
@@ -403,29 +389,29 @@ paths:
         500:
           $ref: "#/responses/Standard500ErrorResponse"
   /authlevel/{id}:
-      get:
-        tags:
-          - user
-        x-swagger-router-controller: UserController
-        description: Return all available user level of authorization
-        operationId: getUsersAuth
-        parameters:
-          - $ref: "#/parameters/id"
-        responses:
-          200:
-            description: successful operation
-            schema:
-              $ref: "#/definitions/AuthLevel"
-            examples:
-              application/json:
-                - id: 0
-                  auth: student
-                - id: 1
-                  auth: teacher
-                - id: 2
-                  auth: admin
-          204:
-            description: no content available
+    get:
+      tags:
+      - user
+      x-swagger-router-controller: UserController
+      description: Return all available user level of authorization
+      operationId: getUsersAuth
+      parameters:
+        - $ref: "#/parameters/id"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/AuthLevel"
+          examples:
+            application/json:
+              - id: 0
+                auth: student
+              - id: 1
+                auth: teacher
+              - id: 2
+                auth: admin
+        204:
+          description: no content available
   /login:
     post:
       tags:
@@ -474,11 +460,6 @@ paths:
           description: The request from frontend
           schema:
             $ref: "#/definitions/GenerateCards"
-securityDefinitions:
-  api_key:
-    type: "apiKey"
-    name: "api_key"
-    in: "header"
 definitions:
   AuthLevel:
     properties:
@@ -513,11 +494,13 @@ definitions:
     xml:
       name: Input data for adding user
   UpdateUser:
+    required:
+      - username
+      - auth_level
     properties:
       username:
         type: string
       password:
-        required: false
         type: string
       auth_level:
         type: integer

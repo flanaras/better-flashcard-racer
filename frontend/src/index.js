@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import SelectMode from './SelectMode'
 import DeckConfig from './DeckConfig'
 import MotherOfDragons from './MotherOfDragons'
-import { FlashcardPractice } from './Flashcard'
+import FlashcardPractice  from './FlashcardPractice'
+import Solutions from './Solutions'
 import UserList from './UserList';
 import CreateUser from './CreateUser';
 import EditUser from './EditUser';
@@ -16,6 +17,7 @@ ReactDOM.render((
             <Route path="/" component={SelectMode} />
             <Route path="deckconfig" component={DeckConfig} />
             <Route path="playgame" component={FlashcardPractice} />
+            <Route path="solutions" component={Solutions} />
             <Route path="users" component={UserList} />
             <Route path="createuser" component={CreateUser} />
             <Route path="edituser" component={EditUser} />

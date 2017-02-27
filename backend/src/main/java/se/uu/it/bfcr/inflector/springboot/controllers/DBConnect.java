@@ -7,8 +7,7 @@ import java.sql.SQLException;
 /**
  * @author Philip Lanaras
  */
-public class
-DBConnect {
+public class DBConnect {
 
     public static Connection connect() throws SQLException {
         Connection conn = null;
@@ -17,7 +16,11 @@ DBConnect {
         String password = "lordofgeese1997";
 
         try {
+//<<<<<<< HEAD
+//            Class.forName("com.mysql.jdbc.Driver");
+//=======
             Class.forName("com.mysql.cj.jdbc.Driver");
+//>>>>>>> user_management
         } catch (Exception ex) {
             System.out.print("Error loading MySQL driver.\n");
         }

@@ -17,6 +17,7 @@ async function LoadJson(url, method, body) {
 		cache: 'default'
 	};
 
+
 	if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
 		myHeaders.set('Content-Type', 'application/json'); // body parsing does not work without correct content type
 	}
@@ -48,4 +49,5 @@ async function LoadJson(url, method, body) {
 		console.error('The Fetch request of ' + myRequest.url + ' failed.', myRequest, e)
 	}
 }
+
 export default LoadJson;

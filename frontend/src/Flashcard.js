@@ -1,81 +1,67 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import { FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import TimeCounter from './TimeCounter';
 
-export class Flashcard extends Component {
+export default class Flashcard extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = { solution : '' };
+    constructor(props) {
+        super(props);
+        this.state = { solution : '', checkSolution : false, inputState : false };
 
-    this.handleInputChange = this.handleInputChange.bind(this)
-  }
-
-  handleInputChange(event) {
-    this.setState({solution: event.target.value});
-    this.props.sendAnswer(event.target.value);
-  }
-
-  isSolutionCorrect(solution) {
-    return this.props.flashcard.solution === parseInt(solution);
-  }
-
-  render() {
-    return (
-      <div>
-        <p>{this.props.flashcard.problem}</p>
-        <input type="text" placeholder="Your solution" value={this.state.solution} onChange={this.handleInputChange}/>
-      </div>
-    )
-  }
-}
-
-export class FlashcardPractice extends Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = { questionsAnswered : 0, answers : [], currentAnswer : '' };
-
-    this.updateAnswer = this.updateAnswer.bind(this);
-    this.completeQuestion = this.completeQuestion.bind(this);
-  }
-
-  completeQuestion() {
-    let flashcard = this.props.chosenDeck.flashcards[this.state.questionsAnswered];
-    flashcard.answer = this.state.currentAnswer;
-
-    this.state.answers.push(flashcard);
-
-    if(this.state.questionsAnswered < this.props.chosenDeck.flashcards.length - 1) {
-      this.setState({ questionsAnswered : this.state.questionsAnswered + 1 })
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.disableInput = this.disableInput.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.isSolutionCorrect = this.isSolutionCorrect.bind(this);
     }
-    else {
-      //TODO: end the session -> send the answers to the parent component
-      /*
-        Something along the lines of:
-        this.props.submitAnswers(this.state.answers);
-       */
+
+    componentDidMount() {
+      ReactDOM.findDOMNode(this.refs.solutionInput).focus();
     }
-  }
 
-  updateAnswer(answer) {
-    this.state.currentAnswer = answer;
-  }
+    componentWillReceiveProps(nextProps) {
+      if(nextProps.flashcard !== this.props.flashcard) {
+        this.setState({solution : '', checkSolution : false });
+        this.props.sendAnswer('', false);
+      }
+    }
 
-  render() {
-    return (
-      <div>
-        {
-          (this.state.questionsAnswered !== this.props.chosenDeck.flashcards.length - 1) ?
-            <div>
-              <Flashcard flashcard={this.props.chosenDeck.flashcards[this.state.questionsAnswered]} sendAnswer={this.updateAnswer}/>
-              <button onClick={this.completeQuestion}>{(this.state.questionsAnswered !== this.props.chosenDeck.flashcards.length - 1) ? 'Next Question' : 'Complete Session'}</button>
-            </div>
-            :
-            <div>
-              <p>Session completed! :)</p>
-            </div>
+    handleInputChange(event) {
+        this.setState({solution: event.target.value, checkSolution: this.isSolutionCorrect(event.target.value)});
+        this.props.sendAnswer(event.target.value, this.isSolutionCorrect(event.target.value));
+    }
+
+    isSolutionCorrect(solution) {
+        return this.props.flashcard.solution === parseInt(solution);
+    }
+
+    disableInput() {
+        this.setState({inputState: true});
+    }
+
+    handleKeyPress(event) {
+        if(event.key === 'Enter') {
+            this.props.submitAnswer(event.target.value);
         }
-      </div>
-    )
-  }
+    }
+
+    render() {
+        var opts = {};
+        if (this.state.inputState)
+            opts['disabled'] = 'disabled';
+        return (
+            <div>
+                <FormGroup controlId="flashcard">
+                    <ControlLabel>{this.props.flashcard.problem}</ControlLabel>
+                    <FormControl type="text" {...opts} style={{textAlign: "center"}}
+                                 placeholder="Your solution" value={this.state.solution}
+                                 ref="solutionInput"
+                                 onKeyPress={this.handleKeyPress}
+                                 onChange={this.handleInputChange} />
+                    <TimeCounter disableInput={this.disableInput} timePerProblem={this.props.timePerProblem} remProb={this.props.remProb} submitAnswer={this.props.submitAnswer} />
+                </FormGroup>
+            </div>
+        )
+    }
 }
+

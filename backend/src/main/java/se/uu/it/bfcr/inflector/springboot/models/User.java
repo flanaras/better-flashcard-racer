@@ -1,6 +1,7 @@
 package se.uu.it.bfcr.inflector.springboot.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import se.uu.it.bfcr.inflector.springboot.UserUtils;
 
 /**
  * Created by Bartok on 2/10/17.
@@ -43,7 +44,7 @@ public class User {
     public User(){
         this.id = 0;
         this.username = "Default";
-        this.auth_level = "student";
+        this.auth_level = UserUtils.authLevelToString(0);
         this.authId = 0;
     }
 
@@ -51,13 +52,7 @@ public class User {
         this.id = ID;
         this.username = name;
         this.authId = auth_level;
-        if(auth_level == 2){
-            this.auth_level = "admin";
-        }else if(auth_level == 1){
-            this.auth_level = "teacher";
-        } else{
-            this.auth_level = "student";
-        }
+        this.auth_level = UserUtils.authLevelToString(auth_level);
     }
 
     public String getUsername(){

@@ -5,10 +5,7 @@ import {Link} from "react-router";
 import LoadJson from "./services/LoadJson"
 import { PageHeader, Form, Grid, Row, Col, Panel, Button, FormGroup, ControlLabel, FormControl, Radio, Checkbox } from 'react-bootstrap';
 
-
-const products = []
-
-export default class HoverStripedTable extends React.Component {
+export default class RoomList extends React.Component {
     constructor() {
         super()
         this.state = {
@@ -47,11 +44,11 @@ export default class HoverStripedTable extends React.Component {
 
         return (
             <div>
-                <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Results</small></PageHeader>
+                <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Rooms</small></PageHeader>
                 <Grid>
                     <Row className="show-grid">
                         <Col xs={1} md={3}></Col>
-                        <Col xs={12} md={6}>
+                        <Col xs={18} md={20}>
                             <Panel style={{textAlign: "center"}}>
                                 <BootstrapTable data={ this.state.rooms } striped={ true } hover={ true } condensed={ true } selectRow={ selectRowProp }>
                                     <TableHeaderColumn dataField='id' isKey={ true }>Id</TableHeaderColumn>

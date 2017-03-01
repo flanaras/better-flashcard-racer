@@ -1,0 +1,22 @@
+Messages sent from the client:
+
+'connect'
+'createRoom' : { Room object }
+'disconnect'
+'leaveRoom'
+'joinRoom' : { id : 1 }
+'sendCredentials' : { User object }
+
+Messages sent from the server:
+
+When a user
+	* sends credentials
+	* creates a room
+	* host leaves (delete room)
+		emit: 'lobbyState', lobbyState
+
+When a user
+	* joins a room
+	* disconnects
+	* leaves the room
+		emit: 'roomState', roomState || emit : 'roomClosed'

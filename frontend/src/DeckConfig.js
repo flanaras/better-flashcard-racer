@@ -134,7 +134,8 @@ export default class DeckConfig extends Component {
                 }]
             }
             const chosenDeck = await LoadJson(config.mock_url + '/generate-cards', 'POST', reqPayload)
-            this.props.onSubmitGameConfig(chosenDeck, this.state.gameLengthProblems, this.state.timePerProblem)
+            const renamedDecks = this.renameAttributes(chosenDeck)
+            this.props.onSubmitGameConfig(renamedDecks, this.state.gameLengthProblems, this.state.timePerProblem)
         }
     }
 

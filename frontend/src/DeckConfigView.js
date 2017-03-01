@@ -7,7 +7,7 @@ export default class DeckConfigView extends Component {
         return (
             <div>
                 <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Game Configuration</small></PageHeader>
-                <DeckConfig/>
+                <DeckConfig onSubmitGameConfig={this.props.onSubmitGameConfig}/>
             </div>
         )
     }

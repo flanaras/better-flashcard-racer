@@ -172,8 +172,6 @@ paths:
           description: "successful operation"
           schema:
             $ref: "#/definitions/Deck"
-        500:
-          description: "An unexpected error occured."
       x-swagger-router-controller: "DeckController"
   /login:
     post:

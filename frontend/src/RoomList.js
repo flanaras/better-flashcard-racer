@@ -55,7 +55,7 @@ export default class RoomList extends React.Component {
                                     <TableHeaderColumn dataField='name'>Name</TableHeaderColumn>
                                     <TableHeaderColumn dataField='deck' dataFormat={this.showDeckName}>Deck</TableHeaderColumn>
                                     <TableHeaderColumn dataField='host' dataFormat={this.showUsername}>Host</TableHeaderColumn>
-                                    <TableHeaderColumn dataField='host' dataFormat={() => (<Link to="deckconfig" >Join</Link>)}>Join Game</TableHeaderColumn>
+                                    <TableHeaderColumn dataField='host' dataFormat={() => (<Link to="room" >Join</Link>)}>Join Game</TableHeaderColumn>
                                 </BootstrapTable>
                                 <Link to="deckconfig" >Try practice mode</Link>
                             </Panel>

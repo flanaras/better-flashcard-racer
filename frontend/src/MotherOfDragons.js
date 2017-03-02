@@ -11,6 +11,7 @@ export default class SelectMode extends Component {
         this.login = this.login.bind(this)
         this.editUser = this.editUser.bind(this)
         this.loadUserInfo = this.loadUserInfo.bind(this)
+        this.logout = this.logout.bind(this)
     }
 
     componentDidUpdate() {
@@ -51,6 +52,15 @@ export default class SelectMode extends Component {
             });
     }
 
+    logout() {
+        cookie.remove("auth");
+        cookie.remove("userid");
+        cookie.remove("username");
+        cookie.remove("userRole");
+        cookie.remove("userRoleId");
+        browserHistory.push('/');
+    }
+
     editUser(newUserId, newUser, newUserRoleId) {
         this.setState({newUserId, newUser, newUserRoleId});
         browserHistory.push('edituser');
@@ -73,6 +83,7 @@ export default class SelectMode extends Component {
                     username: this.state.username,
                     userRole: this.state.userRole,
                     userRoleId: this.state.userRoleId,
+                    logout: this.logout,
                     editUser: this.editUser,
                     newUserId: this.state.newUserId,
                     newUser: this.state.newUser,

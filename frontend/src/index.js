@@ -9,6 +9,7 @@ import UserList from './UserList';
 import CreateUser from './CreateUser';
 import EditUser from './EditUser';
 import Dashboard from './Dashboard';
+import UserSettings from './UserSettings';
 import { Router, Route, browserHistory } from 'react-router'
 
 ReactDOM.render((
@@ -22,6 +23,7 @@ ReactDOM.render((
             <Route path="createuser" component={CreateUser} />
             <Route path="edituser" component={EditUser} />
             <Route path="dashboard" component={Dashboard} />
+            <Route path="usersettings" component={UserSettings} />
         </Route>
     </Router>
 ), document.getElementById('root'));

@@ -6,13 +6,14 @@ import SelectMode from '../src/SelectMode'
 import DeckConfig, {GenerateDeckOptions, SavedDeck} from '../src/DeckConfig'
 import MotherOfDragons from '../src/MotherOfDragons'
 import Solutions from '../src/Solutions'
-import {ControlLabel, FormControl, Button, ListGroup, Form} from 'react-bootstrap'
+import {ControlLabel, FormControl, Button, ListGroup, Form, DropdownButton, MenuItem} from 'react-bootstrap'
 import Flashcard from './../src/Flashcard'
 import FlashcardPractice from './../src/FlashcardPractice'
 import UserList from '../src/UserList';
 import CreateUser from '../src/CreateUser';
 import EditUser from '../src/EditUser';
 import Dashboard from '../src/Dashboard';
+import UserSettings from '../src/UserSettings';
 import {Link} from "react-router";
 
 describe('SelectMode', () => {
@@ -546,5 +547,22 @@ describe('EditUser', () => {
         const form = wrapper.find('form');
         form.simulate('submit');
         expect(apiCallSpy.calledOnce).to.equal(true);
+    });
+});
+
+describe('UserSettings', () => {
+    it('should be a drop-down button with Sign Out option', () => {
+        const wrapper = shallow(<UserSettings auth={true} username="admin" />);
+        expect(wrapper.containsAllMatchingElements([
+            <DropdownButton bsStyle='info' title="admin">
+                <MenuItem eventKey="1">Sign out</MenuItem>
+            </DropdownButton>
+        ])).to.equal(true);
+    });
+    it('onSignOut should be called after clicking Sign out option', () => {
+        const onLogoutSpy = spy(UserSettings.prototype, "onLogout");
+        const wrapper = shallow(<UserSettings auth={true} username="admin" logout={spy()}/>);
+        wrapper.find('MenuItem').simulate('click');
+        expect(onLogoutSpy.calledOnce).to.equal(true);
     });
 });

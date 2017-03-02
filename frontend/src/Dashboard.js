@@ -3,9 +3,13 @@ import {Link} from "react-router";
 import { PageHeader, Panel, Grid, Col, Row, FormGroup, Button } from 'react-bootstrap';
 
 export default class Dashboard extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {};
+    }
+
+    componentDidMount() {
+        this.props.loadUserInfo();
     }
 
     render() {

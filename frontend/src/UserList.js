@@ -21,6 +21,7 @@ export default class UserList extends Component {
   }
 
   componentDidMount() {
+    this.props.loadUserInfo();
     this.apiCall('users');
   }
 

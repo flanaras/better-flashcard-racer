@@ -32,7 +32,7 @@ export default class SelectMode extends Component {
                         userRole: loginAck.auth_level,
                         userRoleId: loginAck.auth_id,
                         auth: true});
-            this.props.login(this.state.username, this.state.userRole, this.state.userRoleId, this.state.auth);
+            this.props.login(this.state.userid, this.state.username, this.state.userRole, this.state.userRoleId, this.state.auth);
         }
     }
 

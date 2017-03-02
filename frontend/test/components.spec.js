@@ -325,7 +325,8 @@ describe('UserList', () => {
     });
     it('should call apiCall to get user list', () => {
         const apiCallSpy = spy(UserList.prototype, "apiCall");
-        const wrapper = mount(<UserList />);
+        const loadUserInfoSpy = spy();
+        const wrapper = mount(<UserList loadUserInfo={loadUserInfoSpy} />);
         expect(apiCallSpy.calledOnce).to.equal(true);
     });
     it('should not render if user is not authenticated', () => {
@@ -334,7 +335,8 @@ describe('UserList', () => {
     });
     it('should call apiDeleteCall to delete user', () => {
         const apiDeleteCall = spy(UserList.prototype, "apiDeleteCall");
-        const wrapper = mount(<UserList auth={true} />);
+        const loadUserInfoSpy = spy();
+        const wrapper = mount(<UserList auth={true} loadUserInfo={loadUserInfoSpy} />);
         wrapper.setState({users});
         wrapper.find('[name="deleteButton0"]').simulate('click');
         expect(apiDeleteCall.calledOnce).to.equal(true);

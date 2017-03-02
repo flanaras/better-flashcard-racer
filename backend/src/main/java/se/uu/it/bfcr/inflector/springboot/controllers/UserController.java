@@ -157,7 +157,10 @@ public class UserController {
     }
 
     public ResponseContext login(RequestContext requestContext, JsonNode body) {
-        ResponseContext responseContext;
+        ResponseContext responseContext = null;
+        Connection con = null;
+        PreparedStatement updateUsers = null;
+        int i = 0;
 
         String password = body.get("password").asText();
         String username = body.get("username").asText();
@@ -165,8 +168,27 @@ public class UserController {
         LoginResponse loginResponse = authenticateUser(password, username);
 
         if (loginResponse != null) {
-            responseContext = new ResponseContext().status(Response.Status.OK);
-            responseContext.entity(loginResponse);
+
+            String updatesUserStrings = "";
+            try {
+                con = DBConnect.connect();
+                updatesUserStrings = "UPDATE users set is_login = 1 where username = ? and password = ? ";
+                updateUsers = con.prepareStatement(updatesUserStrings);
+                updateUsers.setString(1, username);
+                updateUsers.setString(2, password);
+
+                i  = updateUsers.executeUpdate() ;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            if(i > 0)
+            {
+                responseContext = new ResponseContext().status(Response.Status.OK);
+                responseContext.entity(loginResponse);
+            }
+
+
         } else {
             responseContext = new ResponseContext().status(Response.Status.UNAUTHORIZED);
         }
@@ -278,4 +300,50 @@ public class UserController {
             return new ResponseContext().status(Status.NOT_MODIFIED);
         }
     }
+
+    public ResponseContext logout(RequestContext requestContext,JsonNode users) throws SQLException {
+        Connection con = null;
+        User user = new User();
+
+        int i = 0;
+
+        try
+        {
+
+            PreparedStatement updateUsers = null;
+            ObjectMapper mapper = new ObjectMapper();
+            user = mapper.treeToValue(users,User.class);
+            String updatesUserStrings = "";
+            con = DBConnect.connect();
+                updatesUserStrings = "UPDATE users set is_login = 0 where username = ? and password = ? ";
+                updateUsers = con.prepareStatement(updatesUserStrings);
+                updateUsers.setString(1, user.getUsername());
+                updateUsers.setString(2, user.getPassword());
+
+
+            i  = updateUsers.executeUpdate() ;
+        }
+        catch (SQLException ex)
+        {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } finally
+        {
+            con.close();
+        }
+
+
+        if(i > 0) {
+            return new ResponseContext().status(Status.OK);
+        }
+        else
+        {
+            return new ResponseContext().status(Status.NOT_MODIFIED);
+        }
+    }
+
+
 }

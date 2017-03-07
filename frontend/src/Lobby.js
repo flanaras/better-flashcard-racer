@@ -21,9 +21,9 @@ export default class Room extends React.Component {
     socket.on('connect', function() {
       console.log('Connected to the room namespace');
 
-      socket.emit(config.socket.joinLobby, {user : {id : 1, username : 'Astrid'}});
+      socket.emit(config.socket.joinLobby, {id : 1, username : 'Astrid'});
     });
-    
+
   }
 
   initList(userList) {

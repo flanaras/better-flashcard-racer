@@ -42,24 +42,13 @@ def connect(sid, environ):
 async def join_lobby(sid, data):
     print("message ", data)
     Lobby.append(User(data.get('id'), data.get('username'), sid))
-    print('Lobby:')
+    JSON = []
     for user in Lobby:
-        print(' ',user.username)
-        #Does not actually emit dta to clients yet:
-    await sio.emit('updatelobby',namespace='/lobby')
-        #
-
-@sio.on('updatelobby',namespace='/lobby')
-def updatelobby(sid, data):
-    print('Users in lobby: ')
-    for user in Lobby:
-        id = str(user.id)
-        print('id: ',id)
-        print(' username: ',user.username)
-        #Does not actually provide a proper JSON object to client
-    jsondata = json.dumps('')
-    return jsondata
-        #
+        print('Name: ',user.username + ' id: ' + str(user.id))
+        JSON.append({'id': user.id, "username": user.username})
+    #Should return list of all users in JSON, only returns the latest user added...
+    print(json.dumps(JSON))
+    return json.dumps(JSON)
 
 @sio.on('disconnect', namespace='/lobby')
 def disconnect(sid):
@@ -67,9 +56,6 @@ def disconnect(sid):
     for user in Lobby:
         if user.sid == sid:
             Lobby.remove(user)
-    print('Lobby:')
-    for user in Lobby:
-        print(' ',user.username)
 
 #Room responses:
 

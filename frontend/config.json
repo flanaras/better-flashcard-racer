@@ -3,9 +3,12 @@
   "mock_url": "http://virtserver.swaggerhub.com/better-flashcard-racer/testar/1.0.0",
   "socket" :
   {
-    "url" : "http://localhost:8080",
+    "url" : "http://localhost:9000",
+    "roomNamespace" : "room",
+    "lobbyNamespace" : "lobby",
     "getUserList" : "users",
     "newStudent" : "newStudent",
-    "studentLeft" : "studentLeft"
+    "studentLeft" : "studentLeft",
+    "joinLobby" : "join_lobby"
   }
 }

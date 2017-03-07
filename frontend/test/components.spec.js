@@ -8,7 +8,7 @@ import MotherOfDragons from '../src/MotherOfDragons'
 import Flashcard from './../src/Flashcard'
 import FlashcardPractice from './../src/FlashcardPractice';
 import Solutions from '../src/Solutions'
-import Room from '../src/Room';
+import Room from '../src/Lobby';
 import {ControlLabel, FormControl, Button, ListGroup, Form} from 'react-bootstrap'
 
 describe('SelectMode', () => {

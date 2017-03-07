@@ -1,8 +1,5 @@
 import React from 'react';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import config from './../config.json'
-import {Link} from "react-router";
-import LoadJson from "./services/LoadJson"
 import { PageHeader, Grid, Row, Col, Table } from 'react-bootstrap';
 import io from 'socket.io-client';
 
@@ -19,23 +16,14 @@ export default class Room extends React.Component {
   }
 
   componentWillMount() {
-    const socket = io(config.socket.url);
+    const socket = io(config.socket.url + '/' + config.socket.lobbyNamespace);
     var self = this;
     socket.on('connect', function() {
+      console.log('Connected to the room namespace');
 
+      socket.emit(config.socket.joinLobby, {user : {id : 1, username : 'Astrid'}});
     });
-
-    socket.on(config.socket.getUserList, function (data) {
-      self.initList(data.users);
-    });
-
-    socket.on(config.socket.newStudent, function (data) {
-      self.addUserToList(data.user);
-    });
-
-    socket.on(config.socket.studentLeft, function (data) {
-      self.removeUserFromList(data.user);
-    });
+    
   }
 
   initList(userList) {

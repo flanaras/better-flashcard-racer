@@ -33,7 +33,7 @@ sio.attach(app)
 Lobby = []
 Rooms = []
 
-#Lobby Responses:
+#Lobby methods:
 
 @sio.on('connect', namespace='/lobby')
 def connect(sid, environ):
@@ -49,12 +49,12 @@ async def join_lobby(sid, data):
             print("User already in lobby!: ",user.username)
     if flag == False :
         Lobby.append(User(data.get('id'), data.get('username'), sid))
-    return await lobbyJSON()
+    await lobbyJSON()
 
 async def lobbyJSON():
     JSON = []
     for user in Lobby:
-        print('Name: ',user.username + ' id: ' + str(user.id))
+        print('    Name: ',user.username + ' id: ' + str(user.id))
         info = {'id': user.id, 'username': user.username}
         JSON.append(info)
     await sio.emit('updatelobby',data = json.dumps(JSON),namespace = '/lobby')
@@ -67,32 +67,74 @@ async def leave_lobby(sid, data):
         if(user.id == data.get("id")):
             Lobby.remove(user)
             print("User left lobby: ",user.username)
-    return await lobbyJSON()
-
+    await lobbyJSON()
 
 @sio.on('disconnect', namespace='/lobby')
 def disconnect(sid):
     print('disconnected from lobby service: ', sid)
 
-#Room responses:
-
-@sio.on('disconnect', namespace='/room')
-def disconnect(sid):
-    print('disconnected from room service: ', sid)
+#Room methods:
 
 #Needs to be implemented:
-@sio.on('create_room', namespace='/room')
+@sio.on('create_room', namespace='/lobby')
 async def create_room(sid, data):
-    print("message ", data)
+    print("CR: ", data)
+    host = None
+    for user in Lobby:
+        if user.sid == sid:
+            host = user
+    if host != None:
+        Rooms.append(Room(data.get('id'),data.get('roomname'),host.id,host.username,host.sid))
+        Lobby.remove(host)
+        print("Created room, hostID: ",host.id)
+        await roomJSON()
+        await lobbyJSON()
+    else:
+        print("Create room: User not in Lobby!")
+
+@sio.on('join_room', namespace='/lobby')
+async def join_room(sid, data):
+    exists = False
+    print("JR: ", data)
+    for room in Rooms:
+        if data.get('id') == room.id:
+            exists = True
+            roomtojoin = room
+    if exists:
+        for user in Lobby:
+            if user.sid == sid:
+                roomtojoin.players.append(user)
+                Lobby.remove(user)
+                print("Player ",user.username," joined room (id): ",roomtojoin.id)
+                await lobbyJSON()
+                await roomJSON()
+    else:
+        print("No such room (id): ",data.get('id'))
+
+async def roomJSON():
+    JSON = []
+    for room in Rooms:
+        print('    Room: ',room.roomName,' id: ',str(room.id))
+        info = {'id': room.id, 'roomname': room.roomName, 'hostID': room.hostId, 'hostname': room.hostName, 'players': playersASlist(room.players)}
+        JSON.append(info)
+    await sio.emit('updaterooms',data = json.dumps(JSON),namespace = '/lobby')
+    JSON = None
+
+#Ugly helper...
+def playersASlist(players):
+    list = []
+    for user in players:
+        info = {"id": user.id, "username": user.username}
+        list.append(info)
+    return list
 
 #Needs to be implemented:
-@sio.on('leave_room', namespace='/room')
+@sio.on('leave_room', namespace='/lobby')
 async def leave_room(sid, data):
-    print("message ", data)
 
-@sio.on('connect', namespace='/room')
-def connect(sid, environ):
-    print('connected to room service: ', sid)
+    print("message ", data)
+    await lobbyJSON()
+    await roomJSON()
 
 #Run server method:
 

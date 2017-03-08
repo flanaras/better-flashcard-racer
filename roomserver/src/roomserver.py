@@ -29,6 +29,7 @@ class Room:
 sio = socketio.AsyncServer()
 app = web.Application()
 sio.attach(app)
+
 Lobby = []
 Rooms = []
 
@@ -40,22 +41,37 @@ def connect(sid, environ):
 
 @sio.on('join_lobby', namespace='/lobby')
 async def join_lobby(sid, data):
-    print("message ", data)
-    Lobby.append(User(data.get('id'), data.get('username'), sid))
+    print("join: ", data)
+    flag = False
+    for user in Lobby:
+        if user.id == data.get("id"):
+            flag = True
+            print("User already in lobby!: ",user.username)
+    if flag == False :
+        Lobby.append(User(data.get('id'), data.get('username'), sid))
+    return await lobbyJSON()
+
+async def lobbyJSON():
     JSON = []
     for user in Lobby:
         print('Name: ',user.username + ' id: ' + str(user.id))
-        JSON.append({'id': user.id, "username": user.username})
-    #Should return list of all users in JSON, only returns the latest user added...
-    print(json.dumps(JSON))
-    return json.dumps(JSON)
+        info = {'id': user.id, 'username': user.username}
+        JSON.append(info)
+    await sio.emit('updatelobby',data = json.dumps(JSON),namespace = '/lobby')
+    JSON = None
+
+@sio.on('leave_lobby', namespace='/lobby')
+async def leave_lobby(sid, data):
+    print("leave: ", data)
+    for user in Lobby:
+        if(user.id == data.get("id")):
+            Lobby.remove(user)
+            print("User left lobby: ",user.username)
+    return await lobbyJSON()
 
 @sio.on('disconnect', namespace='/lobby')
 def disconnect(sid):
-    print('disconnected from lobby service: ', sid, 'name: ')
-    for user in Lobby:
-        if user.sid == sid:
-            Lobby.remove(user)
+    print('disconnected from lobby service: ', sid)
 
 #Room responses:
 

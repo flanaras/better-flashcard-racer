@@ -1,18 +1,19 @@
 import React from 'react';
 import config from './../config.json'
-import { PageHeader, Grid, Row, Col, Table } from 'react-bootstrap';
+import { PageHeader, Grid, Row, Col, Table, Button } from 'react-bootstrap';
 import io from 'socket.io-client';
+import {Link} from "react-router";
+
+import sampleData from '../../sockets/docs/Lobby.json';
+const sampleUser = {id : 1, username : 'Astrid'};
 
 export default class Room extends React.Component {
   constructor() {
     super();
     this.state = {
-      userList : []
+      roomList: sampleData.rooms
     };
 
-    this.initList = this.initList.bind(this);
-    this.removeUserFromList = this.removeUserFromList.bind(this);
-    this.addUserToList = this.addUserToList.bind(this);
   }
 
   componentWillMount() {
@@ -21,42 +22,35 @@ export default class Room extends React.Component {
     socket.on('connect', function() {
       console.log('Connected to the room namespace');
 
-      socket.emit(config.socket.joinLobby, {id : 1, username : 'Astrid'});
+      socket.emit(config.socket.joinLobby, sampleUser);
     });
 
   }
 
-  initList(userList) {
-    this.setState({userList : userList});
-  }
-
-  removeUserFromList(student) {
-    var index = this.state.userList.indexOf(student);
-    this.state.userList.splice(index, 1);
-
-    this.setState({userList : this.state.userList})
-  }
-
-  addUserToList(student) {
-    this.setState({userList : this.state.userList.concat([student])});
-  }
-
   render() {
-    const userList = this.state.userList.map((user) =>
-      <tr key={user.id}>
-        <td>{user.id}</td>
-        <td>{user.username}</td>
+    const roomList = this.state.roomList.map((room) =>
+      <tr key={room.id}>
+        <td>{room.name}</td>
+        <td>{room.host.username}</td>
+        <td>{room.deck.name}</td>
+        <td>
+          <Link to="#">
+            <Button bsStyle="info" >
+              Join
+            </Button>
+          </Link>
+        </td>
       </tr>
     );
 
     return (
       <div>
-        <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Room</small></PageHeader>
+        <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Lobby</small></PageHeader>
         <Grid>
           <Row className="show-grid">
             <Col xs={1} md={3}></Col>
             <Col xs={12} md={6}>
-              You are currently in the lobby with these users:
+              The following rooms are currently available:
             </Col>
             <Col xs={1} md={3}></Col>
           </Row>
@@ -66,12 +60,14 @@ export default class Room extends React.Component {
               <Table striped bordered condensed hover>
                 <thead>
                 <tr>
-                  <th>User ID</th>
-                  <th>Name</th>
+                  <th>Room</th>
+                  <th>Host</th>
+                  <th>Deck</th>
+                  <th>Join</th>
                 </tr>
                 </thead>
                 <tbody>
-                {userList}
+                {roomList}
                 </tbody>
               </Table>
             </Col>

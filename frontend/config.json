@@ -9,6 +9,7 @@
     "getUserList" : "users",
     "newStudent" : "newStudent",
     "studentLeft" : "studentLeft",
-    "joinLobby" : "join_lobby"
+    "joinLobby" : "join_lobby",
+    "lobbyState" : "lobbyState"
   }
 }

@@ -8,8 +8,11 @@ import MotherOfDragons from '../src/MotherOfDragons'
 import Flashcard from './../src/Flashcard'
 import FlashcardPractice from './../src/FlashcardPractice';
 import Solutions from '../src/Solutions'
-import Room from '../src/Lobby';
+import Lobby from '../src/Lobby';
+import Room from '../src/Lobby'; //todo: replace with actual Room component as soon as it is implemented
 import {ControlLabel, FormControl, Button, ListGroup, Form} from 'react-bootstrap'
+
+import sampleDataLobby from '../../sockets/docs/Lobby.json';
 
 describe('SelectMode', () => {
     it('should be able to select mode: Login or practice mode', () => {
@@ -270,7 +273,11 @@ describe('Room', () => {
     }
   ];
 
-  it('should display the correct number of users in the list', () => {
+  /*
+    TODO: include those tests again when the Room component is implemented
+   */
+
+  xit('should display the correct number of users in the list', () => {
     const wrapper = shallow(<Room />);
     wrapper.setState({userList});
 
@@ -278,7 +285,7 @@ describe('Room', () => {
     expect(tableRows).to.have.length.of(2+1);
   });
 
-  it('should be able to add a user to the list', () => {
+  xit('should be able to add a user to the list', () => {
     const wrapper = shallow(<Room />);
     wrapper.setState({userList});
 
@@ -289,7 +296,7 @@ describe('Room', () => {
     expect(tableRows).to.have.length.of(3+1);
   });
 
-  it('should be able to remove a user from the list', () => {
+  xit('should be able to remove a user from the list', () => {
     const wrapper = shallow(<Room />);
     wrapper.setState({userList});
 
@@ -300,4 +307,15 @@ describe('Room', () => {
     expect(tableRows).to.have.length.of(1+1);
   })
 
+});
+
+describe('Lobby', () => {
+
+  it('should display the correct number of rooms in the list', () => {
+    const wrapper = shallow(<Lobby/>);
+    wrapper.setState({roomList: sampleDataLobby.rooms});
+
+    const tableRows = wrapper.find('tr');
+    expect(tableRows).to.have.length.of(1+1);
+  });
 });

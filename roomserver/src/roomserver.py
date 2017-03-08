@@ -69,6 +69,7 @@ async def leave_lobby(sid, data):
             print("User left lobby: ",user.username)
     return await lobbyJSON()
 
+
 @sio.on('disconnect', namespace='/lobby')
 def disconnect(sid):
     print('disconnected from lobby service: ', sid)

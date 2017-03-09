@@ -11,6 +11,7 @@
     "studentLeft" : "studentLeft",
     "joinLobby" : "join_lobby",
     "lobbyState" : "updatelobby",
-    "joinRoom" : "join_room"
+    "joinRoom" : "join_room",
+    "createRoom" : "create_room"
   }
 }

@@ -6,6 +6,8 @@ import DeckConfig from './DeckConfig'
 import { PageHeader, Form, Grid, Row, Col, Panel, Button, FormGroup, ControlLabel, FormControl, Radio, Checkbox } from 'react-bootstrap';
 import {browserHistory} from "react-router";
 
+const useSockets = true;
+
 export default class CreateRoom extends Component {
     constructor(){
         super();
@@ -28,8 +30,12 @@ export default class CreateRoom extends Component {
             },
             deck: chosenDeck
         }
-        let response = await LoadJson(`${config.mock_url}/rooms`, 'POST', roomPayload)
-        browserHistory.push('/');
+        if(useSockets) {
+            this.props.createRoom(roomPayload);
+        } else {
+            let response = await LoadJson(`${config.mock_url}/rooms`, 'POST', roomPayload)
+            browserHistory.push('/');
+        }
     }
 
     roomNameChange(e) {
@@ -39,7 +45,7 @@ export default class CreateRoom extends Component {
     render() {
         return (
             <div>
-                <PageHeader style={{textAlign: "center"}}>Create Room</PageHeader>
+                {/*<PageHeader style={{textAlign: "center"}}>Create Room</PageHeader>*/}
                 <Grid>
                     <Row className="show-grid">
                         <Col xs={1} md={4}></Col>

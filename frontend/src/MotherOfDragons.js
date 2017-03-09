@@ -67,7 +67,6 @@ export default class SelectMode extends Component {
             auth: false});
 
         browserHistory.push('/');
-        console.log('ok3')
     }
 
     editUser(newUserId, newUser, newUserRoleId) {

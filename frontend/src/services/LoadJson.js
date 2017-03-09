@@ -42,8 +42,8 @@ async function LoadJson(url, method, body) {
 		} else if (response.status == 201) {
 		    return {"ok": "userCreated"}
         } else if (response.status == 200 && method == "PUT") {
-        return {"ok": "userEdited"}
-    }
+        	return {"ok": "userEdited"}
+    	}
 		return response.json();
 	} catch (e) {
 		console.error('The Fetch request of ' + myRequest.url + ' failed.', myRequest, e)

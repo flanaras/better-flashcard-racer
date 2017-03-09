@@ -58,7 +58,16 @@ export default class SelectMode extends Component {
         cookie.remove("username");
         cookie.remove("userRole");
         cookie.remove("userRoleId");
+
+        this.setState({
+            userid: NaN,
+            username: '',
+            userRole: '',
+            userRoleId: NaN,
+            auth: false});
+
         browserHistory.push('/');
+        console.log('ok3')
     }
 
     editUser(newUserId, newUser, newUserRoleId) {

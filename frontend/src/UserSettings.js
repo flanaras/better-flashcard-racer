@@ -1,4 +1,6 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
+import config from './../config.json';
+import LoadJson from "./services/LoadJson";
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 
 export default class UserSettings extends Component {
@@ -6,10 +8,20 @@ export default class UserSettings extends Component {
         super(props);
         this.state = {};
         this.onLogout = this.onLogout.bind(this);
+        this.apiCall = this.apiCall.bind(this);
+    }
+
+    async apiCall(endpoint, userid) {
+        const url = `${config.mock_api_url}/${endpoint}/${userid}`;
+        const logoutAck = await LoadJson(url, 'POST');
+        console.log(logoutAck);
+        if (logoutAck === 'ok') {
+            this.props.logout();
+        }
     }
 
     onLogout() {
-        this.props.logout();
+        this.apiCall('logout', this.props.userid);
     }
 
     render() {

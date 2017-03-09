@@ -19,7 +19,7 @@ export default class Dashboard extends Component {
             <div>
                 <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Dashboard</small>
                     <div style={{textAlign: "right"}}>
-                        <UserSettings auth={this.props.auth} username={this.props.username} logout={this.props.logout}/>
+                        <UserSettings auth={this.props.auth} userid={this.props.userid} username={this.props.username} logout={this.props.logout}/>
                     </div>
                 </PageHeader>
                 <Grid>

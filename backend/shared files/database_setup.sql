@@ -190,4 +190,3 @@ ALTER TABLE `deck_card_dep`
 -- Grant update to user JAVA
 --
 grant UPDATE on flashcardracer.* TO 'java'@'localhost'
-ALTER TABLE `users` ADD `is_login` INT NOT NULL AFTER `authlevel`;

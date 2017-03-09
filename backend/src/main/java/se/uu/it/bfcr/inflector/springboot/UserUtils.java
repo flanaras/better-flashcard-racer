@@ -17,7 +17,7 @@ public class UserUtils {
         LoginResponse loginResponse = null;
         try (Connection connection = DBConnect.connect()) {
             PreparedStatement preparedStatement;
-            String sqlQuery = "SELECT id, username, authlevel " +
+            String sqlQuery = "SELECT id, username, authlevel" +
                     "FROM users " +
                     "WHERE username = ? AND password = ?";
             ResultSet res;
@@ -29,13 +29,11 @@ public class UserUtils {
             res = preparedStatement.executeQuery();
 
             if (res.next()) {
-                if (res.getInt("is_login") == 0) {
                     loginResponse = new LoginResponse();
                     loginResponse.setUsername(res.getString("username"));
                     loginResponse.setUserid(res.getInt("id"));
                     loginResponse.setUserRole(UserUtils.authLevelToString(res.getInt("authlevel")));
                     loginResponse.setAuthId(res.getInt("authlevel"));
-                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

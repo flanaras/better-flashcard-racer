@@ -3,6 +3,7 @@ package se.uu.it.bfcr.inflector.springboot.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mysql.cj.api.mysqla.result.Resultset;
 import io.swagger.inflector.models.RequestContext;
 import io.swagger.inflector.models.ResponseContext;
 import se.uu.it.bfcr.inflector.springboot.models.AuthLevel;
@@ -301,23 +302,31 @@ public class UserController {
 
     public ResponseContext logout(RequestContext requestContext, Long id) throws SQLException {
         Connection con = null;
-        User user = new User();
+        ResultSet res = null;
+
 
         int i = 0;
 
         try
         {
-
             PreparedStatement updateUsers = null;
             // ObjectMapper mapper = new ObjectMapper();
             //user = mapper.treeToValue(users,User.class);
             String updatesUserStrings = "";
             con = DBConnect.connect();
-            updatesUserStrings = "UPDATE users set is_login = 0 where id = ? ";
+            updatesUserStrings = "Select * from users where id = ? ";
             updateUsers = con.prepareStatement(updatesUserStrings);
             updateUsers.setLong(1, id);
 
-            i  = updateUsers.executeUpdate() ;
+            res = updateUsers.executeQuery() ;
+
+            if(res.next())
+            {
+                i = 1;
+            }
+
+
+
         }
         catch (SQLException ex)
         {
@@ -329,14 +338,14 @@ public class UserController {
             con.close();
         }
 
-
-        if(i > 0) {
-            return new ResponseContext().status(Status.OK);
+        if(i == 1) {
+            return new ResponseContext().status(Status.NO_CONTENT);
         }
         else
         {
-            return new ResponseContext().status(Status.NOT_MODIFIED);
+            return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR);
         }
+
     }
 
 

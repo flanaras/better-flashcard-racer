@@ -33,18 +33,25 @@ sio.attach(app)
 Lobby = []
 Rooms = []
 
+UsersInrRoms = []
+
 #Lobby methods:
 
 @sio.on('connect', namespace='/lobby')
 def connect(sid, environ):
     print('connected to lobby service: ', sid)
 
+@sio.on('disconnect', namespace='/lobby')
+def disconnect(sid):
+    #Cleanup!!!!
+    print('disconnected from lobby service: ', sid)
+
 @sio.on('join_lobby', namespace='/lobby')
 async def join_lobby(sid, data):
     print("join: ", data)
     flag = False
     for user in Lobby:
-        if user.id == data.get("id"):
+        if user.sid == sid:
             flag = True
             print("User already in lobby!: ",user.username)
     if flag == False :
@@ -68,10 +75,6 @@ async def leave_lobby(sid, data):
             Lobby.remove(user)
             print("User left lobby: ",user.username)
     await lobbyJSON()
-
-@sio.on('disconnect', namespace='/lobby')
-def disconnect(sid):
-    print('disconnected from lobby service: ', sid)
 
 #Room methods:
 
@@ -120,7 +123,7 @@ async def roomJSON():
     await sio.emit('updaterooms',data = json.dumps(JSON),namespace = '/lobby')
     JSON = None
 
-#Ugly helper...
+#Ugly list helper...
 def playersASlist(players):
     list = []
     for user in players:
@@ -128,13 +131,34 @@ def playersASlist(players):
         list.append(info)
     return list
 
+def destroyRoom(id):
+    Desroom = None
+    for room in Rooms:
+        if id == room.id:
+            Desroom = room
+    oldhost = User(Desroom.hostId,Desroom.hostName,Desroom.hostsid)
+    Lobby.append(oldhost)
+    for user in Desroom.players:
+        Lobby.append(user)
+    Rooms.remove(Desroom)
+
 #Needs to be implemented:
 @sio.on('leave_room', namespace='/lobby')
 async def leave_room(sid, data):
-
-    print("message ", data)
+    leaveid = data.get('id')
+    for room in Rooms:
+        if room.id == leaveid:
+            if room.hostsid == sid:
+                destroyRoom(leaveid)
+            else:
+                for user in room.players:
+                    if user.sid == sid:
+                        Lobby.append(user)
+                        room.players.remove(user)
+                        print("User: ",user.username," left: ",room.roomName)
     await lobbyJSON()
     await roomJSON()
+
 
 #Run server method:
 

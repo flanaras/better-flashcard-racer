@@ -168,27 +168,12 @@ public class UserController {
 
         LoginResponse loginResponse = authenticateUser(password, username);
 
-        if (loginResponse != null) {
-
-            String updatesUserStrings = "";
-            try {
-                con = DBConnect.connect();
-                updatesUserStrings = "UPDATE users set is_login = 1 where id = ?";
-                updateUsers = con.prepareStatement(updatesUserStrings);
-                updateUsers.setInt(1, loginResponse.getUserid());
-
-                i = updateUsers.executeUpdate() ;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            if (i > 0) {
-                responseContext = new ResponseContext().status(Response.Status.OK);
-                responseContext.entity(loginResponse);
-            }
-
-
-        } else {
+        if (loginResponse != null)
+        {
+            responseContext = new ResponseContext().status(Response.Status.OK);
+            responseContext.entity(loginResponse);
+        }
+        else {
             responseContext = new ResponseContext().status(Response.Status.UNAUTHORIZED);
         }
 

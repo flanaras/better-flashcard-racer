@@ -17,9 +17,8 @@ public class UserUtils {
         LoginResponse loginResponse = null;
         try (Connection connection = DBConnect.connect()) {
             PreparedStatement preparedStatement;
-            String sqlQuery = "SELECT id, username, authlevel" +
-                    "FROM users " +
-                    "WHERE username = ? AND password = ?";
+            String sqlQuery = "Select id,username,authlevel from users where username = ? and password = ?";
+
             ResultSet res;
 
             preparedStatement = connection.prepareStatement(sqlQuery);

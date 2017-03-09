@@ -37,45 +37,6 @@ UsersInrRoms = []
 
 #Lobby methods:
 
-@sio.on('connect', namespace='/lobby')
-def connect(sid, environ):
-    print('connected to lobby service: ', sid)
-
-@sio.on('disconnect', namespace='/lobby')
-def disconnect(sid):
-    for user in Lobby:
-        if user.sid == sid:
-            Lobby.remove(user)
-    for room in Rooms:
-        if room.hostsid == sid:
-            destroyRoom(room.id)
-            await roomJSON()
-            await lobbyJSON()
-        else:
-            for player in room.players:
-                if player.sid == sid:
-                    room.players.remove(player)
-                    await roomJSON()
-                    await lobbyJSON()
-    print('disconnected from lobby service: ', sid)
-
-#Example join_lobby JSON:
-# {
-# "id": 1,
-# "username": "user1"
-# }
-@sio.on('join_lobby', namespace='/lobby')
-async def join_lobby(sid, data):
-    print("join: ", data)
-    flag = False
-    for user in Lobby:
-        if user.sid == sid:
-            flag = True
-            print("User already in lobby!: ",user.username)
-    if flag == False :
-        Lobby.append(User(data.get('id'), data.get('username'), sid))
-    await lobbyJSON()
-
 async def lobbyJSON():
     JSON = []
     for user in Lobby:
@@ -85,6 +46,75 @@ async def lobbyJSON():
     await sio.emit('updatelobby',data = json.dumps(JSON),namespace = '/lobby')
     JSON = None
 
+async def roomJSON():
+    JSON = []
+    for room in Rooms:
+        #print('    Room: ',room.roomName,' id: ',str(room.id))
+        info = {'id': room.id, 'roomname': room.roomName, 'hostID': room.hostId, 'hostname': room.hostName, 'players': playersASlist(room.players)}
+        JSON.append(info)
+    await sio.emit('updaterooms',data = json.dumps(JSON),namespace = '/lobby')
+    JSON = None
+
+async def cleanUp():
+    for user in Lobby:
+        if user.sid == sid:
+            Lobby.remove(user)
+    for room in Rooms:
+        if room.hostsid == sid:
+            destroyRoom(room.id)
+        else:
+            for player in room.players:
+                if player.sid == sid:
+                    room.players.remove(player)
+    await roomJSON()
+    await lobbyJSON()
+
+#Ugly list helper...
+def playersASlist(players):
+    list = []
+    for user in players:
+        info = {"id": user.id, "username": user.username}
+        list.append(info)
+    return list
+
+#Destroy room helper...
+def destroyRoom(id):
+    Desroom = None
+    for room in Rooms:
+        if id == room.id:
+            Desroom = room
+    oldhost = User(Desroom.hostId,Desroom.hostName,Desroom.hostsid)
+    Lobby.append(oldhost)
+    for user in Desroom.players:
+        Lobby.append(user)
+    Rooms.remove(Desroom)
+
+@sio.on('connect', namespace='/lobby')
+def connect(sid, environ):
+    print('connected to lobby service: ', sid)
+
+@sio.on('disconnect', namespace='/lobby')
+def disconnect(sid):
+    #cleanUp()
+    print('disconnected from lobby service: ', sid)
+
+#Example join_lobby JSON:
+# {
+# "id": 1,
+# "username": "user1"
+# }
+@sio.on('join_lobby', namespace='/lobby')
+async def join_lobby(sid, data):
+    #print("join: ", data)
+    flag = False
+    for user in Lobby:
+        if user.sid == sid:
+            flag = True
+            print("User already in lobby!: ",user.username)
+    if flag == False :
+        Lobby.append(User(data.get('id'), data.get('username'), sid))
+    await lobbyJSON()
+
 #Example leave_lobby JSON:
 # {
 # "id": 1,
@@ -92,7 +122,7 @@ async def lobbyJSON():
 # }
 @sio.on('leave_lobby', namespace='/lobby')
 async def leave_lobby(sid, data):
-    print("leave: ", data)
+    #print("leave: ", data)
     for user in Lobby:
         if(user.id == data.get("id")):
             Lobby.remove(user)
@@ -108,19 +138,26 @@ async def leave_lobby(sid, data):
 # }
 @sio.on('create_room', namespace='/lobby')
 async def create_room(sid, data):
-    print("CR: ", data)
+    #print("CR: ", data)
     host = None
-    for user in Lobby:
-        if user.sid == sid:
-            host = user
-    if host != None:
-        Rooms.append(Room(data.get('id'),data.get('roomname'),host.id,host.username,host.sid))
-        Lobby.remove(host)
-        print("Created room, hostID: ",host.id)
-        await roomJSON()
-        await lobbyJSON()
+    exists = False
+    for room in Rooms:
+        if room.id == data.get("id"):
+            exists = True
+    if exists:
+        print("Create room: Room with id: '",data.get("id"),"' already exists!")
     else:
-        print("Create room: User not in Lobby!")
+        for user in Lobby:
+            if user.sid == sid:
+                host = user
+        if host != None:
+            Rooms.append(Room(data.get('id'),data.get('roomname'),host.id,host.username,host.sid))
+            Lobby.remove(host)
+            print("Created room, hostID: ",host.id)
+            await roomJSON()
+            await lobbyJSON()
+        else:
+            print("Create room: User not in Lobby!")
 
 #Example join_room JSON:
 # {
@@ -129,7 +166,7 @@ async def create_room(sid, data):
 @sio.on('join_room', namespace='/lobby')
 async def join_room(sid, data):
     exists = False
-    print("JR: ", data)
+    #print("JR: ", data)
     for room in Rooms:
         if data.get('id') == room.id:
             exists = True
@@ -144,34 +181,6 @@ async def join_room(sid, data):
                 await roomJSON()
     else:
         print("No such room (id): ",data.get('id'))
-
-async def roomJSON():
-    JSON = []
-    for room in Rooms:
-        print('    Room: ',room.roomName,' id: ',str(room.id))
-        info = {'id': room.id, 'roomname': room.roomName, 'hostID': room.hostId, 'hostname': room.hostName, 'players': playersASlist(room.players)}
-        JSON.append(info)
-    await sio.emit('updaterooms',data = json.dumps(JSON),namespace = '/lobby')
-    JSON = None
-
-#Ugly list helper...
-def playersASlist(players):
-    list = []
-    for user in players:
-        info = {"id": user.id, "username": user.username}
-        list.append(info)
-    return list
-
-def destroyRoom(id):
-    Desroom = None
-    for room in Rooms:
-        if id == room.id:
-            Desroom = room
-    oldhost = User(Desroom.hostId,Desroom.hostName,Desroom.hostsid)
-    Lobby.append(oldhost)
-    for user in Desroom.players:
-        Lobby.append(user)
-    Rooms.remove(Desroom)
 
 #Example leave_room JSON:
 # {

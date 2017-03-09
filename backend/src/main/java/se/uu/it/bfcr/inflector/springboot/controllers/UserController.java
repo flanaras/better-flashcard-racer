@@ -301,7 +301,7 @@ public class UserController {
         }
     }
 
-    public ResponseContext logout(RequestContext requestContext,JsonNode users) throws SQLException {
+    public ResponseContext logout(RequestContext requestContext, Long id) throws SQLException {
         Connection con = null;
         User user = new User();
 
@@ -311,15 +311,13 @@ public class UserController {
         {
 
             PreparedStatement updateUsers = null;
-            ObjectMapper mapper = new ObjectMapper();
-            user = mapper.treeToValue(users,User.class);
+            // ObjectMapper mapper = new ObjectMapper();
+            //user = mapper.treeToValue(users,User.class);
             String updatesUserStrings = "";
             con = DBConnect.connect();
-                updatesUserStrings = "UPDATE users set is_login = 0 where username = ? and password = ? ";
-                updateUsers = con.prepareStatement(updatesUserStrings);
-                updateUsers.setString(1, user.getUsername());
-                updateUsers.setString(2, user.getPassword());
-
+            updatesUserStrings = "UPDATE users set is_login = 0 where id = ? ";
+            updateUsers = con.prepareStatement(updatesUserStrings);
+            updateUsers.setLong(1, id);
 
             i  = updateUsers.executeUpdate() ;
         }
@@ -328,8 +326,6 @@ public class UserController {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
         } finally
         {
             con.close();

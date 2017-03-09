@@ -53,13 +53,14 @@ public class UserUtils {
         } else if (authLevel == 2) {
             return AuthLevels.admin;
         }
-        return "unknown_auth_level";
+        return AuthLevels.unknown;
     }
 
     class AuthLevels {
         static final String student = "student";
         static final String teacher = "teacher";
         static final String admin = "admin";
+        static final String unknown = "unknown_auth_level";
     }
 
     public static int authLevelToInt(String authLevel) {

@@ -43,9 +43,27 @@ def connect(sid, environ):
 
 @sio.on('disconnect', namespace='/lobby')
 def disconnect(sid):
-    #Cleanup!!!!
+    for user in Lobby:
+        if user.sid == sid:
+            Lobby.remove(user)
+    for room in Rooms:
+        if room.hostsid == sid:
+            destroyRoom(room.id)
+            await roomJSON()
+            await lobbyJSON()
+        else:
+            for player in room.players:
+                if player.sid == sid:
+                    room.players.remove(player)
+                    await roomJSON()
+                    await lobbyJSON()
     print('disconnected from lobby service: ', sid)
 
+#Example join_lobby JSON:
+# {
+# "id": 1,
+# "username": "user1"
+# }
 @sio.on('join_lobby', namespace='/lobby')
 async def join_lobby(sid, data):
     print("join: ", data)
@@ -67,6 +85,11 @@ async def lobbyJSON():
     await sio.emit('updatelobby',data = json.dumps(JSON),namespace = '/lobby')
     JSON = None
 
+#Example leave_lobby JSON:
+# {
+# "id": 1,
+# "username": "user1" (not used)
+# }
 @sio.on('leave_lobby', namespace='/lobby')
 async def leave_lobby(sid, data):
     print("leave: ", data)
@@ -78,7 +101,11 @@ async def leave_lobby(sid, data):
 
 #Room methods:
 
-#Needs to be implemented:
+#Example create_room JSON:
+# {
+# "id": 1,
+# "roomname": "user's room"
+# }
 @sio.on('create_room', namespace='/lobby')
 async def create_room(sid, data):
     print("CR: ", data)
@@ -95,6 +122,10 @@ async def create_room(sid, data):
     else:
         print("Create room: User not in Lobby!")
 
+#Example join_room JSON:
+# {
+# "id": 1 (ID of room to join)
+# }
 @sio.on('join_room', namespace='/lobby')
 async def join_room(sid, data):
     exists = False
@@ -142,7 +173,10 @@ def destroyRoom(id):
         Lobby.append(user)
     Rooms.remove(Desroom)
 
-#Needs to be implemented:
+#Example leave_room JSON:
+# {
+# "id": 1 (ID of room to leave)
+# }
 @sio.on('leave_room', namespace='/lobby')
 async def leave_room(sid, data):
     leaveid = data.get('id')
@@ -158,7 +192,6 @@ async def leave_room(sid, data):
                         print("User: ",user.username," left: ",room.roomName)
     await lobbyJSON()
     await roomJSON()
-
 
 #Run server method:
 

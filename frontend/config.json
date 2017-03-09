@@ -10,6 +10,7 @@
     "newStudent" : "newStudent",
     "studentLeft" : "studentLeft",
     "joinLobby" : "join_lobby",
-    "lobbyState" : "lobbyState"
+    "lobbyState" : "updatelobby",
+    "joinRoom" : "join_room"
   }
 }

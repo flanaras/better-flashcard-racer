@@ -19,7 +19,7 @@ ReactDOM.render((
             <Route path="solutions" component={Solutions} />
             <Route path="createroom" component={CreateRoom} />
             <Route path="roomlist" component={RoomList} />
-            <Route path="room" component={Lobby} />
+            <Route path="lobby" component={Lobby} />
         </Route>
     </Router>
 ), document.getElementById('root'));

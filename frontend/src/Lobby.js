@@ -7,6 +7,8 @@ import {Link} from "react-router";
 import sampleData from '../../sockets/docs/Lobby.json';
 const sampleUser = {id : 1, username : 'Astrid'};
 
+var socket;
+
 export default class Room extends React.Component {
   constructor() {
     super();
@@ -17,14 +19,22 @@ export default class Room extends React.Component {
   }
 
   componentWillMount() {
-    const socket = io(config.socket.url + '/' + config.socket.lobbyNamespace);
+    socket = io(config.socket.url + '/' + config.socket.lobbyNamespace);
     var self = this;
     socket.on('connect', function() {
-      console.log('Connected to the room namespace');
 
       socket.emit(config.socket.joinLobby, sampleUser);
     });
 
+    socket.on(config.socket.lobbyState, (data) => {
+      //todo: the server response should contain data as described in '../../sockets/docs/Lobby.json'
+      //todo: as soon as that is in place, update the roomList with this data
+      console.log(data);
+    })
+  }
+
+  joinRoom() {
+    socket.emit(config.socket.joinRoom, { id : this });
   }
 
   render() {
@@ -34,7 +44,7 @@ export default class Room extends React.Component {
         <td>{room.host.username}</td>
         <td>{room.deck.name}</td>
         <td>
-          <Link to="#">
+          <Link to="" onClick={this.joinRoom.bind(room.id)}>
             <Button bsStyle="info" >
               Join
             </Button>

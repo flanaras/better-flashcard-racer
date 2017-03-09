@@ -29,11 +29,13 @@ public class UserUtils {
             res = preparedStatement.executeQuery();
 
             if (res.next()) {
-                loginResponse = new LoginResponse();
-                loginResponse.setUsername(res.getString("username"));
-                loginResponse.setUserid(res.getInt("id"));
-                loginResponse.setUserRole(UserUtils.authLevelToString(res.getInt("authlevel")));
-                loginResponse.setAuthId(res.getInt("authlevel"));
+                if (res.getInt("is_login") == 0) {
+                    loginResponse = new LoginResponse();
+                    loginResponse.setUsername(res.getString("username"));
+                    loginResponse.setUserid(res.getInt("id"));
+                    loginResponse.setUserRole(UserUtils.authLevelToString(res.getInt("authlevel")));
+                    loginResponse.setAuthId(res.getInt("authlevel"));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

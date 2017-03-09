@@ -172,18 +172,16 @@ public class UserController {
             String updatesUserStrings = "";
             try {
                 con = DBConnect.connect();
-                updatesUserStrings = "UPDATE users set is_login = 1 where username = ? and password = ? ";
+                updatesUserStrings = "UPDATE users set is_login = 1 where id = ?";
                 updateUsers = con.prepareStatement(updatesUserStrings);
-                updateUsers.setString(1, username);
-                updateUsers.setString(2, password);
+                updateUsers.setInt(1, loginResponse.getUserid());
 
-                i  = updateUsers.executeUpdate() ;
+                i = updateUsers.executeUpdate() ;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
-            if(i > 0)
-            {
+            if (i > 0) {
                 responseContext = new ResponseContext().status(Response.Status.OK);
                 responseContext.entity(loginResponse);
             }

@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import config from './../config.json';
 import LoadJson from "./services/LoadJson";
-import { DropdownButton, MenuItem } from 'react-bootstrap';
+import { DropdownButton, MenuItem, Navbar } from 'react-bootstrap';
+import Breadcrumbs from 'react-breadcrumbs';
 
 export default class UserSettings extends Component {
     constructor(props) {
@@ -26,11 +27,15 @@ export default class UserSettings extends Component {
     render() {
         return (
             this.props.auth?
-                <div>
-                    <DropdownButton bsStyle={'info'} title={this.props.username} >
+                <Navbar >
+                    <Breadcrumbs
+                        routes={this.props.routes}
+                        params={this.props.params}
+                    />
+                    <DropdownButton bsStyle={'info'} bsSize={'small'} title={this.props.username} >
                         <MenuItem eventKey="1" onClick={this.onLogout}>Sign out</MenuItem>
                     </DropdownButton>
-                </div>
+                </Navbar>
             :<div/>
         )
     }

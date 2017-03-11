@@ -17,11 +17,9 @@ export default class Dashboard extends Component {
         return (
             (this.props.auth && this.props.userRole!=='student')?
             <div>
-                <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Dashboard</small>
-                    <div style={{textAlign: "right"}}>
-                        <UserSettings auth={this.props.auth} userid={this.props.userid} username={this.props.username} logout={this.props.logout}/>
-                    </div>
-                </PageHeader>
+                <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>{this.props.route.name}</small></PageHeader>
+                <UserSettings routes={this.props.routes} auth={this.props.auth} userid={this.props.userid} username={this.props.username} logout={this.props.logout}/>
+
                 <Grid>
                     <Row className="show-grid">
                         <Col xs={1} md={4}></Col>
@@ -29,6 +27,7 @@ export default class Dashboard extends Component {
                             <Panel style={{textAlign: "center"}}>
                                 <FormGroup><Button bsStyle="info" ><Link style={{color: "#ffffff"}} to="deckconfig" >Try practice mode</Link></Button></FormGroup>
                                 <FormGroup><Button bsStyle="info" ><Link style={{color: "#ffffff"}} to="users">User management</Link></Button></FormGroup>
+
                             </Panel>
                         </Col>
                         <Col xs={1} md={4}></Col>

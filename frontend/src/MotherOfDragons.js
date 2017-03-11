@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {browserHistory} from "react-router";
 import cookie from "react-cookie";
 
-export default class SelectMode extends Component {
+export default class MotherOfDragons extends Component {
     constructor(props) {
         super(props)
         this.state = {}
@@ -39,7 +39,7 @@ export default class SelectMode extends Component {
         cookie.save("userRoleId", userRoleId, {path: "/", expires: d});
         cookie.save("auth", auth, {path: "/", expires: d});
 
-        browserHistory.push('dashboard');
+        //browserHistory.push('dashboard');
     }
 
     loadUserInfo() {
@@ -95,7 +95,8 @@ export default class SelectMode extends Component {
                     editUser: this.editUser,
                     newUserId: this.state.newUserId,
                     newUser: this.state.newUser,
-                    newUserRoleId: this.state.newUserRoleId
+                    newUserRoleId: this.state.newUserRoleId,
+                    routes: this.props.routes
                 })}
             </div>
         )

@@ -6,6 +6,7 @@ import { PageHeader, Grid, Row, Col, Table, Button } from 'react-bootstrap';
 import config from '../config.json';
 import {Link} from "react-router";
 import LoadJson from './services/LoadJson';
+import UserSettings from './UserSettings';
 
 export default class UserList extends Component {
 
@@ -72,7 +73,8 @@ export default class UserList extends Component {
     return (
         this.props.auth?
           <div>
-            <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>User Management</small></PageHeader>
+            <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>{this.props.route.name}</small></PageHeader>
+            <UserSettings auth={this.props.auth} routes={this.props.routes} userid={this.props.userid} username={this.props.username} logout={this.props.logout}/>
             <Grid>
               <Row className="show-grid">
                 <Col xs={1} md={3}></Col>

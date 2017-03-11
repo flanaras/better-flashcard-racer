@@ -18,7 +18,7 @@ import {Link} from "react-router";
 
 describe('SelectMode', () => {
     it('should render username and password input texts, login button and try practice mode link', () => {
-        const wrapper = shallow(<SelectMode />);
+        const wrapper = shallow(<SelectMode route={{name: 'Welcome'}} />);
         expect(wrapper.containsAllMatchingElements([
             <FormControl type="text" name="username"/>
         ])).to.equal(true);
@@ -33,11 +33,11 @@ describe('SelectMode', () => {
         expect(wrapper.find('Link').length).to.equal(1);
     });
     it('should init without authentication', () => {
-        const wrapper = shallow(<SelectMode />);
+        const wrapper = shallow(<SelectMode route={{name: 'Welcome'}} />);
         expect(wrapper.state('auth')).to.equal(false);
     });
     it('should accept inputs', () => {
-        const wrapper = shallow(<SelectMode />);
+        const wrapper = shallow(<SelectMode route={{name: 'Welcome'}} />);
         const username = wrapper.find("[name='username']");
         username.simulate('change', {target: {name: 'username', value: 'test'}});
         expect(wrapper.state('username')).to.equal('test');
@@ -49,7 +49,7 @@ describe('SelectMode', () => {
     it('should call apiCall when login form is submitted', () => {
         const apiCallSpy = spy(SelectMode.prototype, "apiCall");
         expect(apiCallSpy.notCalled).to.equal(true);
-        const wrapper = mount(<SelectMode />);
+        const wrapper = mount(<SelectMode route={{name: 'Welcome'}} />);
         const form = wrapper.find('form');
         form.simulate('submit');
         expect(apiCallSpy.calledOnce).to.equal(true);
@@ -58,7 +58,7 @@ describe('SelectMode', () => {
 
 describe('Dashboard', () => {
     it('Dashboard should be available only if the user is authenticated and his userRole is admin or teacher', () => {
-        let wrapper = shallow(<Dashboard auth={true} userRole='admin'/>);
+        let wrapper = shallow(<Dashboard route={{name: 'Dashboard'}} auth={true} userRole='admin'/>);
         expect(wrapper.containsAllMatchingElements([
             <Link style={{color: "#ffffff"}} to="deckconfig" >Try practice mode</Link>
         ])).to.equal(true);
@@ -66,7 +66,7 @@ describe('Dashboard', () => {
             <Link style={{color: "#ffffff"}} to="users">User management</Link>
         ])).to.equal(true);
 
-        wrapper = shallow(<Dashboard auth={false} userRole=''/>);
+        wrapper = shallow(<Dashboard route={{name: 'Dashboard'}} auth={false} userRole=''/>);
         expect(wrapper.containsAllMatchingElements([
             <Link style={{color: "#ffffff"}} to="deckconfig" >Try practice mode</Link>
         ])).to.equal(false);
@@ -319,7 +319,7 @@ describe('UserList', () => {
                 {id: 2, username : "Another User", auth_level: "Student", auth_id: 0}];
 
     it('should display the correct number of elements in the table', () => {
-        const wrapper = shallow(<UserList auth={true} users={users} />);
+        const wrapper = shallow(<UserList route={{name: 'User Management'}} auth={true} users={users} />);
         wrapper.setState({users});
         const tableRows = wrapper.find('tr');
         expect(tableRows).to.have.length.of(3+1);
@@ -327,7 +327,7 @@ describe('UserList', () => {
     it('should call apiCall to get user list', () => {
         const apiCallSpy = spy(UserList.prototype, "apiCall");
         const loadUserInfoSpy = spy();
-        const wrapper = mount(<UserList loadUserInfo={loadUserInfoSpy} />);
+        const wrapper = mount(<UserList route={{name: 'User Management'}} loadUserInfo={loadUserInfoSpy} />);
         expect(apiCallSpy.calledOnce).to.equal(true);
     });
     it('should not render if user is not authenticated', () => {
@@ -337,7 +337,7 @@ describe('UserList', () => {
     it('should call apiDeleteCall to delete user', () => {
         const apiDeleteCall = spy(UserList.prototype, "apiDeleteCall");
         const loadUserInfoSpy = spy();
-        const wrapper = mount(<UserList auth={true} loadUserInfo={loadUserInfoSpy} />);
+        const wrapper = mount(<UserList routes={[]} route={{name: 'User Management'}} auth={true} loadUserInfo={loadUserInfoSpy} />);
         wrapper.setState({users});
         wrapper.find('[name="deleteButton0"]').simulate('click');
         expect(apiDeleteCall.calledOnce).to.equal(true);

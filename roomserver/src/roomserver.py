@@ -77,7 +77,7 @@ async def roomJSON():
         print('flashcard inside roomJSON: ', room.deck.flashcard)
         cards = cardsAsList(room.deck.flashcard)
         deck = {'id': room.deck.id, 'numProblems':room.deck.numProblems, 'name': room.deck.name, 'description': room.deck.description, 'user_id': room.deck.user_id, 'user_name': room.deck.user_name, 'created': room.deck.created, 'changed': room.deck.changed, 'private': room.deck.private, 'flashcard': cards}
-        info = {'id': room.id, 'roomname': room.roomName, 'host': room.host, 'deck': deck, 'players': playersASlist(room.players)}
+        info = {'id': room.id, 'name': room.roomName, 'host': room.host, 'deck': deck, 'players': playersASlist(room.players)}
         JSON.append(info)
     await sio.emit('updaterooms',data = json.dumps(JSON),namespace = '/lobby')
     JSON = None
@@ -220,10 +220,10 @@ async def create_room(sid, data):
                 cards.append(newCard)
             deckObject = Deck(deck.get('id'), deck.get('numProblems'), deck.get('name'), deck.get('description'), deck.get('user_id'), deck.get('user_name'), deck.get('created'), deck.get('changed'), deck.get('private'), cards)
 
-            Rooms.append(Room(str(uuid.uuid1()), data.get('roomname'), host, deckObject))
-            Lobby.remove(host)
+            Rooms.append(Room(str(uuid.uuid1()), data.get('name'), host, deckObject))
             await roomJSON()
             await lobbyJSON()
+            Lobby.remove(host)
         else:
             print("Create room: User not in Lobby!")
 

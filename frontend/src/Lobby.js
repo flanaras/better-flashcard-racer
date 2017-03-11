@@ -32,12 +32,20 @@ export default class Room extends React.Component {
     socket.on(config.socket.lobbyState, (data) => {
       //todo: the server response should contain data as described in '../../sockets/docs/Lobby.json'
       //todo: as soon as that is in place, update the roomList with this data
-      console.log(data);
-    })
+      console.log('The lobby state was sent!');
+      console.log('Lobby state: ', data);
+    });
+
+    socket.on(config.socket.roomState, (data) => {
+      console.log('The room state was sent!');
+      console.log('Room state: ', JSON.parse(data));
+      this.setState({roomList : JSON.parse(data)});
+    });
   }
 
   joinRoom() {
-    socket.emit(config.socket.joinRoom, { id : this });
+    console.log(this);
+    //socket.emit(config.socket.joinRoom, { id : this });
   }
 
   createRoom(roomPayload) {

@@ -12,6 +12,7 @@ from aiohttp import web
 import socketio
 import json
 import itertools
+import uuid
 
 class User:
     def __init__(self, id, username, sid, authLevel):
@@ -40,9 +41,9 @@ class Flashcard:
         self.answer = answer
 
 class Room:
-    newid = next(itertools.count())
-    def __init__(self, roomName, User, Deck):
-        self.id = Room.newid + 1
+    #newid = next(itertools.count())
+    def __init__(self, id, roomName, User, Deck):
+        self.id = id
         self.roomName = roomName
         self.host = User
         self.deck = Deck
@@ -72,11 +73,11 @@ async def roomJSON():
     JSON = []
     for room in Rooms:
         print('    Room: ',room.roomName,' id: ',str(room.id))
-        host = {'id': room.host.id, 'auth_level': room.host.authLevel, 'username': room.host.username}
+        #host = {'id': room.host.id, 'auth_level': room.host.authLevel, 'username': room.host.username}
         print('flashcard inside roomJSON: ', room.deck.flashcard)
         cards = cardsAsList(room.deck.flashcard)
         deck = {'id': room.deck.id, 'numProblems':room.deck.numProblems, 'name': room.deck.name, 'description': room.deck.description, 'user_id': room.deck.user_id, 'user_name': room.deck.user_name, 'created': room.deck.created, 'changed': room.deck.changed, 'private': room.deck.private, 'flashcard': cards}
-        info = {'id': room.id, 'roomname': room.roomName, 'host': host, 'deck': deck, 'players': playersASlist(room.players)}
+        info = {'id': room.id, 'roomname': room.roomName, 'host': room.host, 'deck': deck, 'players': playersASlist(room.players)}
         JSON.append(info)
     await sio.emit('updaterooms',data = json.dumps(JSON),namespace = '/lobby')
     JSON = None
@@ -219,7 +220,7 @@ async def create_room(sid, data):
                 cards.append(newCard)
             deckObject = Deck(deck.get('id'), deck.get('numProblems'), deck.get('name'), deck.get('description'), deck.get('user_id'), deck.get('user_name'), deck.get('created'), deck.get('changed'), deck.get('private'), cards)
 
-            Rooms.append(Room(data.get('roomname'), host, deckObject))
+            Rooms.append(Room(str(uuid.uuid1()), data.get('roomname'), host, deckObject))
             Lobby.remove(host)
             await roomJSON()
             await lobbyJSON()

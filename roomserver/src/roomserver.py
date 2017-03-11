@@ -5,26 +5,48 @@
 #   2. install aiohttp: run "pip install aiohttp"
 #   3. install socket.io: run "pip install python-socketio"
 #   4. start server: run "python roomserver.py"
+#   listen to event updateroom
 #-----------------------------------------------------------------------------------------------------------------------
 
 from aiohttp import web
 import socketio
 import json
+import itertools
 
 class User:
-    def __init__(self, id, username, sid):
+    def __init__(self, id, username, sid, authLevel):
         self.id = id
         self.username = username
         self.sid = sid
+        self.authLevel = authLevel
+
+class Deck:
+    def __init__(self, id, numProblems, name, description, user_id, user_name, created, changed, private, Flashcard):
+        self.id = id
+        self.numProblems = numProblems
+        self.name = name
+        self.description = description
+        self.user_id = user_id
+        self.user_name = user_name
+        self.created = created
+        self.changed = changed
+        self.private = private
+        self.flashcard = Flashcard
+
+class Flashcard:
+    def __init__(self, id, problem, answer):
+        self.id = id
+        self.problem = problem
+        self.answer = answer
 
 class Room:
-    def __init__(self, id, roomName, hostId, hostName, hostsid):
-        self.id = id
+    newid = next(itertools.count())
+    def __init__(self, roomName, User, Deck):
+        self.id = Room.newid + 1
         self.roomName = roomName
-        self.hostId = hostId
-        self.hostName = hostName
+        self.host = User
+        self.deck = Deck
         self.players = []
-        self.hostsid = hostsid
 
 sio = socketio.AsyncServer()
 app = web.Application()
@@ -40,8 +62,8 @@ UsersInrRoms = []
 async def lobbyJSON():
     JSON = []
     for user in Lobby:
-        print('    Name: ',user.username + ' id: ' + str(user.id))
-        info = {'id': user.id, 'username': user.username}
+        #print('    Name: ',user.username + ' id: ' + str(user.id) + ' auth_level: ' + str(user.authLevel))
+        info = {'id': user.id, 'username': user.username, 'auth_level': user.authLevel}
         JSON.append(info)
     await sio.emit('updatelobby',data = json.dumps(JSON),namespace = '/lobby')
     JSON = None
@@ -49,8 +71,12 @@ async def lobbyJSON():
 async def roomJSON():
     JSON = []
     for room in Rooms:
-        #print('    Room: ',room.roomName,' id: ',str(room.id))
-        info = {'id': room.id, 'roomname': room.roomName, 'hostID': room.hostId, 'hostname': room.hostName, 'players': playersASlist(room.players)}
+        print('    Room: ',room.roomName,' id: ',str(room.id))
+        host = {'id': room.host.id, 'auth_level': room.host.authLevel, 'username': room.host.username}
+        print('flashcard inside roomJSON: ', room.deck.flashcard)
+        cards = cardsAsList(room.deck.flashcard)
+        deck = {'id': room.deck.id, 'numProblems':room.deck.numProblems, 'name': room.deck.name, 'description': room.deck.description, 'user_id': room.deck.user_id, 'user_name': room.deck.user_name, 'created': room.deck.created, 'changed': room.deck.changed, 'private': room.deck.private, 'flashcard': cards}
+        info = {'id': room.id, 'roomname': room.roomName, 'host': host, 'deck': deck, 'players': playersASlist(room.players)}
         JSON.append(info)
     await sio.emit('updaterooms',data = json.dumps(JSON),namespace = '/lobby')
     JSON = None
@@ -66,6 +92,7 @@ async def cleanUp():
             for player in room.players:
                 if player.sid == sid:
                     room.players.remove(player)
+    #await doesn't work, cause disconnect function should be async too
     await roomJSON()
     await lobbyJSON()
 
@@ -73,9 +100,18 @@ async def cleanUp():
 def playersASlist(players):
     list = []
     for user in players:
-        info = {"id": user.id, "username": user.username}
+        info = {"id": user.id, "username": user.username, "auth_level": user.authLevel}
         list.append(info)
     return list
+
+#change flashcard into dictionary
+def cardsAsList(cards):
+    list = []
+    for card in cards:
+        info = {"id": card.id, "problem": card.problem, "answer": card.answer}
+        list.append(info)
+    return list
+
 
 #Destroy room helper...
 def destroyRoom(id):
@@ -100,25 +136,27 @@ def disconnect(sid):
 
 #Example join_lobby JSON:
 # {
-# "id": 1,
-# "username": "user1"
+#  "id": 1,
+#  "auth_level": "admin",
+#  "username": "Astrid"
 # }
+# add checking user_id
 @sio.on('join_lobby', namespace='/lobby')
 async def join_lobby(sid, data):
-    #print("join: ", data)
+    print("join: ", data)
     flag = False
     for user in Lobby:
-        if user.sid == sid:
+        if user.sid == sid or user.id == data.get('id'):
             flag = True
             print("User already in lobby!: ",user.username)
     if flag == False :
-        Lobby.append(User(data.get('id'), data.get('username'), sid))
+        Lobby.append(User(data.get('id'), data.get('username'), sid, data.get('auth_level')))
     await lobbyJSON()
+    await roomJSON()
 
 #Example leave_lobby JSON:
 # {
 # "id": 1,
-# "username": "user1" (not used)
 # }
 @sio.on('leave_lobby', namespace='/lobby')
 async def leave_lobby(sid, data):
@@ -133,27 +171,55 @@ async def leave_lobby(sid, data):
 
 #Example create_room JSON:
 # {
-# "id": 1,
-# "roomname": "user's room"
+#   "roomname": "user's room",
+#   "user_id": 1,
+#   "deck": {
+#       "id": 1,
+#       "numProblems": 5,
+#       "name": "A test deck",
+#       "description": "Description for a test deck",
+#       "user_id": 2,
+#       "user_name": "John",
+#       "created": "2017-01-25T20:17:45.000Z",
+#       "changed": "2017-01-25T20:17:45.000Z",
+#       "private": false,
+#       "flashcard": [
+#         {
+#           "id": 1,
+#           "problem": "1+1",
+#           "answer": 2
+#         },
+#         {
+#           "id": 2,
+#           "problem": "2+2",
+#           "answer": 4
+#         }
+#       ]
+#     }
 # }
 @sio.on('create_room', namespace='/lobby')
 async def create_room(sid, data):
-    #print("CR: ", data)
+    print("CR: ", data)
     host = None
     exists = False
-    for room in Rooms:
-        if room.id == data.get("id"):
-            exists = True
     if exists:
-        print("Create room: Room with id: '",data.get("id"),"' already exists!")
+        print("Create room: Room already exists!")
     else:
         for user in Lobby:
-            if user.sid == sid:
+            print(user.username)
+            if user.sid == sid and user.id == data.get("user_id"):
                 host = user
         if host != None:
-            Rooms.append(Room(data.get('id'),data.get('roomname'),host.id,host.username,host.sid))
+            deck =  data.get("deck")
+            flashcard = deck.get("flashcard")
+            cards = []
+            for card in flashcard:
+                newCard = Flashcard(card.get('id'), card.get('problem'), card.get('answer'))
+                cards.append(newCard)
+            deckObject = Deck(deck.get('id'), deck.get('numProblems'), deck.get('name'), deck.get('description'), deck.get('user_id'), deck.get('user_name'), deck.get('created'), deck.get('changed'), deck.get('private'), cards)
+
+            Rooms.append(Room(data.get('roomname'), host, deckObject))
             Lobby.remove(host)
-            print("Created room, hostID: ",host.id)
             await roomJSON()
             await lobbyJSON()
         else:
@@ -191,7 +257,7 @@ async def leave_room(sid, data):
     leaveid = data.get('id')
     for room in Rooms:
         if room.id == leaveid:
-            if room.hostsid == sid:
+            if room.host.sid == sid:
                 destroyRoom(leaveid)
             else:
                 for user in room.players:
@@ -199,7 +265,7 @@ async def leave_room(sid, data):
                         Lobby.append(user)
                         room.players.remove(user)
                         print("User: ",user.username," left: ",room.roomName)
-    await lobbyJSON()
+    #await lobbyJSON()
     await roomJSON()
 
 #Run server method:

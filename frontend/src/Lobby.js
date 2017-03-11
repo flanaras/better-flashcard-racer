@@ -7,7 +7,7 @@ import CreateRoom from './CreateRoom';
 
 import sampleData from '../../sockets/docs/Lobby.json';
 const sampleUser = {id : 1, username : 'Astrid'};
-
+const eventHost = {"id": 2, "auth_level": "teacher", "username": "Teachername"};
 var socket;
 
 export default class Room extends React.Component {
@@ -26,7 +26,7 @@ export default class Room extends React.Component {
     var self = this;
     socket.on('connect', function() {
 
-      socket.emit(config.socket.joinLobby, sampleUser);
+      socket.emit(config.socket.joinLobby, eventHost);
     });
 
     socket.on(config.socket.lobbyState, (data) => {
@@ -41,6 +41,7 @@ export default class Room extends React.Component {
   }
 
   createRoom(roomPayload) {
+    console.log(roomPayload);
     socket.emit(config.socket.createRoom, roomPayload);
   }
 

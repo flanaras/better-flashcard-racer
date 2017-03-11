@@ -207,11 +207,12 @@ async def create_room(sid, data):
     else:
         for user in Lobby:
             print(user.username)
-            if user.sid == sid and user.id == data.get("user_id"):
+            host = data.get("host")
+            if user.sid == sid and user.id == host.get("id"):
                 host = user
         if host != None:
             deck =  data.get("deck")
-            flashcard = deck.get("flashcard")
+            flashcard = deck.get("flashcards")
             cards = []
             for card in flashcard:
                 newCard = Flashcard(card.get('id'), card.get('problem'), card.get('answer'))

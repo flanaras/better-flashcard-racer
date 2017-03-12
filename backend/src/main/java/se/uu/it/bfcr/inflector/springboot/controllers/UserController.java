@@ -3,6 +3,7 @@ package se.uu.it.bfcr.inflector.springboot.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mysql.cj.api.mysqla.result.Resultset;
 import io.swagger.inflector.models.RequestContext;
 import io.swagger.inflector.models.ResponseContext;
 import se.uu.it.bfcr.inflector.springboot.models.AuthLevel;
@@ -157,17 +158,22 @@ public class UserController {
     }
 
     public ResponseContext login(RequestContext requestContext, JsonNode body) {
-        ResponseContext responseContext;
+        ResponseContext responseContext = null;
+        Connection con = null;
+        PreparedStatement updateUsers = null;
+        int i = 0;
 
         String password = body.get("password").asText();
         String username = body.get("username").asText();
 
         LoginResponse loginResponse = authenticateUser(password, username);
 
-        if (loginResponse != null) {
+        if (loginResponse != null)
+        {
             responseContext = new ResponseContext().status(Response.Status.OK);
             responseContext.entity(loginResponse);
-        } else {
+        }
+        else {
             responseContext = new ResponseContext().status(Response.Status.UNAUTHORIZED);
         }
 
@@ -278,4 +284,54 @@ public class UserController {
             return new ResponseContext().status(Status.NOT_MODIFIED);
         }
     }
+
+    public ResponseContext logout(RequestContext requestContext, Long id) throws SQLException {
+        Connection con = null;
+        ResultSet res = null;
+
+
+        int i = 0;
+
+        try
+        {
+            PreparedStatement updateUsers = null;
+            // ObjectMapper mapper = new ObjectMapper();
+            //user = mapper.treeToValue(users,User.class);
+            String updatesUserStrings = "";
+            con = DBConnect.connect();
+            updatesUserStrings = "Select * from users where id = ? ";
+            updateUsers = con.prepareStatement(updatesUserStrings);
+            updateUsers.setLong(1, id);
+
+            res = updateUsers.executeQuery() ;
+
+            if(res.next())
+            {
+                i = 1;
+            }
+
+
+
+        }
+        catch (SQLException ex)
+        {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        } finally
+        {
+            con.close();
+        }
+
+        if(i == 1) {
+            return new ResponseContext().status(Status.NO_CONTENT);
+        }
+        else
+        {
+            return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+
 }

@@ -227,6 +227,22 @@ paths:
         401:
           description: "unsuccessful login"
       x-swagger-router-controller: "UserController"
+  /logout/{id}:
+    post:
+      summary: "Logout users"
+      description: "Change the status of user for logout"
+      operationId: "logout"
+      x-swagger-router-controller: "UserController"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The identifier of the object"
+        required: true
+        type: "integer"
+        x-example: 1
+      responses:
+        200:
+          description: "successful operation"
   /rooms:
     get:
       tags:

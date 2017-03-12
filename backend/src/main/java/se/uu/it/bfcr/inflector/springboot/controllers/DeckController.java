@@ -146,64 +146,54 @@ public class DeckController {
                 .entity(decksList);
     }
 
-    public ResponseContext generateCards(RequestContext requestContext, JsonNode genDecks)
-    {
+    public ResponseContext generateCards(RequestContext requestContext, JsonNode genDecks) {
         Deck deck = new Deck();
         try {
             ObjectMapper mapper = new ObjectMapper();
-            generateCarding genCard = mapper.treeToValue(genDecks,generateCarding.class);
+            generateCarding genCard = mapper.treeToValue(genDecks, generateCarding.class);
 
-            HashMap<Integer,String>hmap = new HashMap<Integer,String>();
-            ArrayList<OperandGenerate> operandarr = genCard.getOperand();
+            List<String> operandList = mappingOperand(genCard.getOperand().get(0));
+            List<Flashcard> cards = new ArrayList<>();
 
-
-
-            hmap = mappingOperand(operandarr);
-            List<Flashcard> cards = new ArrayList<Flashcard>();
-            for(int i = 0; i<genCard.getNumberSolution();i++)
-            {
-                int randNumber1 = 0;
-                int randNumber2 = 0;
-                int randOperand = 1 + (int)(Math.random()*hmap.size());
+            for (int i = 0; i < genCard.getNumberSolution(); i++) {
+                int randNumber1;
+                int randNumber2;
+                int randOperand = (int)(Math.random() * operandList.size());
                 int total = 0;
 
-                if(hmap.get(randOperand).equals("/"))
-                {
-                    boolean flag = false;
+                if (operandList.get(randOperand).equals("/")) {
+                    boolean flag;
 
-                    do
-                    {
+                    do {
                         randNumber1 = genCard.getMin() + (int) (Math.random() * genCard.getMax());
                         randNumber2 = genCard.getMin() + (int) (Math.random() * genCard.getMax());
-                        //total = randNumber1 / randNumber2;
                         flag = false;
-                        if(randNumber2 == 0)
+
+                        if (randNumber2 == 0) {
                             flag = true;
-                        else
-                        {
-                            if ((randNumber1 % randNumber2) > 0)
+                        } else {
+                            if ((randNumber1 % randNumber2) > 0) {
                                 flag = true;
+                            }
                         }
-                    }while(flag);
+                    } while (flag);
                     total = randNumber1 / randNumber2;
 
-                }
-                else
-                {
+                } else {
                     randNumber1 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
                     randNumber2 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
 
-                    if (hmap.get(randOperand).equals("+")) {
+                    if (operandList.get(randOperand).equals("+")) {
                         total = randNumber1 + randNumber2;
-                    } else if (hmap.get(randOperand).equals("-")) {
+                    } else if (operandList.get(randOperand).equals("-")) {
                         total = randNumber1 - randNumber2;
-                    } else if (hmap.get(randOperand).equals("X")) {
+                    } else if (operandList.get(randOperand).equals("X")) {
                         total = randNumber1 * randNumber2;
                     }
                 }
 
 
-                String problems = randNumber1+" "+hmap.get(randOperand)+" "+randNumber2;
+                String problems = randNumber1 + " " + operandList.get(randOperand) + " " + randNumber2;
                 cards.add(new Flashcard(999999, problems, String.valueOf(total)));
             }
 
@@ -228,32 +218,25 @@ public class DeckController {
                 .entity(deck);
     }
 
-    private HashMap<Integer,String> mappingOperand(ArrayList<OperandGenerate> operand)
-    {
-        HashMap<Integer,String>hmaps = new HashMap<Integer,String>();
-        int count = 1;
-        if(operand.get(0).isAdd())
-        {
-            hmaps.put(count,"+");
-            count++;
-        }
-        if(operand.get(0).isMinus())
-        {
-            hmaps.put(count,"-");
-            count++;
-        }
-        if(operand.get(0).isMulti())
-        {
-            hmaps.put(count,"X");
-            count++;
-        }
-        if(operand.get(0).isDiv())
-        {
-            hmaps.put(count,"/");
-            count++;
+    private List<String> mappingOperand(OperandGenerate operand) {
+        List<String> operands = new ArrayList<>();
+
+        if (operand.isAdd()) {
+            operands.add("+");
         }
 
+        if (operand.isMinus()) {
+            operands.add("-");
+        }
 
-        return hmaps;
+        if (operand.isMulti()) {
+            operands.add("X");
+        }
+
+        if (operand.isDiv()) {
+            operands.add("/");
+        }
+
+        return operands;
     }
 }

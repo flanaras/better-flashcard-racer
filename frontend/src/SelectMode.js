@@ -32,7 +32,8 @@ export default class SelectMode extends Component {
                         userRole: loginAck.auth_level,
                         userRoleId: loginAck.auth_id,
                         auth: true});
-            this.props.login(this.state.username, this.state.userRole, this.state.userRoleId, this.state.auth);
+            this.props.login(this.state.userid, this.state.username, this.state.userRole, this.state.userRoleId, this.state.auth);
+            this.props.router.push('dashboard');
         }
     }
 
@@ -50,7 +51,7 @@ export default class SelectMode extends Component {
     render() {
         return (
             <div>
-                <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Welcome</small></PageHeader>
+                <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>{this.props.route.name}</small></PageHeader>
                 <Grid>
                     <Row className="show-grid">
                         <Col xs={1} md={4}></Col>

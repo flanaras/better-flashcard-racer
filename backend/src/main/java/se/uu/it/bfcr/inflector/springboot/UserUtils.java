@@ -17,9 +17,8 @@ public class UserUtils {
         LoginResponse loginResponse = null;
         try (Connection connection = DBConnect.connect()) {
             PreparedStatement preparedStatement;
-            String sqlQuery = "SELECT id, username, authlevel " +
-                    "FROM users " +
-                    "WHERE username = ? AND password = ?";
+            String sqlQuery = "Select id,username,authlevel from users where username = ? and password = ?";
+
             ResultSet res;
 
             preparedStatement = connection.prepareStatement(sqlQuery);
@@ -29,11 +28,11 @@ public class UserUtils {
             res = preparedStatement.executeQuery();
 
             if (res.next()) {
-                loginResponse = new LoginResponse();
-                loginResponse.setUsername(res.getString("username"));
-                loginResponse.setUserid(res.getInt("id"));
-                loginResponse.setUserRole(UserUtils.authLevelToString(res.getInt("authlevel")));
-                loginResponse.setAuthId(res.getInt("authlevel"));
+                    loginResponse = new LoginResponse();
+                    loginResponse.setUsername(res.getString("username"));
+                    loginResponse.setUserid(res.getInt("id"));
+                    loginResponse.setUserRole(UserUtils.authLevelToString(res.getInt("authlevel")));
+                    loginResponse.setAuthId(res.getInt("authlevel"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,13 +50,14 @@ public class UserUtils {
         } else if (authLevel == 2) {
             return AuthLevels.admin;
         }
-        return "unknown_auth_level";
+        return AuthLevels.unknown;
     }
 
     class AuthLevels {
         static final String student = "student";
         static final String teacher = "teacher";
         static final String admin = "admin";
+        static final String unknown = "unknown_auth_level";
     }
 
     public static int authLevelToInt(String authLevel) {

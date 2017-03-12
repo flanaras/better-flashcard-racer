@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
 import config from './../config.json'
 import LoadJson from "./services/LoadJson";
-import {Link} from "react-router";
+import {browserHistory} from "react-router";
+import UserSettings from './UserSettings';
 import { Button, PageHeader, FormGroup, ControlLabel, FormControl, Panel, Grid, Col, Row } from 'react-bootstrap';
 
 export default class EditUser extends Component {
@@ -35,6 +36,7 @@ export default class EditUser extends Component {
         const newUserAck = await LoadJson(url, 'PUT', {username: newUser, auth_level: newRoleId});
         if (typeof(newUserAck.ok) !== 'undefined' && newUserAck.ok === 'userEdited') {
             this.setState({newUserMsg: 'User updated successfully!'});
+            browserHistory.push('/dashboard/users');
         } else {
             this.setState({newUserMsg: 'User could not be updated. Try again!'});
         }
@@ -64,7 +66,12 @@ export default class EditUser extends Component {
         return (
             this.props.auth?
                 <div>
-                    <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Edit user</small></PageHeader>
+                    <PageHeader style={{textAlign: "center", marginBottom: 0}}>
+                        Flashcard Racer
+                        <small>{this.props.route.name}</small>
+                    </PageHeader>
+                    <UserSettings auth={this.props.auth} routes={this.props.routes} userid={this.props.userid}
+                                  username={this.props.username} logout={this.props.logout}/>
                     <Grid>
                         <Row className="show-grid">
                             <Col xs={1} md={4}></Col>
@@ -82,10 +89,6 @@ export default class EditUser extends Component {
                                             {' '}
                                             {authLevels}
                                         </FormGroup>
-                                        {' '}
-                                        <Button bsStyle="info" >
-                                            <Link style={{color: "#ffffff"}} to="users">Go back</Link>
-                                        </Button>
                                         {' '}
                                         <Button bsStyle="info" type="submit">
                                             Update user

@@ -73,11 +73,11 @@ async def roomJSON():
     JSON = []
     for room in Rooms:
         print('    Room: ',room.roomName,' id: ',str(room.id))
-        #host = {'id': room.host.id, 'auth_level': room.host.authLevel, 'username': room.host.username}
+        host = {'id': room.host.id, 'auth_level': room.host.authLevel, 'username': room.host.username}
         print('flashcard inside roomJSON: ', room.deck.flashcard)
         cards = cardsAsList(room.deck.flashcard)
         deck = {'id': room.deck.id, 'numProblems':room.deck.numProblems, 'name': room.deck.name, 'description': room.deck.description, 'user_id': room.deck.user_id, 'user_name': room.deck.user_name, 'created': room.deck.created, 'changed': room.deck.changed, 'private': room.deck.private, 'flashcard': cards}
-        info = {'id': room.id, 'name': room.roomName, 'host': room.host, 'deck': deck, 'players': playersASlist(room.players)}
+        info = {'id': room.id, 'name': room.roomName, 'host': host, 'deck': deck, 'players': playersASlist(room.players)}
         JSON.append(info)
     await sio.emit('updaterooms',data = json.dumps(JSON),namespace = '/lobby')
     JSON = None
@@ -223,7 +223,7 @@ async def create_room(sid, data):
             Rooms.append(Room(str(uuid.uuid1()), data.get('name'), host, deckObject))
             await roomJSON()
             await lobbyJSON()
-            Lobby.remove(host)
+            #Lobby.remove(host)
         else:
             print("Create room: User not in Lobby!")
 

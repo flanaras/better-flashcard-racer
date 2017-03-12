@@ -13,6 +13,7 @@
     "lobbyState" : "updatelobby",
     "joinRoom" : "join_room",
     "createRoom" : "create_room",
-    "roomState" : "updaterooms"
+    "roomState" : "updaterooms",
+    "leaveRoom" : "leave_room"
   }
 }

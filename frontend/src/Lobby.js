@@ -15,46 +15,57 @@ export default class Room extends React.Component {
     super();
     this.state = {
       roomList : sampleData.rooms,
-      displayList : true
+      selectedRoom: '',
+      roomDetails : null,
+      userList: [],
+      displayList : true,
+      lobby: true
     };
 
     this.displayList = this.displayList.bind(this);
+    this.createRoom = this.createRoom.bind(this);
+    this.leaveGame = this.leaveGame.bind(this);
   }
 
   componentWillMount() {
-    socket = io(config.socket.url + '/' + config.socket.lobbyNamespace);
-    var self = this;
-    socket.on('connect', function() {
+    if(socket === undefined) {
+      socket = io(config.socket.url + '/' + config.socket.lobbyNamespace);
+    }
 
+    socket.on('connect', function() {
       socket.emit(config.socket.joinLobby, eventHost);
     });
 
-    socket.on(config.socket.lobbyState, (data) => {
-      //todo: the server response should contain data as described in '../../sockets/docs/Lobby.json'
-      //todo: as soon as that is in place, update the roomList with this data
-      console.log('The lobby state was sent!');
-      console.log('Lobby state: ', data);
-    });
-
     socket.on(config.socket.roomState, (data) => {
-      console.log('The room state was sent!');
-      console.log('Room state: ', JSON.parse(data));
       this.setState({roomList : JSON.parse(data)});
     });
   }
 
-  joinRoom() {
-    console.log(this);
-    socket.emit(config.socket.joinRoom, { id : this });
+  joinRoom(roomID) {
+    let userList;
+    let roomDetails;
+    for(var room in this.state.roomList) {
+      if(this.state.roomList[room].id === roomID) {
+        userList = this.state.roomList[room].players;
+        roomDetails = this.state.roomList[room];
+      }
+    }
+    this.setState({lobby: false, selectedRoom : roomID, userList: userList, roomDetails : roomDetails});
+    socket.emit(config.socket.joinRoom, { id : roomID });
   }
 
   createRoom(roomPayload) {
-    console.log(roomPayload);
     socket.emit(config.socket.createRoom, roomPayload);
+    this.displayList();
   }
 
   displayList() {
     this.setState({displayList : !this.state.displayList})
+  }
+
+  leaveGame() {
+    socket.emit(config.socket.leaveRoom, { id : this.state.selectedRoom });
+    this.setState({lobby : true, selectedRoom : ''});
   }
 
   render() {
@@ -64,7 +75,7 @@ export default class Room extends React.Component {
         <td>{room.host.username}</td>
         <td>{room.deck.name}</td>
         <td>
-          <Link to="" onClick={this.joinRoom.bind(room.id)}>
+          <Link to="" onClick={this.joinRoom.bind(this, room.id)}>
             <Button bsStyle="info" >
               Join
             </Button>
@@ -73,61 +84,125 @@ export default class Room extends React.Component {
       </tr>
     );
 
+    const userList = this.state.userList.map((user) =>
+      <tr key={user.id}>
+        <td>
+          {user.username}
+        </td>
+      </tr>
+    );
+
+    let displayElement = null;
+
+    if(this.state.lobby) {
+      displayElement = this.state.displayList ?
+        <Grid>
+          <Row className="show-grid">
+            <Col xs={1} md={3}></Col>
+            <Col xs={12} md={6}>
+              The following rooms are currently available:
+            </Col>
+            <Col xs={1} md={3}></Col>
+          </Row>
+          <Row className="show-grid">
+            <Col xs={1} md={3}></Col>
+            <Col xs={12} md={6}>
+              <Table striped bordered condensed hover>
+                <thead>
+                <tr>
+                  <th>Room</th>
+                  <th>Host</th>
+                  <th>Deck</th>
+                  <th>Join</th>
+                </tr>
+                </thead>
+                <tbody>
+                {roomList}
+                </tbody>
+              </Table>
+            </Col>
+            <Col xs={1} md={3}></Col>
+          </Row>
+          <Row>
+            <Col xs={1} md={3}></Col>
+            <Col xs={12} md={6}>
+              <Button bsStyle="info" onClick={this.displayList}>
+                Create new room
+              </Button>
+            </Col>
+            <Col xs={1} md={3}></Col>
+          </Row>
+        </Grid>
+        :
+        <Grid>
+          <CreateRoom createRoom={this.createRoom}/>
+          <Row>
+            <Col xs={1} md={3}></Col>
+            <Col xs={12} md={6}>
+              <Button bsStyle="info" onClick={this.displayList}>
+                Back to Lobby
+              </Button>
+            </Col>
+            <Col xs={1} md={3}></Col>
+          </Row>
+        </Grid>
+    }
+    else {
+      displayElement =
+        <Grid>
+          <Row className="show-grid">
+            <Col xs={1} md={3}></Col>
+            <Col xs={12} md={6}>
+              <b>Room:</b> {this.state.roomDetails.name}
+              <br/>
+              <b>Host:</b> {this.state.roomDetails.host.username}
+              <br/>
+              <b>Deck:</b> {this.state.roomDetails.deck.name}
+              <br/>
+              <b>Number of Questions:</b> {this.state.roomDetails.deck.numProblems}
+              <br/>
+            </Col>
+            <Col xs={1} md={3}></Col>
+          </Row>
+          <Row className="show-grid">
+            <Col xs={1} md={3}></Col>
+            <Col xs={12} md={6}>
+              These users are in the room:
+            </Col>
+            <Col xs={1} md={3}></Col>
+          </Row>
+          <Row className="show-grid">
+            <Col xs={1} md={3}></Col>
+            <Col xs={12} md={6}>
+              <Table striped bordered condensed hover>
+                <thead>
+                <tr>
+                  <th>Username</th>
+                </tr>
+                </thead>
+                <tbody>
+                  {userList}
+                </tbody>
+              </Table>
+            </Col>
+            <Col xs={1} md={3}></Col>
+          </Row>
+          <Row>
+            <Col xs={1} md={3}></Col>
+            <Col xs={12} md={6}>
+              <Button bsStyle="info" onClick={this.leaveGame}>
+                Back to Lobby
+              </Button>
+            </Col>
+            <Col xs={1} md={3}></Col>
+          </Row>
+        </Grid>
+    }
+
     return (
       <div>
         <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Lobby</small></PageHeader>
-        {this.state.displayList ?
-          <Grid>
-            <Row className="show-grid">
-              <Col xs={1} md={3}></Col>
-              <Col xs={12} md={6}>
-                The following rooms are currently available:
-              </Col>
-              <Col xs={1} md={3}></Col>
-            </Row>
-            <Row className="show-grid">
-              <Col xs={1} md={3}></Col>
-              <Col xs={12} md={6}>
-                <Table striped bordered condensed hover>
-                  <thead>
-                  <tr>
-                    <th>Room</th>
-                    <th>Host</th>
-                    <th>Deck</th>
-                    <th>Join</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  {roomList}
-                  </tbody>
-                </Table>
-              </Col>
-              <Col xs={1} md={3}></Col>
-            </Row>
-            <Row>
-              <Col xs={1} md={3}></Col>
-              <Col xs={12} md={6}>
-                <Button bsStyle="info" onClick={this.displayList}>
-                  Create new room
-                </Button>
-              </Col>
-              <Col xs={1} md={3}></Col>
-            </Row>
-          </Grid>
-          :
-          <Grid>
-            <CreateRoom createRoom={this.createRoom}/>
-            <Row>
-              <Col xs={1} md={3}></Col>
-              <Col xs={12} md={6}>
-                <Button bsStyle="info" onClick={this.displayList}>
-                  Back to Lobby
-                </Button>
-              </Col>
-              <Col xs={1} md={3}></Col>
-            </Row>
-          </Grid>
-        }
+        {displayElement}
       </div>
     )
   }

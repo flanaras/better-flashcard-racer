@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import config from './../config.json';
 import LoadJson from "./services/LoadJson";
-import { DropdownButton, MenuItem, Navbar } from 'react-bootstrap';
+import { DropdownButton, MenuItem, Navbar, Grid, Row, Col } from 'react-bootstrap';
 import Breadcrumbs from 'react-breadcrumbs';
 
 export default class UserSettings extends Component {
@@ -28,13 +28,24 @@ export default class UserSettings extends Component {
         return (
             this.props.auth?
                 <Navbar >
-                    <Breadcrumbs
-                        routes={this.props.routes}
-                        params={this.props.params}
-                    />
-                    <DropdownButton bsStyle={'info'} bsSize={'small'} title={this.props.username} >
-                        <MenuItem eventKey="1" onClick={this.onLogout}>Sign out</MenuItem>
-                    </DropdownButton>
+                    <Grid>
+                        <Row className="show-grid">
+                            <Col xs={12} md={8} style={{marginTop: 15}}>
+                                <div style={{textAlign: 'left', fontSize: 15}}>
+                                    <Breadcrumbs
+                                        routes={this.props.routes}
+                                    />
+                                </div>
+                            </Col>
+                            <Col xs={6} md={4} style={{marginTop: 10}}>
+                                <div style={{textAlign: 'right'}}>
+                                    <DropdownButton bsStyle={'info'} bsSize={'small'} title={this.props.username} >
+                                        <MenuItem eventKey="1" onClick={this.onLogout}>Sign out</MenuItem>
+                                    </DropdownButton>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Grid>
                 </Navbar>
             :<div/>
         )

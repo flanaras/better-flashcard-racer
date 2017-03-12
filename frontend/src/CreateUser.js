@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import config from './../config.json'
 import LoadJson from "./services/LoadJson";
 import {Link} from "react-router";
+import UserSettings from './UserSettings';
 import { Button, PageHeader, FormGroup, ControlLabel, FormControl, Panel, Grid, Col, Row } from 'react-bootstrap';
 
 export default class CreateUser extends Component {
@@ -60,7 +61,10 @@ export default class CreateUser extends Component {
         return (
             this.props.auth?
                 <div>
-                    <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Create user</small></PageHeader>
+                    <PageHeader  style={{textAlign: "center", marginBottom: 0}}>
+                        Flashcard Racer <small>{this.props.route.name}</small>
+                    </PageHeader>
+                    <UserSettings auth={this.props.auth} routes={this.props.routes} userid={this.props.userid} username={this.props.username} logout={this.props.logout}/>
                     <Grid>
                         <Row className="show-grid">
                             <Col xs={1} md={4}></Col>
@@ -97,10 +101,6 @@ export default class CreateUser extends Component {
                                                 }
                                             </FormControl>
                                         </FormGroup>
-                                        {' '}
-                                        <Button bsStyle="info" >
-                                            <Link style={{color: "#ffffff"}} to="users">Go back</Link>
-                                        </Button>
                                         {' '}
                                         <Button bsStyle="info" type="submit">
                                             Create user

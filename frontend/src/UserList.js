@@ -70,36 +70,56 @@ export default class UserList extends Component {
         </td>
       </tr>
     );
-    return (
-        this.props.auth?
-          <div>
-            <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>{this.props.route.name}</small></PageHeader>
-            <UserSettings auth={this.props.auth} routes={this.props.routes} userid={this.props.userid} username={this.props.username} logout={this.props.logout}/>
-            <Grid>
-              <Row className="show-grid">
-                <Col xs={1} md={3}></Col>
-                <Col xs={12} md={6}>
-                  <Table striped bordered condensed hover>
-                    <thead>
-                      <tr>
-                        <th>User ID</th>
-                        <th>Name</th>
-                        <th>Role</th>
-                        <th>Options</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {userList}
-                      <tr><Link to="createuser">Add</Link></tr>
-                    </tbody>
-                  </Table>
-                </Col>
-                <Col xs={1} md={3}></Col>
-              </Row>
-            </Grid>
-          </div>
-        :<div/>
-    )
+    if(this.props.children) {
+          return (React.cloneElement(this.props.children, {
+              loadUserInfo: this.props.loadUserInfo,
+              auth: this.props.auth,
+              userid: this.props.userid,
+              username: this.props.username,
+              userRoleId: this.props.userRoleId,
+              logout: this.props.logout,
+              editUser: this.props.editUser,
+              newUserId: this.props.newUserId,
+              newUser: this.props.newUser,
+              newUserRoleId: this.props.newUserRoleId,
+              routes: this.props.routes
+          }));
+    } else {
+        return (
+            this.props.auth ?
+                <div>
+                    <PageHeader style={{textAlign: "center", marginBottom: 0}}>
+                        Flashcard Racer
+                        <small>{this.props.route.name}</small>
+                    </PageHeader>
+                    <UserSettings auth={this.props.auth} routes={this.props.routes} userid={this.props.userid}
+                                  username={this.props.username} logout={this.props.logout}/>
+                    <Grid>
+                        <Row className="show-grid">
+                            <Col xs={1} md={3}></Col>
+                            <Col xs={12} md={6}>
+                                <Table striped bordered condensed hover>
+                                    <thead>
+                                    <tr>
+                                        <th>User ID</th>
+                                        <th>Name</th>
+                                        <th>Role</th>
+                                        <th>Options</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {userList}
+                                    <tr><Link to="/dashboard/users/createuser">Add</Link></tr>
+                                    </tbody>
+                                </Table>
+                            </Col>
+                            <Col xs={1} md={3}></Col>
+                        </Row>
+                    </Grid>
+                </div>
+                : <div/>
+        )
+    }
   }
 }
 

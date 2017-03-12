@@ -39,7 +39,7 @@ export default class MotherOfDragons extends Component {
         cookie.save("userRoleId", userRoleId, {path: "/", expires: d});
         cookie.save("auth", auth, {path: "/", expires: d});
 
-        //browserHistory.push('dashboard');
+        browserHistory.push('dashboard');
     }
 
     loadUserInfo() {
@@ -71,7 +71,7 @@ export default class MotherOfDragons extends Component {
 
     editUser(newUserId, newUser, newUserRoleId) {
         this.setState({newUserId, newUser, newUserRoleId});
-        browserHistory.push('edituser');
+        browserHistory.push('/dashboard/users/edituser');
     }
 
     render() {

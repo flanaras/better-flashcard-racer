@@ -234,7 +234,7 @@ async def create_room(sid, data):
 @sio.on('join_room', namespace='/lobby')
 async def join_room(sid, data):
     exists = False
-    #print("JR: ", data)
+    print("JR: ", data)
     for room in Rooms:
         if data.get('id') == room.id:
             exists = True

@@ -45,7 +45,7 @@ export default class Room extends React.Component {
 
   joinRoom() {
     console.log(this);
-    //socket.emit(config.socket.joinRoom, { id : this });
+    socket.emit(config.socket.joinRoom, { id : this });
   }
 
   createRoom(roomPayload) {

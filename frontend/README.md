@@ -17,7 +17,10 @@
             This way, you can easily do TDD, by writing a new test case in test/components.spec.js, see it failing,
             and then implement the code in your component in src.
     - For more info about the dev environment: https://facebook.github.io/react/blog/2016/07/22/create-apps-with-no-configuration.html 
-    
+   
+#### To build the project:
+    - npm run build (standing in the root of the frontend directory, same dir as package.json)
+        - The project has now been built in the folder 'build', and can be deployed and served as a 'normal' HTML file.
 
 - More instructions regarding test framework, etc:
     - Documentation for the airbnb:s React framework Enzyme: http://airbnb.io/enzyme/docs/api/

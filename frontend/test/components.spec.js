@@ -314,7 +314,6 @@ describe('Solutions', () => {
     });
 });
 
-<<<<<<< HEAD
 describe('Room', () => {
 
   //TODO: is there a good way to mock the socket connection?
@@ -375,7 +374,6 @@ describe('Lobby', () => {
     expect(tableRows).to.have.length.of(1+1);
   });
 });
-=======
 
 describe('UserList', () => {
 
@@ -620,4 +618,3 @@ describe('UserSettings', () => {
         expect(onLogoutSpy.calledOnce).to.equal(true);
     });
 });
->>>>>>> origin/dev

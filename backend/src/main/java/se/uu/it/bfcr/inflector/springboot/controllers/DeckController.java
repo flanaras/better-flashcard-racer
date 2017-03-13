@@ -39,61 +39,67 @@ import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Ilona Asa
+ * @author Philip Lanaras
+ * @author michael
+ */
+
 @Component
 public class DeckController {
-	private Connection con = null;
-	private String selectCards = "SELECT card.id as card_id, problem, solution FROM deck_card_dep, card where deck_card_dep.card_id=card.id AND deck_card_dep.deck_id = ?";
-	private List<Deck> decksList = new ArrayList<Deck>();
+    private Connection con = null;
+    private String selectCards = "SELECT card.id as card_id, problem, solution FROM deck_card_dep, card where deck_card_dep.card_id=card.id AND deck_card_dep.deck_id = ?";
+    private List<Deck> decksList = new ArrayList<Deck>();
 
-	public List<Deck> populateDeck(ResultSet rs) throws SQLException{
-		PreparedStatement preparedStm2 = null;
-		List<Deck> decks = new ArrayList<Deck>();
-		while (rs.next()) {
-			Deck deck = new Deck();
-			deck.setUserId(rs.getInt("user_id"));
-			deck.setName(rs.getString("name"));
-			deck.setCreated(rs.getString("created"));
-			deck.setChanged(rs.getString("changed"));
-			deck.setDescription(rs.getString("description"));
-			deck.setId(rs.getInt("id"));
-			if(rs.getInt("user_id") == 0){
-				deck.setIsPrivate(false);
-			}else {
-				deck.setIsPrivate(true);
-			}
-			deck.setNumProblems(rs.getInt("num_problem"));
-			deck.setUserName(rs.getString("username"));
+    public List<Deck> populateDeck(ResultSet rs) throws SQLException{
+        PreparedStatement preparedStm2 = null;
+        List<Deck> decks = new ArrayList<Deck>();
+        while (rs.next()) {
+            Deck deck = new Deck();
+            deck.setUserId(rs.getInt("user_id"));
+            deck.setName(rs.getString("name"));
+            deck.setCreated(rs.getString("created"));
+            deck.setChanged(rs.getString("changed"));
+            deck.setDescription(rs.getString("description"));
+            deck.setId(rs.getInt("id"));
+            if(rs.getInt("user_id") == 0){
+                deck.setIsPrivate(false);
+            }else {
+                deck.setIsPrivate(true);
+            }
+            deck.setNumProblems(rs.getInt("num_problem"));
+            deck.setUserName(rs.getString("username"));
 
-			preparedStm2 = con.prepareStatement(selectCards);
-			preparedStm2.setInt(1, rs.getInt("id"));
-			ResultSet rsCards = preparedStm2.executeQuery();
+            preparedStm2 = con.prepareStatement(selectCards);
+            preparedStm2.setInt(1, rs.getInt("id"));
+            ResultSet rsCards = preparedStm2.executeQuery();
 
-			List<Flashcard> cards = new ArrayList<Flashcard>();
-			while (rsCards.next()) {
-				Flashcard card = new Flashcard();
-				card.setId(rsCards.getInt("card_id"));
-				card.setProblem(rsCards.getString("problem"));
-				card.setAnswer(rsCards.getString("solution"));
-				cards.add(card);
-			}
+            List<Flashcard> cards = new ArrayList<Flashcard>();
+            while (rsCards.next()) {
+                Flashcard card = new Flashcard();
+                card.setId(rsCards.getInt("card_id"));
+                card.setProblem(rsCards.getString("problem"));
+                card.setAnswer(rsCards.getString("solution"));
+                cards.add(card);
+            }
 
-			deck.setFlashcard(cards);
+            deck.setFlashcard(cards);
 
-			decks.add(deck);
-		}
-		return decks;
-	}
+            decks.add(deck);
+        }
+        return decks;
+    }
 
-	public ResponseContext getDecks(RequestContext requestContext) throws SQLException {
+    public ResponseContext getDecks(RequestContext requestContext) throws SQLException {
         PreparedStatement preparedStm1 = null;
         
         try {
             con = DBConnect.connect();
-			String selectDecks = "SELECT COUNT(*) as num_problem, decks.id as id, decks.name, decks.description, decks.difficulty, decks.private, decks.created, decks.changed, users.id as user_id, users.username FROM `decks`, users, deck_card_dep where decks.created_by = users.id AND decks.id=deck_card_dep.deck_id GROUP BY deck_card_dep.deck_id";
-			preparedStm1 = con.prepareStatement(selectDecks);
+            String selectDecks = "SELECT COUNT(*) as num_problem, decks.id as id, decks.name, decks.description, decks.difficulty, decks.private, decks.created, decks.changed, users.id as user_id, users.username FROM `decks`, users, deck_card_dep where decks.created_by = users.id AND decks.id=deck_card_dep.deck_id GROUP BY deck_card_dep.deck_id";
+            preparedStm1 = con.prepareStatement(selectDecks);
 
             ResultSet rs = preparedStm1.executeQuery();
-			decksList = populateDeck(rs);
+            decksList = populateDeck(rs);
             
         } catch (SQLException ex) {
             Logger.getLogger(DeckController.class.getName()).log(Level.SEVERE,
@@ -111,123 +117,126 @@ public class DeckController {
                                     .entity(decksList);
     }
 
-	public ResponseContext getDecksById(RequestContext requestContext, Long id) throws SQLException {
-		PreparedStatement preparedStm1 = null;
+    public ResponseContext getDeckById(RequestContext requestContext, Long id) throws SQLException {
+        PreparedStatement preparedStm1 = null;
 
-		try {
-			con = DBConnect.connect();
-			String selectDecks = "SELECT COUNT(*) as num_problem, decks.id as id, decks.name, decks.description, decks.difficulty, decks.private, decks.created, decks.changed, users.id as user_id, users.username FROM `decks`, users, deck_card_dep where decks.created_by = users.id AND decks.id=deck_card_dep.deck_id AND decks.id = ? GROUP BY deck_card_dep.deck_id";
+        try {
+            con = DBConnect.connect();
+            String selectDecks = "SELECT COUNT(*) as num_problem, decks.id as id, decks.name, decks.description, decks.difficulty, decks.private, decks.created, decks.changed, users.id as user_id, users.username FROM `decks`, users, deck_card_dep where decks.created_by = users.id AND decks.id=deck_card_dep.deck_id AND decks.id = ? GROUP BY deck_card_dep.deck_id";
 
-			preparedStm1 = con.prepareStatement(selectDecks);
-			preparedStm1.setInt(1, id.intValue());
-			ResultSet rs = preparedStm1.executeQuery();
+            preparedStm1 = con.prepareStatement(selectDecks);
+            preparedStm1.setInt(1, id.intValue());
+            ResultSet rs = preparedStm1.executeQuery();
 
-			decksList = populateDeck(rs);
+            decksList = populateDeck(rs);
 
-		} catch (SQLException ex) {
-			Logger.getLogger(DeckController.class.getName()).log(Level.SEVERE,
-					null, ex);
-		} finally {
-			try {
-				con.close();
-			} catch (SQLException ex) {
-				Logger.getLogger(DeckController.class.getName()).log(
-						Level.SEVERE, null, ex);
-			}
-		}
+        } catch (SQLException ex) {
+            Logger.getLogger(DeckController.class.getName()).log(Level.SEVERE,
+                    null, ex);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(DeckController.class.getName()).log(
+                        Level.SEVERE, null, ex);
+            }
+        }
 
-		return new ResponseContext().status(Status.OK)
-				.entity(decksList);
-	}
+        return new ResponseContext().status(Status.OK)
+                .entity(decksList);
+    }
 
-	public ResponseContext generateCards(RequestContext requestContext, JsonNode genDecks)
-	{
-		Deck deck = new Deck();
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			generateCarding genCard = mapper.treeToValue(genDecks,generateCarding.class);
+    public ResponseContext generateCards(RequestContext requestContext, JsonNode genDecks) {
+        Deck deck = new Deck();
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            generateCarding genCard = mapper.treeToValue(genDecks, generateCarding.class);
 
-			HashMap<Integer,String>hmap = new HashMap<Integer,String>();
-			ArrayList<OperandGenerate> operandarr = genCard.getOperand();
+            List<String> operandList = mappingOperand(genCard.getOperand().get(0));
+            List<Flashcard> cards = new ArrayList<>();
 
+            for (int i = 0; i < genCard.getNumberSolution(); i++) {
+                int randNumber1;
+                int randNumber2;
+                int randOperand = (int)(Math.random() * operandList.size());
+                int total = 0;
 
+                if (operandList.get(randOperand).equals("/")) {
+                    boolean flag;
 
-			hmap = mappingOperand(operandarr);
-			List<Flashcard> cards = new ArrayList<Flashcard>();
-			for(int i = 0; i<genCard.getNumberSolution();i++)
-			{
-				int randNumber1 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
-				int randNumber2 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
-				int randOperand = 1 + (int)(Math.random()*hmap.size());
-				int total = 0;
-				if(hmap.get(randOperand).equals("+"))
-				{
-					total = randNumber1 + randNumber2;
-				}
-				else if(hmap.get(randOperand).equals("-"))
-				{
-					total = randNumber1 - randNumber2;
-				}
-				else if(hmap.get(randOperand).equals("X"))
-				{
-					total  =  randNumber1 * randNumber2;
-				}
-				else if(hmap.get(randOperand).equals("/"))
-				{
-					total = randNumber1 / randNumber2;
-				}
+                    do {
+                        randNumber1 = genCard.getMin() + (int) (Math.random() * genCard.getMax());
+                        randNumber2 = genCard.getMin() + (int) (Math.random() * genCard.getMax());
+                        flag = false;
 
-				String problems = randNumber1+" "+hmap.get(randOperand)+" "+randNumber2;
-				cards.add(new Flashcard(999999, problems, String.valueOf(total)));
-			}
+                        if (randNumber2 == 0) {
+                            flag = true;
+                        } else {
+                            if ((randNumber1 % randNumber2) > 0) {
+                                flag = true;
+                            }
+                        }
+                    } while (flag);
+                    total = randNumber1 / randNumber2;
 
+                } else {
+                    randNumber1 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
+                    randNumber2 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
 
-
-			deck.setUserId(9999);
-			deck.setFlashcard(cards);
-			deck.setName("PraticeDeck");
-			deck.setCreated(OffsetDateTime.now().toString());
-			deck.setChanged(OffsetDateTime.now().toString());
-			deck.setDescription("Deck created by request of user");
-			deck.setId(99999);
-			deck.setIsPrivate(false);
-			deck.setNumProblems(genCard.getNumberSolution());
-			deck.setUserName("NN");
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
+                    if (operandList.get(randOperand).equals("+")) {
+                        total = randNumber1 + randNumber2;
+                    } else if (operandList.get(randOperand).equals("-")) {
+                        total = randNumber1 - randNumber2;
+                    } else if (operandList.get(randOperand).equals("X")) {
+                        total = randNumber1 * randNumber2;
+                    }
+                }
 
 
-		return new ResponseContext().status(Status.OK)
-				.entity(deck);
-	}
-
-	private HashMap<Integer,String> mappingOperand(ArrayList<OperandGenerate> operand)
-	{
-		HashMap<Integer,String>hmaps = new HashMap<Integer,String>();
-		int count = 1;
-		if(operand.get(0).isAdd())
-		{
-			hmaps.put(count,"+");
-			count++;
-		}
-		if(operand.get(0).isMinus())
-		{
-			hmaps.put(count,"-");
-			count++;
-		}
-		if(operand.get(0).isMulti())
-		{
-			hmaps.put(count,"X");
-			count++;
-		}
-		if(operand.get(0).isDiv())
-		{
-			hmaps.put(count,"/");
-			count++;
-		}
+                String problems = randNumber1 + " " + operandList.get(randOperand) + " " + randNumber2;
+                cards.add(new Flashcard(999999, problems, String.valueOf(total)));
+            }
 
 
-		return hmaps;
-	}
+
+            deck.setUserId(9999);
+            deck.setFlashcard(cards);
+            deck.setName("PraticeDeck");
+            deck.setCreated(OffsetDateTime.now().toString());
+            deck.setChanged(OffsetDateTime.now().toString());
+            deck.setDescription("Deck created by request of user");
+            deck.setId(99999);
+            deck.setIsPrivate(false);
+            deck.setNumProblems(genCard.getNumberSolution());
+            deck.setUserName("NN");
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+
+        return new ResponseContext().status(Status.OK)
+                .entity(deck);
+    }
+
+    private List<String> mappingOperand(OperandGenerate operand) {
+        List<String> operands = new ArrayList<>();
+
+        if (operand.isAdd()) {
+            operands.add("+");
+        }
+
+        if (operand.isMinus()) {
+            operands.add("-");
+        }
+
+        if (operand.isMulti()) {
+            operands.add("X");
+        }
+
+        if (operand.isDiv()) {
+            operands.add("/");
+        }
+
+        return operands;
+    }
 }

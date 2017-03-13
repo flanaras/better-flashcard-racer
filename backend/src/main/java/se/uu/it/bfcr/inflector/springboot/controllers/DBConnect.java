@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * @author Philip Lanaras
+ */
 public class DBConnect {
 
     public static Connection connect() throws SQLException {
@@ -14,15 +17,17 @@ public class DBConnect {
 
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+//<<<<<<< HEAD
+//            Class.forName("com.mysql.jdbc.Driver");
+//=======
+            Class.forName("com.mysql.cj.jdbc.Driver");
+//>>>>>>> user_management
         } catch (Exception ex) {
             System.out.print("Error loading MySQL driver.\n");
         }
 
         try {
-//            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + username + "&" + password);
-        	conn = DriverManager.getConnection(url, username, password);
-
+            conn = DriverManager.getConnection(url, username, password);
         } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());

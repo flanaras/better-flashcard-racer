@@ -55,6 +55,7 @@ artifacts {
 }
 
 dependencies {
+	compile(group: 'mysql', name: 'mysql-connector-java', version: '6.0.5')
 	compile('io.swagger:swagger-inflector:1.0.10')
 	compile('com.github.javafaker:javafaker:0.11') {
 		exclude group: 'com.github.bmoliveira'

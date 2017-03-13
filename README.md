@@ -1,22 +1,3 @@
-# better-flashcard-racer
-
-- Instructions for frontend environment setup:
-    
-    - git clone -b dev git@github.com:flanaras/better-flashcard-racer.git
-    - cd better-flashcard-racer
-    - cd frontend
-    - npm install (installs all dependencies)
-    - npm install -g mocha
-    - npm install react-bootstrap --save
-    - mocha --require setup.js ./test/*.spec.js
-        - You should see a passing test. If you see an error, something is wrong.
-    - npm start
-        - starts a browser, http://localhost:3000/
-    - to run "watching tests", run:
-        - npm test-watch
-    - For more info about the dev environment: https://semaphoreci.com/community/tutorials/getting-started-with-tdd-in-react
-
-
 ##GIT WORKFLOW
 
 ###Start working on a new feature

@@ -10,8 +10,7 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "virtserver.swaggerhub.com"
-basePath: "/better-flashcard-racer/testar/1.0.0"
+basePath: /v1
 tags:
 - name: "decks"
   description: "All about decks data"
@@ -23,13 +22,19 @@ consumes:
 produces:
 - "application/json"
 paths:
-  /authlevel:
+  /authlevel/{id}:
     get:
       tags:
       - "user"
       description: "Return all available user level of authorization"
       operationId: "getUsersAuth"
-      parameters: []
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The identifier of the object"
+        required: true
+        type: "integer"
+        x-example: 1
       responses:
         200:
           description: "successful operation"
@@ -38,11 +43,13 @@ paths:
           examples:
             application/json:
             - id: 0
-              auth: "admin"
+              auth: "student"
             - id: 1
               auth: "teacher"
             - id: 2
-              auth: "student"
+              auth: "admin"
+        204:
+          description: "no content available"
       x-swagger-router-controller: "UserController"
   /decks:
     get:
@@ -51,13 +58,7 @@ paths:
       summary: "Find all decks available"
       description: "Return all set of decks"
       operationId: "getDecks"
-      parameters:
-      - name: "user_id"
-        in: "query"
-        description: "The id for the user"
-        required: false
-        type: "integer"
-        x-example: 1
+      parameters: []
       responses:
         200:
           description: "successful operation"
@@ -115,8 +116,6 @@ paths:
               - id: 55
                 problem: "7-3"
                 answer: 4
-        500:
-          description: "An unexpected error occured."
       x-swagger-router-controller: "DeckController"
     post:
       tags:
@@ -153,55 +152,6 @@ paths:
           description: "successful operation"
           schema:
             $ref: "#/definitions/Deck"
-        404:
-          description: "Deck not found"
-        500:
-          description: "An unexpected error occured."
-      x-swagger-router-controller: "DeckController"
-    put:
-      tags:
-      - "deck"
-      summary: "Updates a deck in the store with form data"
-      description: "Update a deck by ID"
-      operationId: "updateDeck"
-      parameters:
-      - name: "id"
-        in: "path"
-        description: "The identifier of the object"
-        required: true
-        type: "integer"
-        x-example: 1
-      - in: "body"
-        name: "deck"
-        description: "Deck object that will be changed"
-        required: true
-        schema:
-          $ref: "#/definitions/Deck"
-      responses:
-        204:
-          description: "Deck sucessfully updated."
-        500:
-          description: "An unexpected error occured."
-    delete:
-      tags:
-      - "deck"
-      summary: "Delete a deck"
-      description: "deleting deck by id and using teacher account"
-      operationId: "deleteDeck"
-      parameters:
-      - name: "id"
-        in: "path"
-        description: "The identifier of the object"
-        required: true
-        type: "integer"
-        x-example: 1
-      responses:
-        204:
-          description: "Deck successfully deleted."
-        404:
-          description: "The object was not found in"
-        500:
-          description: "An unexpected error occured."
   /generate-cards:
     post:
       tags:
@@ -221,8 +171,33 @@ paths:
           description: "successful operation"
           schema:
             $ref: "#/definitions/Deck"
-        500:
-          description: "An unexpected error occured."
+          examples:
+            application/json:
+              id: 1
+              numProblems: 5
+              name: "A test deck"
+              description: "Description for a test deck"
+              user_id: 2
+              user_name: "John"
+              created: "2017-01-25T20:17:45.000Z"
+              changed: "2017-01-25T20:17:45.000Z"
+              private: false
+              flashcard:
+              - id: 1
+                problem: "1+1"
+                answer: 2
+              - id: 2
+                problem: "2+2"
+                answer: 4
+              - id: 3
+                problem: "3+3"
+                answer: 6
+              - id: 4
+                problem: "4+4"
+                answer: 8
+              - id: 5
+                problem: "5+5"
+                answer: 10
       x-swagger-router-controller: "DeckController"
   /login:
     post:
@@ -246,11 +221,179 @@ paths:
           examples:
             application/json:
             - id: 1
+              auth_id: 2
               auth_level: "admin"
               username: "Astrid"
-        403:
+        401:
           description: "unsuccessful login"
       x-swagger-router-controller: "UserController"
+  /logout/{id}:
+    post:
+      summary: "Logout users"
+      description: "Change the status of user for logout"
+      operationId: "logout"
+      x-swagger-router-controller: "UserController"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The identifier of the object"
+        required: true
+        type: "integer"
+        x-example: 1
+      responses:
+        200:
+          description: "successful operation"
+  /rooms:
+    get:
+      tags:
+      - "room"
+      - "mocked"
+      description: "Return all rooms"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Rooms"
+          examples:
+            application/json:
+            - id: 1
+              name: "Lars room"
+              host:
+                id: 1
+                auth_level: "admin"
+                username: "Astrid"
+                examples: ""
+              deck:
+                id: 1
+                numProblems: 5
+                name: "A test deck"
+                description: "Description for a test deck"
+                user_id: 2
+                user_name: "John"
+                created: "2017-01-25T20:17:45.000Z"
+                changed: "2017-01-25T20:17:45.000Z"
+                private: false
+                flashcard:
+                - id: 1
+                  problem: "1+1"
+                  answer: 2
+                - id: 2
+                  problem: "2+2"
+                  answer: 4
+                - id: 3
+                  problem: "3+3"
+                  answer: 6
+                - id: 4
+                  problem: "4+4"
+                  answer: 8
+                - id: 5
+                  problem: "5+5"
+                  answer: 10
+            - id: 2
+              name: "Kalles room"
+              host:
+                id: 2
+                auth_level: "teacher"
+                username: "Olle"
+                examples: ""
+              deck:
+                id: 1
+                numProblems: 5
+                name: "Another test deck"
+                description: "Description for a test deck"
+                user_id: 2
+                user_name: "John"
+                created: "2017-01-25T20:17:45.000Z"
+                changed: "2017-01-25T20:17:45.000Z"
+                private: false
+                flashcard:
+                - id: 1
+                  problem: "1+1"
+                  answer: 2
+                - id: 2
+                  problem: "2+2"
+                  answer: 4
+                - id: 3
+                  problem: "3+3"
+                  answer: 6
+                - id: 4
+                  problem: "4+4"
+                  answer: 8
+                - id: 5
+                  problem: "5+5"
+                  answer: 10
+    post:
+      tags:
+      - "room"
+      - "mocked"
+      description: "Add a new room"
+      parameters:
+      - in: "body"
+        name: "Input"
+        description: "The information about the user to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/Room"
+      responses:
+        201:
+          description: "successful operation"
+          examples:
+            application/json:
+              url: "virtserver.swaggerhub.com/better-flashcard-racer/testar/1.0.0/rooms/1"
+  /rooms/{id}:
+    get:
+      tags:
+      - "room"
+      - "mocked"
+      description: "Return a room"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The identifier of the object"
+        required: true
+        type: "integer"
+        x-example: 1
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Room"
+          examples:
+            application/json:
+              id: 1
+              name: "Lars room"
+              host:
+                id: 1
+                auth_level: "admin"
+                username: "Astrid"
+                examples: ""
+              deck:
+                id: 1
+                numProblems: 5
+                name: "A test deck"
+                description: "Description for a test deck"
+                user_id: 2
+                user_name: "John"
+                created: "2017-01-25T20:17:45.000Z"
+                changed: "2017-01-25T20:17:45.000Z"
+                private: false
+                flashcard:
+                - id: 1
+                  problem: "1+1"
+                  answer: 2
+                - id: 2
+                  problem: "2+2"
+                  answer: 4
+                - id: 3
+                  problem: "3+3"
+                  answer: 6
+                - id: 4
+                  problem: "4+4"
+                  answer: 8
+                - id: 5
+                  problem: "5+5"
+                  answer: 10
   /users:
     get:
       tags:
@@ -267,12 +410,15 @@ paths:
           examples:
             application/json:
             - id: 1
+              auth_id: 2
               auth_level: "admin"
               username: "Astrid"
             - id: 2
+              auth_id: 1
               auth_level: "teacher"
               username: "Teachername"
             - id: 3
+              auth_id: 0
               auth_level: "student"
               username: "Studentname"
       x-swagger-router-controller: "UserController"
@@ -292,6 +438,8 @@ paths:
       responses:
         201:
           description: "Created entity"
+          schema:
+            $ref: "#/definitions/User"
   /users/{id}:
     get:
       tags:
@@ -315,6 +463,7 @@ paths:
           examples:
             application/json:
             - id: 1
+              auth_id: 2
               auth_level: "admin"
               username: "Astrid"
       x-swagger-router-controller: "UserController"
@@ -334,7 +483,7 @@ paths:
         description: "The information about the user to be update"
         required: true
         schema:
-          $ref: "#/definitions/AddUserInput"
+          $ref: "#/definitions/UpdateUser"
       responses:
         200:
           description: "Update Successfull"
@@ -356,8 +505,10 @@ paths:
         type: "integer"
         x-example: 1
       responses:
-        200:
+        204:
           description: "successful operation"
+        500:
+          description: "An unexpected error occured."
       x-swagger-router-controller: "UserController"
 securityDefinitions:
   api_key:
@@ -377,6 +528,8 @@ definitions:
         type: "integer"
       username:
         type: "string"
+      auth_id:
+        type: "integer"
       auth_level:
         type: "string"
     xml:
@@ -386,6 +539,19 @@ definitions:
     items:
       $ref: "#/definitions/User"
   AddUserInput:
+    properties:
+      username:
+        type: "string"
+      password:
+        type: "string"
+      auth_level:
+        type: "integer"
+    xml:
+      name: "Input data for adding user"
+  UpdateUser:
+    required:
+    - "auth_level"
+    - "username"
     properties:
       username:
         type: "string"
@@ -464,6 +630,24 @@ definitions:
         type: "integer"
       operators:
         $ref: "#/definitions/Operators"
+  Room:
+    required:
+    - "deck"
+    - "host"
+    - "name"
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      host:
+        $ref: "#/definitions/User"
+      deck:
+        $ref: "#/definitions/Deck"
+  Rooms:
+    type: "array"
+    items:
+      $ref: "#/definitions/Room"
 parameters:
   id:
     name: "id"
@@ -472,17 +656,6 @@ parameters:
     required: true
     type: "integer"
     x-example: 1
-  user_id:
-    name: "user_id"
-    in: "query"
-    description: "The id for the user"
-    required: false
-    type: "integer"
-    x-example: 1
 responses:
   Standard500ErrorResponse:
     description: "An unexpected error occured."
-  ObjectDoesNotExistResponse:
-    description: "The object was not found in"
-  Standard201CreatedResponse:
-    description: "Created entity"

@@ -47,6 +47,13 @@ export default class Dashboard extends Component {
                                         <FormGroup><Button bsStyle="info"><Link style={{color: "#ffffff"}}
                                                                                 to="dashboard/users">User
                                             management</Link></Button></FormGroup>
+                                        <FormGroup>
+                                            <Button bsStyle="info">
+                                                <Link style={{color : '#fff'}} to="lobby">
+                                                    Room management
+                                                </Link>
+                                            </Button>
+                                        </FormGroup>
 
                                     </Panel>
                                 </Col>

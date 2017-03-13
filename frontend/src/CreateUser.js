@@ -28,13 +28,13 @@ export default class CreateUser extends Component {
     }
 
     async apiGetCall(endpoint) {
-        const url = `${config.mock_api_url}/${endpoint}`;
+        const url = `${config.base_url}/${endpoint}`;
         const authLevel = await LoadJson(url);
         this.setState({authLevel});
     }
 
     async apiCall(endpoint, newUser, newPassw, newRoleId) {
-        const url = `${config.mock_api_url}/${endpoint}`;
+        const url = `${config.base_url}/${endpoint}`;
         const newUserAck = await LoadJson(url, 'POST', {username: newUser, password: newPassw, auth_level: newRoleId});
         if (typeof(newUserAck.ok) !== 'undefined' && newUserAck.ok === 'userCreated') {
             this.setState({newUserMsg: 'New user created successfully!'});

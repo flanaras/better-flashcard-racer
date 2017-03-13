@@ -241,8 +241,8 @@ paths:
         type: "integer"
         x-example: 1
       responses:
-        200:
-          description: "successful operation"
+        204:
+          description: "no content"
   /rooms:
     get:
       tags:

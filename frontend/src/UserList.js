@@ -27,13 +27,13 @@ export default class UserList extends Component {
   }
 
   async apiCall(endpoint) {
-    const url = `${config.mock_api_url}/${endpoint}`;
+    const url = `${config.base_url}/${endpoint}`;
     const users = await LoadJson(url);
     this.setState({users});
   }
 
   async apiDeleteCall(endpoint, userid, index) {
-    const url = `${config.mock_api_url}/${endpoint}/${userid}`;
+    const url = `${config.base_url}/${endpoint}/${userid}`;
     const delUserAck = await LoadJson(url, 'DELETE');
     if (delUserAck === 'ok') {
         this.setState({newUserMsg: 'User deleted successfully!'});

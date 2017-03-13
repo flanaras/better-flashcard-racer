@@ -13,7 +13,7 @@ export default class UserSettings extends Component {
     }
 
     async apiCall(endpoint, userid) {
-        const url = `${config.mock_api_url}/${endpoint}/${userid}`;
+        const url = `${config.base_url}/${endpoint}/${userid}`;
         const logoutAck = await LoadJson(url, 'POST');
         if (logoutAck === 'ok') {
             this.props.logout();

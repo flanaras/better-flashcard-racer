@@ -53,7 +53,7 @@ export default class Solutions extends React.Component {
                                             <Button bsStyle="info">Play another deck</Button>
                                         </LinkContainer>
                                         {' '}
-                                        <LinkContainer to={{ pathname: '/'}}>
+                                        <LinkContainer to={{ pathname: '/dashboard'}}>
                                             <Button bsStyle="info">Home</Button>
                                         </LinkContainer>
                                 </Panel>

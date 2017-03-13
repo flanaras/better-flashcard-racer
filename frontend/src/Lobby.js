@@ -3,11 +3,10 @@ import config from './../config.json'
 import { PageHeader, Grid, Row, Col, Table, Button } from 'react-bootstrap';
 import io from 'socket.io-client';
 import {Link} from "react-router";
+import cookie from 'react-cookie';
 import CreateRoom from './CreateRoom';
 
 import sampleData from '../../sockets/docs/Lobby.json';
-const sampleUser = {id : 1, username : 'Astrid'};
-const eventHost = {"id": 2, "auth_level": "teacher", "username": "Teachername"};
 var socket;
 
 export default class Room extends React.Component {
@@ -33,11 +32,23 @@ export default class Room extends React.Component {
     }
 
     socket.on('connect', function() {
-      socket.emit(config.socket.joinLobby, eventHost);
+      const user = { id : cookie.load('userid'), auth_level : cookie.load('userRole'), username : cookie.load('username')};
+      socket.emit(config.socket.joinLobby, user);
     });
 
     socket.on(config.socket.roomState, (data) => {
-      this.setState({roomList : JSON.parse(data)});
+      let userList;
+      let roomDetails;
+      const roomList = JSON.parse(data);
+      if(this.state.selectedRoom !== '') {
+        for(var room in this.state.roomList) {
+          if(this.state.roomList[room].id === this.state.selectedRoom) {
+            userList = roomList[room].players;
+            roomDetails = roomList[room];
+          }
+        }
+      }
+      this.setState({roomList : roomList});
     });
   }
 
@@ -51,6 +62,8 @@ export default class Room extends React.Component {
       }
     }
     this.setState({lobby: false, selectedRoom : roomID, userList: userList, roomDetails : roomDetails});
+    console.log(userList);
+    console.log(this.state.userList);
     socket.emit(config.socket.joinRoom, { id : roomID });
   }
 
@@ -84,12 +97,24 @@ export default class Room extends React.Component {
       </tr>
     );
 
-    const userList = this.state.userList.map((user) =>
-      <tr key={user.id}>
+    var users = [];
+    if(this.state.selectedRoom !== '') {
+      for(var room in this.state.roomList) {
+        if(this.state.roomList[room].id === this.state.selectedRoom) {
+          users = this.state.roomList[room].players;
+        }
+      }
+    }
+    const userList = users.map((user) => {
+
+      console.log(user);
+
+      return (<tr key={user.id}>
         <td>
           {user.username}
         </td>
-      </tr>
+      </tr>);
+    }
     );
 
     let displayElement = null;

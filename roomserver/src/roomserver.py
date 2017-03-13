@@ -74,7 +74,7 @@ async def roomJSON():
     for room in Rooms:
         print('    Room: ',room.roomName,' id: ',str(room.id))
         host = {'id': room.host.id, 'auth_level': room.host.authLevel, 'username': room.host.username}
-        print('flashcard inside roomJSON: ', room.deck.flashcard)
+        #print('flashcard inside roomJSON: ', room.deck.flashcard)
         cards = cardsAsList(room.deck.flashcard)
         deck = {'id': room.deck.id, 'numProblems':room.deck.numProblems, 'name': room.deck.name, 'description': room.deck.description, 'user_id': room.deck.user_id, 'user_name': room.deck.user_name, 'created': room.deck.created, 'changed': room.deck.changed, 'private': room.deck.private, 'flashcard': cards}
         info = {'id': room.id, 'name': room.roomName, 'host': host, 'deck': deck, 'players': playersASlist(room.players)}
@@ -87,13 +87,15 @@ async def cleanUp():
         if user.sid == sid:
             Lobby.remove(user)
     for room in Rooms:
+        '''
         if room.hostsid == sid:
             destroyRoom(room.id)
         else:
-            for player in room.players:
-                if player.sid == sid:
-                    room.players.remove(player)
-    #await doesn't work, cause disconnect function should be async too
+        '''
+        for player in room.players:
+            if player.sid == sid:
+                room.players.remove(player)
+                #await doesn't work, cause disconnect function should be async too
     await roomJSON()
     await lobbyJSON()
 
@@ -247,6 +249,8 @@ async def join_room(sid, data):
                 print("Player ",user.username," joined room (id): ",roomtojoin.id)
                 await lobbyJSON()
                 await roomJSON()
+            else:
+                print("Player could not join the room")
     else:
         print("No such room (id): ",data.get('id'))
 
@@ -259,14 +263,16 @@ async def leave_room(sid, data):
     leaveid = data.get('id')
     for room in Rooms:
         if room.id == leaveid:
+            '''
             if room.host.sid == sid:
                 destroyRoom(leaveid)
             else:
-                for user in room.players:
-                    if user.sid == sid:
-                        Lobby.append(user)
-                        room.players.remove(user)
-                        print("User: ",user.username," left: ",room.roomName)
+            '''
+            for user in room.players:
+                if user.sid == sid:
+                    Lobby.append(user)
+                    room.players.remove(user)
+                    print("User: ",user.username," left: ",room.roomName)
     #await lobbyJSON()
     await roomJSON()
 

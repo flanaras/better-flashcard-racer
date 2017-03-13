@@ -5,6 +5,7 @@ import {Link} from "react-router";
 import DeckConfig from './DeckConfig'
 import { PageHeader, Form, Grid, Row, Col, Panel, Button, FormGroup, ControlLabel, FormControl, Radio, Checkbox } from 'react-bootstrap';
 import {browserHistory} from "react-router";
+import cookie from 'react-cookie';
 
 const useSockets = true;
 
@@ -22,11 +23,10 @@ export default class CreateRoom extends Component {
         console.log('submitted!')
         const roomPayload = {
             name: this.state.roomName,
-            //:TODO replace with state.user object when user-management done
             host: {
-                "id": 2,
-                "auth_level": "teacher",
-                "username": "Teachername"
+                id : cookie.load('userid'),
+                auth_level : cookie.load('userRole'),
+                username : cookie.load('username')
             },
             deck: chosenDeck
         }

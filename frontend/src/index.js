@@ -24,7 +24,7 @@ ReactDOM.render((
                     <Route name="Edit User" path="edituser" component={EditUser} />
                 </Route>
             </Route>
-            <Route name="Deck Configuration" path="deckconfig" component={DeckConfig} />
+            <Route name="Deck Configuration" path="deckconfig" component={DeckConfigView} />
             <Route name="Play Game" path="playgame" component={FlashcardPractice} />
             <Route name="Solutions" path="solutions" component={Solutions} />
             <Route path="createroom" component={CreateRoom} />

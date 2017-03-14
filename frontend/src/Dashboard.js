@@ -30,7 +30,7 @@ export default class Dashboard extends Component {
             }));
         } else {
             return (
-                (this.props.auth && this.props.userRole !== 'student') ?
+                this.props.auth ?
                     <div>
                         <PageHeader style={{textAlign: "center", marginBottom: 0}}>
                             Flashcard Racer <small>{this.props.route.name}</small>
@@ -44,13 +44,13 @@ export default class Dashboard extends Component {
                                     <Panel style={{textAlign: "center"}}>
                                         <FormGroup><Button bsStyle="info"><Link style={{color: "#ffffff"}}
                                                                                 to="deckconfig">Try practice mode</Link></Button></FormGroup>
-                                        <FormGroup><Button bsStyle="info"><Link style={{color: "#ffffff"}}
+                                        <FormGroup><Button style={{display: (this.props.userRole !== 'student'?'initial':'none')}} bsStyle="info"><Link style={{color: "#ffffff"}}
                                                                                 to="dashboard/users">User
                                             management</Link></Button></FormGroup>
                                         <FormGroup>
                                             <Button bsStyle="info">
                                                 <Link style={{color : '#fff'}} to="lobby">
-                                                    Room management
+                                                    {this.props.userRole !== 'student'?'Room management':'Available room'}
                                                 </Link>
                                             </Button>
                                         </FormGroup>

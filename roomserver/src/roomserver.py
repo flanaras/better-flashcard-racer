@@ -50,21 +50,11 @@ UsersInrRoms = []
 
 #Lobby methods:
 
-async def lobbyJSON():
-    JSON = []
-    for user in Lobby:
-        #print('    Name: ',user.username + ' id: ' + str(user.id) + ' auth_level: ' + str(user.authLevel))
-        info = {'id': user.id, 'username': user.username, 'auth_level': user.authLevel}
-        JSON.append(info)
-    await sio.emit('updatelobby',data = json.dumps(JSON),namespace = '/lobby')
-    JSON = None
-
 async def roomJSON():
     JSON = []
     for room in Rooms:
         print('    Room: ',room.roomName,' id: ',str(room.id))
         host = {'id': room.host.id, 'auth_level': room.host.authLevel, 'username': room.host.username}
-        #print('flashcard inside roomJSON: ', room.deck.flashcard)
         cards = cardsAsList(room.deck.flashcard)
         deck = {'id': room.deck.id, 'numProblems':room.deck.numProblems, 'name': room.deck.name, 'description': room.deck.description, 'user_id': room.deck.user_id, 'user_name': room.deck.user_name, 'created': room.deck.created, 'changed': room.deck.changed, 'private': room.deck.private, 'flashcard': cards}
         info = {'id': room.id, 'name': room.roomName, 'host': host, 'deck': deck, 'players': playersASlist(room.players)}
@@ -87,7 +77,6 @@ async def cleanUp():
                 room.players.remove(player)
                 #await doesn't work, cause disconnect function should be async too
     await roomJSON()
-    await lobbyJSON()
 
 #Ugly list helper...
 def playersASlist(players):
@@ -132,7 +121,6 @@ def disconnect(sid):
 #  "auth_level": "admin",
 #  "username": "Astrid"
 # }
-# add checking user_id
 @sio.on('join_lobby', namespace='/lobby')
 async def join_lobby(sid, data):
     print("join: ", data)
@@ -143,7 +131,6 @@ async def join_lobby(sid, data):
             print("User already in lobby!: ",user.username)
     if flag == False :
         Lobby.append(User(data.get('id'), data.get('username'), sid, data.get('auth_level')))
-    await lobbyJSON()
     await roomJSON()
 
 #Example leave_lobby JSON:
@@ -157,7 +144,6 @@ async def leave_lobby(sid, data):
         if(user.id == data.get("id")):
             Lobby.remove(user)
             print("User left lobby: ",user.username)
-    await lobbyJSON()
 
 #Room methods:
 
@@ -217,7 +203,6 @@ async def create_room(sid, data):
 
             Rooms.append(Room(str(uuid.uuid1()), data.get('name'), host, deckObject))
             await roomJSON()
-            await lobbyJSON()
             #Lobby.remove(host)
         else:
             print("Create room: User not in Lobby!")
@@ -240,7 +225,6 @@ async def join_room(sid, data):
                 roomtojoin.players.append(user)
                 Lobby.remove(user)
                 print("Player ",user.username," joined room (id): ",roomtojoin.id)
-                await lobbyJSON()
                 await roomJSON()
             else:
                 print("Player could not join the room")
@@ -266,11 +250,13 @@ async def leave_room(sid, data):
                     Lobby.append(user)
                     room.players.remove(user)
                     print("User: ",user.username," left: ",room.roomName)
-    #await lobbyJSON()
     await roomJSON()
 
 #Run server method:
 
 if __name__ == '__main__':
+    #for remote websocket server
     #web.run_app(app,host='83.212.101.194',port=9000)
+
+    #for local websocket server
     web.run_app(app,host='127.0.0.1',port=9000)

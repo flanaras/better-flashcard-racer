@@ -31,7 +31,6 @@ class Flashcard:
         self.answer = answer
 
 class Room:
-    #newid = next(itertools.count())
     def __init__(self, id, roomName, User, Deck):
         self.id = id
         self.roomName = roomName
@@ -45,10 +44,7 @@ sio.attach(app)
 
 Lobby = []
 Rooms = []
-
 UsersInrRoms = []
-
-#Lobby methods:
 
 async def roomJSON():
     JSON = []
@@ -75,10 +71,8 @@ async def cleanUp():
         for player in room.players:
             if player.sid == sid:
                 room.players.remove(player)
-                #await doesn't work, cause disconnect function should be async too
     await roomJSON()
 
-#Ugly list helper...
 def playersASlist(players):
     list = []
     for user in players:
@@ -86,7 +80,6 @@ def playersASlist(players):
         list.append(info)
     return list
 
-#change flashcard into dictionary
 def cardsAsList(cards):
     list = []
     for card in cards:
@@ -94,7 +87,6 @@ def cardsAsList(cards):
         list.append(info)
     return list
 
-#Destroy room helper...
 def destroyRoom(id):
     Desroom = None
     for room in Rooms:
@@ -112,15 +104,8 @@ def connect(sid, environ):
 
 @sio.on('disconnect', namespace='/lobby')
 def disconnect(sid):
-    #cleanUp()
     print('disconnected from lobby service: ', sid)
 
-#Example join_lobby JSON:
-# {
-#  "id": 1,
-#  "auth_level": "admin",
-#  "username": "Astrid"
-# }
 @sio.on('join_lobby', namespace='/lobby')
 async def join_lobby(sid, data):
     print("join: ", data)
@@ -133,52 +118,13 @@ async def join_lobby(sid, data):
         Lobby.append(User(data.get('id'), data.get('username'), sid, data.get('auth_level')))
     await roomJSON()
 
-#Example leave_lobby JSON:
-# {
-# "id": 1,
-# }
 @sio.on('leave_lobby', namespace='/lobby')
 async def leave_lobby(sid, data):
-    #print("leave: ", data)
     for user in Lobby:
         if(user.id == data.get("id")):
             Lobby.remove(user)
             print("User left lobby: ",user.username)
 
-#Room methods:
-
-#Example create_room JSON:
-# {
-#   "name": "user's room",
-#   "host": {
-#       "id": 1,
-#       "auth_level": "teacher",
-#       "username": "miaTeacher"
-#   },
-#   "deck": {
-#       "id": 1,
-#       "numProblems": 5,
-#       "name": "A test deck",
-#       "description": "Description for a test deck",
-#       "user_id": 2,
-#       "user_name": "John",
-#       "created": "2017-01-25T20:17:45.000Z",
-#       "changed": "2017-01-25T20:17:45.000Z",
-#       "private": false,
-#       "flashcard": [
-#         {
-#           "id": 1,
-#           "problem": "1+1",
-#           "answer": 2
-#         },
-#         {
-#           "id": 2,
-#           "problem": "2+2",
-#           "answer": 4
-#         }
-#       ]
-#     }
-# }
 @sio.on('create_room', namespace='/lobby')
 async def create_room(sid, data):
     print("CR: ", data)
@@ -203,14 +149,10 @@ async def create_room(sid, data):
 
             Rooms.append(Room(str(uuid.uuid1()), data.get('name'), host, deckObject))
             await roomJSON()
-            #Lobby.remove(host)
+            await lobbyJSON()
         else:
             print("Create room: User not in Lobby!")
 
-#Example join_room JSON:
-# {
-# "id": 1 (ID of room to join)
-# }
 @sio.on('join_room', namespace='/lobby')
 async def join_room(sid, data):
     exists = False
@@ -231,10 +173,6 @@ async def join_room(sid, data):
     else:
         print("No such room (id): ",data.get('id'))
 
-#Example leave_room JSON:
-# {
-# "id": 1 (ID of room to leave)
-# }
 @sio.on('leave_room', namespace='/lobby')
 async def leave_room(sid, data):
     leaveid = data.get('id')
@@ -252,11 +190,5 @@ async def leave_room(sid, data):
                     print("User: ",user.username," left: ",room.roomName)
     await roomJSON()
 
-#Run server method:
-
 if __name__ == '__main__':
-    #for remote websocket server
-    #web.run_app(app,host='83.212.101.194',port=9000)
-
-    #for local websocket server
     web.run_app(app,host='127.0.0.1',port=9000)

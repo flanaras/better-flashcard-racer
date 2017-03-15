@@ -2,9 +2,10 @@
 ## IDE
 This project use Intelij as an IDE, can download at https://www.jetbrains.com/idea/
 
-## REST API Documentation
-This project use swagger as the API documentation, can see the documentation of Better FlashCard Racer api at https://app.swaggerhub.com/api/better-flashcard-racer/testar/1.0.0
-##GIT WORKFLOW
+## Project Management
+This project use trello as the project management to manage our job, can see our progress and what left for this project at https://trello.com/b/MmX9WgcZ/flashcard
+
+## GIT WORKFLOW
 
 ###Start working on a new feature
 

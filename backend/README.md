@@ -5,6 +5,10 @@ This has been adopted from the [swagger examples](https://github.com/swagger-api
 ## API Test with Postman
 This project using automatic testing for the API, can download postman at https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop?hl=en and see postmant testing at https://github.com/flanaras/better-flashcard-racer/blob/room/backend/shared%20files/Real%20Flashcard%20Endpoint.postman_collection.json\
 
+
+## REST API Documentation
+This project use swagger as the API documentation, can see the documentation of Better FlashCard Racer api at https://app.swaggerhub.com/api/better-flashcard-racer/testar/1.0.0
+
 ## Building and running
 
 The project uses [Gradle](https://gradle.org/) for its build system and you can build the project by running:

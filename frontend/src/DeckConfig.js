@@ -40,7 +40,7 @@ export default class DeckConfig extends Component {
     }
 
     async apiCall(endpoint) {
-        const url = `${config.mock_url}/${endpoint}`
+        const url = `${config.base_url}/${endpoint}`
         let decks = await LoadJson(url)
         const renamedDecks = decks.map(deck => this.renameAttributes(deck))
         this.setState({decks: renamedDecks})
@@ -133,7 +133,7 @@ export default class DeckConfig extends Component {
                     multi: this.state.generateDeck.operators.multi
                 }]
             }
-            const chosenDeck = await LoadJson(config.mock_url + '/generate-cards', 'POST', reqPayload)
+            const chosenDeck = await LoadJson(config.base_url + '/generate-cards', 'POST', reqPayload)
             const renamedDecks = this.renameAttributes(chosenDeck)
             this.props.onSubmitGameConfig(renamedDecks, this.state.gameLengthProblems, this.state.timePerProblem)
         }

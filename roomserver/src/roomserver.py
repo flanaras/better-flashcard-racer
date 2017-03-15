@@ -1,13 +1,3 @@
-#-----------------------------------------------------------------------------------------------------------------------
-#Install/Run notes: (for now might add included packages later)
-#   0. install python ver > 3.5
-#   1. install pip: Download "https://bootstrap.pypa.io/get-pip.py" and run with "python get-pip.py"
-#   2. install aiohttp: run "pip install aiohttp"
-#   3. install socket.io: run "pip install python-socketio"
-#   4. start server: run "python roomserver.py"
-#   listen to event updateroom
-#-----------------------------------------------------------------------------------------------------------------------
-
 from aiohttp import web
 import socketio
 import json
@@ -115,7 +105,6 @@ def cardsAsList(cards):
         list.append(info)
     return list
 
-
 #Destroy room helper...
 def destroyRoom(id):
     Desroom = None
@@ -174,8 +163,12 @@ async def leave_lobby(sid, data):
 
 #Example create_room JSON:
 # {
-#   "roomname": "user's room",
-#   "user_id": 1,
+#   "name": "user's room",
+#   "host": {
+#       "id": 1,
+#       "auth_level": "teacher",
+#       "username": "miaTeacher"
+#   },
 #   "deck": {
 #       "id": 1,
 #       "numProblems": 5,

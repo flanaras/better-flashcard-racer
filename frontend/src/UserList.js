@@ -2,7 +2,8 @@
  * Created by Fabian Schöndorff on 13.02.17.
  */
 
-import React, {Component} from 'react'
+import React, {Component} from 'react';
+import update from 'react-addons-update';
 import { PageHeader, Grid, Row, Col, Table, Button } from 'react-bootstrap';
 import config from '../config.json';
 import {Link} from "react-router";
@@ -47,10 +48,20 @@ export default class UserList extends Component {
     const url = `${config.base_url}/${endpoint}/${userid}`;
     const delUserAck = await LoadJson(url, 'DELETE');
     if (delUserAck === 'ok') {
-        this.setState({newUserMsg: 'User deleted successfully!'});
+        var newUserInfoParam = update(this.state, {
+            newUserInfo: {
+                newUserMsg: { $set: 'User deleted successfully!' }
+            }
+        });
+        this.setState(newUserInfoParam);
         this.apiCall('users');
     } else {
-        this.setState({newUserMsg: 'User could not be deleted. Try again!'});
+        var newUserInfoParam = update(this.state, {
+            newUserInfo: {
+                newUserMsg: { $set: 'User could not be deleted. Try again!' }
+            }
+        });
+        this.setState(newUserInfoParam);
         alert(this.state.newUserMsg);
     }
   }
@@ -89,10 +100,7 @@ export default class UserList extends Component {
     if(this.props.children) {
           return (React.cloneElement(this.props.children, {
               loadUserInfo: this.props.loadUserInfo,
-              auth: this.props.auth,
-              userid: this.props.userid,
-              username: this.props.username,
-              userRoleId: this.props.userRoleId,
+              userInfo: this.props.userInfo,
               logout: this.props.logout,
               addEditUser: this.addEditUser,
               newUserInfo: this.state.newUserInfo,
@@ -100,14 +108,13 @@ export default class UserList extends Component {
           }));
     } else {
         return (
-            this.props.auth ?
+            this.props.userInfo.auth ?
                 <div>
                     <PageHeader style={{textAlign: "center", marginBottom: 0}}>
                         Flashcard Racer
                         <small>{this.props.route.name}</small>
                     </PageHeader>
-                    <UserSettings auth={this.props.auth} routes={this.props.routes} userid={this.props.userid}
-                                  username={this.props.username} logout={this.props.logout}/>
+                    <UserSettings routes={this.props.routes} userInfo={this.props.userInfo} logout={this.props.logout}/>
                     <Grid>
                         <Row className="show-grid">
                             <Col xs={1} md={3}></Col>

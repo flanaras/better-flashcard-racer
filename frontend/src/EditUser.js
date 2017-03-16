@@ -11,7 +11,12 @@ export default class EditUser extends Component {
         super(props);
         this.state = {
             authLevel: [],
-            newUserInfo: this.props.newUserInfo
+            newUserInfo: {
+                newUserId: NaN,
+                newUser: '',
+                newUserRoleId: NaN,
+                newUserMsg: ''
+            }
         };
         this.handleChange = this.handleChange.bind(this);
         this.onEditUser = this.onEditUser.bind(this);
@@ -20,7 +25,8 @@ export default class EditUser extends Component {
     }
 
     componentWillMount() {
-        this.apiGetCall('authlevel/'+this.props.userRoleId);
+        this.setState({newUserInfo: this.props.newUserInfo});
+        this.apiGetCall('authlevel/'+this.props.userInfo.userRoleId);
     }
 
     async apiGetCall(endpoint) {
@@ -79,14 +85,13 @@ export default class EditUser extends Component {
                             })}
                         </FormControl>
         return (
-            this.props.auth?
+            this.props.userInfo.auth?
                 <div>
                     <PageHeader style={{textAlign: "center", marginBottom: 0}}>
                         Flashcard Racer
                         <small>{this.props.route.name}</small>
                     </PageHeader>
-                    <UserSettings auth={this.props.auth} routes={this.props.routes} userid={this.props.userid}
-                                  username={this.props.username} logout={this.props.logout}/>
+                    <UserSettings routes={this.props.routes} userInfo={this.props.userInfo} logout={this.props.logout}/>
                     <Grid>
                         <Row className="show-grid">
                             <Col xs={1} md={4}></Col>

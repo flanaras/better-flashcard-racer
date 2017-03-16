@@ -5,7 +5,15 @@ import cookie from "react-cookie";
 export default class MotherOfDragons extends Component {
     constructor(props) {
         super(props)
-        this.state = {}
+        this.state = {
+            userInfo: {
+                auth: false,
+                userid: NaN,
+                username: '',
+                userRole: '',
+                userRoleId: NaN
+            }
+        }
         this.onSubmitGameConfig = this.onSubmitGameConfig.bind(this)
         this.submitAnswers = this.submitAnswers.bind(this)
         this.submitCreateRoom = this.submitCreateRoom.bind(this)
@@ -24,7 +32,6 @@ export default class MotherOfDragons extends Component {
     }
 
     submitCreateRoom() {
-
         browserHistory.push('/');
     }
 
@@ -33,25 +40,28 @@ export default class MotherOfDragons extends Component {
         browserHistory.push('solutions');
     }
 
-    login(userid, username, userRole, userRoleId, auth) {
+    login(userInfo) {
+        cookie.save("userid", userInfo.userid, {path: "/"});
+        cookie.save("username", userInfo.username, {path: "/"});
+        cookie.save("userRole", userInfo.userRole, {path: "/"});
+        cookie.save("userRoleId", userInfo.userRoleId, {path: "/"});
+        cookie.save("auth", userInfo.auth, {path: "/"});
 
-        cookie.save("userid", userid, {path: "/"});
-        cookie.save("username", username, {path: "/"});
-        cookie.save("userRole", userRole, {path: "/"});
-        cookie.save("userRoleId", userRoleId, {path: "/"});
-        cookie.save("auth", auth, {path: "/"});
+        this.setState({userInfo});
 
-        browserHistory.push('dashboard');
+        browserHistory.push('/dashboard');
     }
 
     loadUserInfo() {
         this.setState({
+            userInfo: {
                 auth: cookie.load("auth") === "true" ? true : false,
                 userid: cookie.load("userid"),
                 username: cookie.load("username"),
                 userRole: cookie.load("userRole"),
                 userRoleId: cookie.load("userRoleId")
-            });
+            }
+        });
     }
 
     logout() {
@@ -62,11 +72,14 @@ export default class MotherOfDragons extends Component {
         cookie.remove("userRoleId");
 
         this.setState({
-            userid: NaN,
-            username: '',
-            userRole: '',
-            userRoleId: NaN,
-            auth: false});
+            userInfo: {
+                userid: NaN,
+                username: '',
+                userRole: '',
+                userRoleId: NaN,
+                auth: false
+            }
+        });
 
         browserHistory.push('/');
     }
@@ -83,11 +96,7 @@ export default class MotherOfDragons extends Component {
                     decks: this.state.decks,
                     login: this.login,
                     loadUserInfo: this.loadUserInfo,
-                    auth: this.state.auth,
-                    userid: this.state.userid,
-                    username: this.state.username,
-                    userRole: this.state.userRole,
-                    userRoleId: this.state.userRoleId,
+                    userInfo: this.state.userInfo,
                     logout: this.logout,
                     routes: this.props.routes,
                     submitCreateRoom: this.state.submitCreateRoom

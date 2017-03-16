@@ -4,7 +4,6 @@ import { shallow, mount } from 'enzyme'
 import sinon, { spy } from 'sinon'
 import SelectMode from '../src/SelectMode'
 import DeckConfig, {GenerateDeckOptions, SavedDeck} from '../src/DeckConfig'
-import MotherOfDragons from '../src/MotherOfDragons'
 import Solutions from '../src/Solutions'
 import {ControlLabel, FormControl, Button, ListGroup, Form, DropdownButton, MenuItem} from 'react-bootstrap'
 import Flashcard from './../src/Flashcard'
@@ -36,17 +35,17 @@ describe('SelectMode', () => {
     });
     it('should init without authentication', () => {
         const wrapper = shallow(<SelectMode route={{name: 'Welcome'}} />);
-        expect(wrapper.state('auth')).to.equal(false);
+        expect(wrapper.state(['userInfo']).auth).to.equal(false);
     });
     it('should accept inputs', () => {
         const wrapper = shallow(<SelectMode route={{name: 'Welcome'}} />);
         const username = wrapper.find("[name='username']");
         username.simulate('change', {target: {name: 'username', value: 'test'}});
-        expect(wrapper.state('username')).to.equal('test');
+        expect(wrapper.state('userInfo').username).to.equal('test');
 
         const password = wrapper.find("[name='password']");
         password.simulate('change', {target: {name: 'password', value: 'some pass'}});
-        expect(wrapper.state('password')).to.equal('some pass');
+        expect(wrapper.state('userInfo').password).to.equal('some pass');
     });
     it('should call apiCall when login form is submitted', () => {
         const apiCallSpy = spy(SelectMode.prototype, "apiCall");
@@ -59,8 +58,18 @@ describe('SelectMode', () => {
 });
 
 describe('Dashboard', () => {
-    it('Dashboard should be available only if the user is authenticated and his userRole is admin or teacher', () => {
-        let wrapper = shallow(<Dashboard route={{name: 'Dashboard'}} auth={true} userRole='admin'/>);
+    it('Dashboard should be available only if the user is authenticated', () => {
+        let userInfo = {
+            username: '',
+            password: '',
+            userid: NaN,
+            userRole: 'admin',
+            userRoleId: NaN,
+            auth: true,
+            loginErrorMsg: ''
+        };
+
+        let wrapper = shallow(<Dashboard route={{name: 'Dashboard'}} loadUserInfo={spy()} userInfo={userInfo} />);
         expect(wrapper.containsAllMatchingElements([
             <Link style={{color: "#ffffff"}} to="deckconfig" >Try practice mode</Link>
         ])).to.equal(true);
@@ -68,7 +77,17 @@ describe('Dashboard', () => {
             <Link style={{color: "#ffffff"}} to="dashboard/users">User management</Link>
         ])).to.equal(true);
 
-        wrapper = shallow(<Dashboard route={{name: 'Dashboard'}} auth={false} userRole=''/>);
+        userInfo = {
+            username: '',
+            password: '',
+            userid: NaN,
+            userRole: 'student',
+            userRoleId: NaN,
+            auth: false,
+            loginErrorMsg: ''
+        };
+
+        wrapper = shallow(<Dashboard route={{name: 'Dashboard'}} loadUserInfo={spy()} userInfo={userInfo} />);
         expect(wrapper.containsAllMatchingElements([
             <Link style={{color: "#ffffff"}} to="deckconfig" >Try practice mode</Link>
         ])).to.equal(false);
@@ -380,8 +399,18 @@ describe('UserList', () => {
     const users = [{id: 1, username: "Test User", auth_level: "Teacher", auth_id: 1},
                 {id: 2, username : "Another User", auth_level: "Student", auth_id: 0}];
 
+    var userInfo = {
+        username: 'admin',
+        password: '',
+        userid: NaN,
+        userRole: 'admin',
+        userRoleId: 2,
+        auth: true,
+        loginErrorMsg: ''
+    };
+
     it('should display the correct number of elements in the table', () => {
-        const wrapper = shallow(<UserList route={{name: 'User Management'}} auth={true} users={users} />);
+        const wrapper = shallow(<UserList route={{name: 'User Management'}} userInfo={userInfo} users={users} />);
         wrapper.setState({users});
         const tableRows = wrapper.find('tr');
         expect(tableRows).to.have.length.of(3+1);
@@ -389,37 +418,68 @@ describe('UserList', () => {
     it('should call apiCall to get user list', () => {
         const apiCallSpy = spy(UserList.prototype, "apiCall");
         const loadUserInfoSpy = spy();
-        const wrapper = mount(<UserList route={{name: 'User Management'}} loadUserInfo={loadUserInfoSpy} />);
+        const wrapper = mount(<UserList routes={[]} route={{name: 'User Management'}} userInfo={userInfo} loadUserInfo={loadUserInfoSpy} />);
         expect(apiCallSpy.calledOnce).to.equal(true);
-    });
-    it('should not render if user is not authenticated', () => {
-        const wrapper = shallow(<UserList auth={false}/>);
-        expect(wrapper.containsAllMatchingElements()).to.equal(false);
     });
     it('should call apiDeleteCall to delete user', () => {
         const apiDeleteCall = spy(UserList.prototype, "apiDeleteCall");
         const loadUserInfoSpy = spy();
-        const wrapper = mount(<UserList routes={[]} route={{name: 'User Management'}} auth={true} loadUserInfo={loadUserInfoSpy} />);
+        const wrapper = mount(<UserList routes={[]} route={{name: 'User Management'}} userInfo={userInfo} loadUserInfo={loadUserInfoSpy} />);
         wrapper.setState({users});
         wrapper.find('[name="deleteButton0"]').simulate('click');
         expect(apiDeleteCall.calledOnce).to.equal(true);
     });
+    it('should not render if user is not authenticated', () => {
+
+        userInfo = {
+            username: '',
+            password: '',
+            userid: NaN,
+            userRole: '',
+            userRoleId: NaN,
+            auth: false,
+            loginErrorMsg: ''
+        };
+
+        const wrapper = shallow(<UserList userInfo={userInfo}/>);
+
+        expect(wrapper.containsAllMatchingElements()).to.equal(false);
+    });
 });
 
 describe('CreateUser', () => {
+    var userInfo = {
+        username: '',
+        password: '',
+        userid: NaN,
+        userRole: '',
+        userRoleId: NaN,
+        auth: false,
+        loginErrorMsg: ''
+    };
+
     it('should not render if user is not authenticated', () => {
-        const wrapper = shallow(<CreateUser route={{name: 'Create User'}} username='' userRole='' auth={false}/>);
+        const wrapper = shallow(<CreateUser route={{name: 'Create User'}} userInfo={userInfo} />);
         expect(wrapper.containsAllMatchingElements()).to.equal(false);
     });
-    it('for an authenticated user should render role dropdown, username and password input texts also create user and go back buttons', () => {
-        const username = 'Aron';
-        const userRole = 'teacher';
-        const auth = true;
+    it('for an authenticated user should render role dropdown, username and password input texts also create user button', () => {
+
         const authLevel = [{
             "id": 0,
             "auth": "Student"
         }];
-        const wrapper = mount(<CreateUser routes={[]} route={{name: 'Create User'}} username={username} userRole={userRole} auth={auth}/>);
+
+        userInfo = {
+            username: 'Aron',
+            password: 'teacher',
+            userid: NaN,
+            userRole: '',
+            userRoleId: NaN,
+            auth: true,
+            loginErrorMsg: ''
+        };
+
+        const wrapper = shallow(<CreateUser routes={[]} route={{name: 'Create User'}} userInfo={userInfo} />);
         wrapper.setState({authLevel});
         expect(wrapper.find('option').length).to.equal(1);
         expect(wrapper.containsAllMatchingElements([
@@ -438,14 +498,19 @@ describe('CreateUser', () => {
         ])).to.equal(true);
     });
     it('dropdown options should be consistent with the user authentication level', () => {
-        const username = 'Aron';
-        const auth = true;
-
-        let userRole = 'admin';
+        userInfo = {
+            username: 'Aron',
+            password: 'teacher',
+            userid: NaN,
+            userRole: 'admin',
+            userRoleId: 2,
+            auth: true,
+            loginErrorMsg: ''
+        };
         let authLevel = [{
-            "id": 0,
-            "auth": "Student"
-        },
+                "id": 0,
+                "auth": "Student"
+            },
             {
                 "id": 1,
                 "auth": "Teacher"
@@ -455,23 +520,40 @@ describe('CreateUser', () => {
                 "auth": "Admin"
             }];
         const apiGetCallSpy = spy(CreateUser.prototype, "apiGetCall");
-        let wrapper = mount(<CreateUser routes={[]} route={{name: 'Create User'}} username={username} userRole={userRole} auth={auth}/>);
+        let wrapper = mount(<CreateUser routes={[]} route={{name: 'Create User'}} userInfo={userInfo} />);
         expect(apiGetCallSpy.calledOnce).to.equal(true);
         wrapper.setState({authLevel});
         expect(wrapper.find('option').length).to.equal(3);
 
-        userRole = 'teacher';
+        userInfo = {
+            username: 'Aron',
+            password: 'teacher',
+            userid: NaN,
+            userRole: 'teacher',
+            userRoleId: 1,
+            auth: true,
+            loginErrorMsg: ''
+        };
         authLevel = [{
             "id": 0,
             "auth": "Student"
         }];
-        wrapper = mount(<CreateUser routes={[]} route={{name: 'Create User'}} username={username} userRole={userRole} auth={auth}/>);
+        wrapper = mount(<CreateUser routes={[]} route={{name: 'Create User'}} userInfo={userInfo} />);
         wrapper.setState({authLevel});
         expect(wrapper.find('option').length).to.equal(1);
     });
     it('should accept inputs and changes in dropdown', () => {
+        userInfo = {
+            username: 'Aron',
+            password: 'teacher',
+            userid: NaN,
+            userRole: 'admin',
+            userRoleId: 2,
+            auth: true,
+            loginErrorMsg: ''
+        };
 
-        const wrapper = mount(<CreateUser addEditUser={spy()} routes={[]} route={{name: 'Create User'}} username='Aron' userRole='admin' auth={true}/>);
+        const wrapper = mount(<CreateUser addEditUser={spy()} routes={[]} route={{name: 'Create User'}} userInfo={userInfo} />);
         const newUser = wrapper.find("[name='newUser']");
         newUser.simulate('change', {target: {name: 'newUser', value: 'sara10'}});
         expect(wrapper.state(['newUserInfo']).newUser).to.equal('sara10');
@@ -489,10 +571,6 @@ describe('CreateUser', () => {
         expect(wrapper.state(['newUserInfo']).newUserRoleId).to.equal(0);
     });
     it('should show password unmatched in case they are different', () => {
-        const username = 'Aron';
-        const userRole = 'admin';
-        const auth = true;
-
         const  newUserInfo = {
             newUser: '',
             newPassw: '123456',
@@ -502,7 +580,7 @@ describe('CreateUser', () => {
             newPassError: ''
         }
 
-        const wrapper = mount(<CreateUser routes={[]} route={{name: 'Create User'}} username={username} userRole={userRole} auth={auth}/>);
+        const wrapper = mount(<CreateUser routes={[]} route={{name: 'Create User'}} userInfo={userInfo} />);
         expect(wrapper.state(['newUserInfo']).newPassError).to.equal('');
         wrapper.setState({newUserInfo});
         const form = wrapper.find('form');
@@ -510,13 +588,9 @@ describe('CreateUser', () => {
         expect(wrapper.state(['newUserInfo']).newPassError).to.equal('Passwords does not match!');
     });
     it('should call apiCall when create user form is submitted', () => {
-        const username = 'Aron';
-        let userRole = 'admin';
-        const auth = true;
-
         const apiCallSpy = spy(CreateUser.prototype, "apiCall");
         expect(apiCallSpy.notCalled).to.equal(true);
-        const wrapper = mount(<CreateUser routes={[]} route={{name: 'Create User'}} username={username} userRole={userRole} auth={auth}/>);
+        const wrapper = mount(<CreateUser routes={[]} route={{name: 'Create User'}} userInfo={userInfo} />);
         const form = wrapper.find('form');
         form.simulate('submit');
         expect(apiCallSpy.calledOnce).to.equal(true);
@@ -524,20 +598,36 @@ describe('CreateUser', () => {
 });
 
 describe('EditUser', () => {
+    var userInfo = {
+        username: '',
+        password: '',
+        userid: NaN,
+        userRole: '',
+        userRoleId: NaN,
+        auth: false,
+        loginErrorMsg: ''
+    };
+
     it('should not render if user is not authenticated', () => {
-        const wrapper = shallow(<EditUser routes={[]} route={{name: 'Edit User'}} auth={false}/>);
+        const wrapper = shallow(<EditUser routes={[]} route={{name: 'Edit User'}} userInfo={userInfo} />);
         expect(wrapper.containsAllMatchingElements()).to.equal(false);
     });
     it('for an authenticated user should render role dropdown and username input texts also update user button', () => {
-        const username = 'Aron';
-        const userRole = 'teacher';
-        const userRoleId = 1;
-        const auth = true;
+        userInfo = {
+            username: 'Aron',
+            password: '',
+            userid: NaN,
+            userRole: 'teacher',
+            userRoleId: 1,
+            auth: true,
+            loginErrorMsg: ''
+        };
+
         const authLevel = [{
             "id": 0,
             "auth": "Student"
         }];
-        const wrapper = mount(<EditUser routes={[]} newUserInfo={[]} route={{name: 'Edit User'}}  username={username} userRole={userRole} userRoleId={userRoleId} auth={auth}/>);
+        const wrapper = mount(<EditUser routes={[]} newUserInfo={[]} route={{name: 'Edit User'}} userInfo={userInfo} />);
         wrapper.setState({authLevel})
         expect(wrapper.find('option').length).to.equal(1);
         expect(wrapper.containsAllMatchingElements([
@@ -550,11 +640,15 @@ describe('EditUser', () => {
         ])).to.equal(true);
     });
     it('dropdown options should be consistent with the user authentication level', () => {
-        const username = 'Aron';
-        const auth = true;
-
-        let userRole = 'admin';
-        let userRoleId = 2;
+        userInfo = {
+            username: 'Aron',
+            password: '',
+            userid: NaN,
+            userRole: 'admin',
+            userRoleId: 2,
+            auth: true,
+            loginErrorMsg: ''
+        };
         let authLevel = [{
             "id": 0,
             "auth": "Student"
@@ -568,24 +662,40 @@ describe('EditUser', () => {
                 "auth": "Admin"
             }];
         const apiGetCallSpy = spy(EditUser.prototype, "apiGetCall");
-        let wrapper = mount(<EditUser routes={[]} newUserInfo={[]} route={{name: 'Edit User'}}  username={username} userRole={userRole} userRoleId={userRoleId} auth={auth}/>);
+        let wrapper = mount(<EditUser routes={[]} newUserInfo={[]} route={{name: 'Edit User'}} userInfo={userInfo} />);
         expect(apiGetCallSpy.calledOnce).to.equal(true);
         wrapper.setState({authLevel});
         expect(wrapper.find('option').length).to.equal(3);
 
-        userRole = 'teacher';
-        userRoleId = 1;
+        userInfo = {
+            username: 'Aron',
+            password: '',
+            userid: NaN,
+            userRole: 'teacher',
+            userRoleId: 1,
+            auth: true,
+            loginErrorMsg: ''
+        };
         authLevel = [{
             "id": 0,
             "auth": "Student"
         }];
-        wrapper = mount(<EditUser routes={[]} newUserInfo={[]} route={{name: 'Edit User'}}  username={username} userRole={userRole} userRoleId={userRoleId} auth={auth}/>);
+        wrapper = mount(<EditUser routes={[]} newUserInfo={[]} route={{name: 'Edit User'}} userInfo={userInfo} />);
         wrapper.setState({authLevel});
         expect(wrapper.find('option').length).to.equal(1);
     });
     it('should accept inputs and changes in dropdown', () => {
+        userInfo = {
+            username: 'Aron',
+            password: '',
+            userid: NaN,
+            userRole: 'admin',
+            userRoleId: 2,
+            auth: true,
+            loginErrorMsg: ''
+        };
 
-        const wrapper = mount(<EditUser routes={[]} newUserInfo={{newUserId: 0, newUser: 'sara', newUserRoleId: 0}} route={{name: 'Edit User'}}  username='Aron' userRole='admin' userRoleId={2} auth={true}/>);
+        const wrapper = mount(<EditUser routes={[]} newUserInfo={{newUserId: 0, newUser: 'sara', newUserRoleId: 0}} route={{name: 'Edit User'}}  userInfo={userInfo} />);
         const newUser = wrapper.find("[name='newUser']");
         newUser.simulate('change', {target: {name: 'newUser', value: 'sara10'}});
         expect(wrapper.state(['newUserInfo']).newUser).to.equal('sara10');
@@ -595,14 +705,9 @@ describe('EditUser', () => {
         expect(wrapper.state(['newUserInfo']).newUserRoleId).to.equal(2);
     });
     it('should call apiCall when update user form is submitted', () => {
-        const username = 'Aron';
-        const userRole = 'admin';
-        const userRoleId = 2;
-        const auth = true;
-
         const apiCallSpy = spy(EditUser.prototype, "apiCall");
         expect(apiCallSpy.notCalled).to.equal(true);
-        const wrapper = mount(<EditUser routes={[]} newUserInfo={[]} route={{name: 'Edit User'}}  username={username} userRole={userRole} userRoleId={userRoleId} auth={auth}/>);
+        const wrapper = mount(<EditUser routes={[]} newUserInfo={[]} route={{name: 'Edit User'}} userInfo={userInfo} />);
         const form = wrapper.find('form');
         form.simulate('submit');
         expect(apiCallSpy.calledOnce).to.equal(true);
@@ -610,8 +715,18 @@ describe('EditUser', () => {
 });
 
 describe('UserSettings', () => {
+    let userInfo = {
+        username: 'admin',
+        password: '',
+        userid: NaN,
+        userRole: 'admin',
+        userRoleId: NaN,
+        auth: true,
+        loginErrorMsg: ''
+    };
+
     it('should be a drop-down button with Sign Out option', () => {
-        const wrapper = shallow(<UserSettings auth={true} username="admin" />);
+        const wrapper = shallow(<UserSettings userInfo={userInfo} />);
         expect(wrapper.containsAllMatchingElements([
             <DropdownButton bsStyle='info' title="admin">
                 <MenuItem eventKey="1">Sign out</MenuItem>
@@ -620,7 +735,7 @@ describe('UserSettings', () => {
     });
     it('onSignOut should be called after clicking Sign out option', () => {
         const onLogoutSpy = spy(UserSettings.prototype, "onLogout");
-        const wrapper = shallow(<UserSettings auth={true} username="admin" logout={spy()}/>);
+        const wrapper = shallow(<UserSettings userInfo={userInfo} logout={spy()}/>);
         wrapper.find('MenuItem').simulate('click');
         expect(onLogoutSpy.calledOnce).to.equal(true);
     });

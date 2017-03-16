@@ -10,7 +10,6 @@ export default class MotherOfDragons extends Component {
         this.submitAnswers = this.submitAnswers.bind(this)
         this.submitCreateRoom = this.submitCreateRoom.bind(this)
         this.login = this.login.bind(this)
-        this.editUser = this.editUser.bind(this)
         this.loadUserInfo = this.loadUserInfo.bind(this)
         this.logout = this.logout.bind(this)
     }
@@ -75,11 +74,6 @@ export default class MotherOfDragons extends Component {
         browserHistory.push('/');
     }
 
-    editUser(newUserId, newUser, newUserRoleId) {
-        this.setState({newUserId, newUser, newUserRoleId});
-        browserHistory.push('/dashboard/users/edituser');
-    }
-
     render() {
         return (
             <div>
@@ -98,10 +92,6 @@ export default class MotherOfDragons extends Component {
                     userRole: this.state.userRole,
                     userRoleId: this.state.userRoleId,
                     logout: this.logout,
-                    editUser: this.editUser,
-                    newUserId: this.state.newUserId,
-                    newUser: this.state.newUser,
-                    newUserRoleId: this.state.newUserRoleId,
                     routes: this.props.routes,
                     submitCreateRoom: this.state.submitCreateRoom
                 })}

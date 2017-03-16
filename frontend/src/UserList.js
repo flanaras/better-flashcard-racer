@@ -1,24 +1,34 @@
 /**
  * Created by Fabian Schöndorff on 13.02.17.
  */
+
 import React, {Component} from 'react'
 import { PageHeader, Grid, Row, Col, Table, Button } from 'react-bootstrap';
 import config from '../config.json';
 import {Link} from "react-router";
 import LoadJson from './services/LoadJson';
 import UserSettings from './UserSettings';
+import {browserHistory} from "react-router";
 
 export default class UserList extends Component {
 
   constructor() {
     super();
 
-    this.state = { users : [] };
+    this.state = {
+        users : [],
+        newUserInfo: {
+            newUserId: NaN,
+            newUser: '',
+            newUserRoleId: NaN
+        }
+    };
 
     this.apiCall = this.apiCall.bind(this);
     this.apiDeleteCall = this.apiDeleteCall.bind(this);
     this.handleEditUser = this.handleEditUser.bind(this);
     this.handleDeleteUser = this.handleDeleteUser.bind(this);
+    this.editUser = this.editUser.bind(this);
   }
 
   componentDidMount() {
@@ -51,10 +61,16 @@ export default class UserList extends Component {
   }
 
   handleEditUser(e) {
-    const userid = e.target.value;
-    const index = this.state.users.findIndex(user => user.id==userid);
-    const user = this.state.users[index];
-    this.props.editUser(user.id, user.username, user.auth_id);
+      const userid = e.target.value;
+      const index = this.state.users.findIndex(user => user.id == userid);
+      const user = this.state.users[index];
+      this.setState({newUserInfo: {newUserId: user.id, newUser: user.username, newUserRoleId: user.auth_id}});
+      browserHistory.push('/dashboard/users/edituser');
+  }
+
+  editUser(newUserInfo) {
+      this.apiCall('users');
+      this.setState({newUserInfo});
   }
 
   render() {
@@ -78,10 +94,8 @@ export default class UserList extends Component {
               username: this.props.username,
               userRoleId: this.props.userRoleId,
               logout: this.props.logout,
-              editUser: this.props.editUser,
-              newUserId: this.props.newUserId,
-              newUser: this.props.newUser,
-              newUserRoleId: this.props.newUserRoleId,
+              editUser: this.editUser,
+              newUserInfo: this.state.newUserInfo,
               routes: this.props.routes
           }));
     } else {

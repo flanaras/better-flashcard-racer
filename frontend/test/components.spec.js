@@ -521,7 +521,7 @@ describe('EditUser', () => {
         const wrapper = shallow(<EditUser routes={[]} route={{name: 'Edit User'}} auth={false}/>);
         expect(wrapper.containsAllMatchingElements()).to.equal(false);
     });
-    it('for an authenticated user should render role dropdown, username and password input texts also update user and go back buttons', () => {
+    it('for an authenticated user should render role dropdown and username input texts also update user button', () => {
         const username = 'Aron';
         const userRole = 'teacher';
         const userRoleId = 1;
@@ -530,7 +530,7 @@ describe('EditUser', () => {
             "id": 0,
             "auth": "Student"
         }];
-        const wrapper = mount(<EditUser routes={[]} route={{name: 'Edit User'}}  username={username} userRole={userRole} userRoleId={userRoleId} auth={auth}/>);
+        const wrapper = mount(<EditUser routes={[]} newUserInfo={[]} route={{name: 'Edit User'}}  username={username} userRole={userRole} userRoleId={userRoleId} auth={auth}/>);
         wrapper.setState({authLevel})
         expect(wrapper.find('option').length).to.equal(1);
         expect(wrapper.containsAllMatchingElements([
@@ -561,7 +561,7 @@ describe('EditUser', () => {
                 "auth": "Admin"
             }];
         const apiGetCallSpy = spy(EditUser.prototype, "apiGetCall");
-        let wrapper = mount(<EditUser routes={[]} route={{name: 'Edit User'}}  username={username} userRole={userRole} userRoleId={userRoleId} auth={auth}/>);
+        let wrapper = mount(<EditUser routes={[]} newUserInfo={[]} route={{name: 'Edit User'}}  username={username} userRole={userRole} userRoleId={userRoleId} auth={auth}/>);
         expect(apiGetCallSpy.calledOnce).to.equal(true);
         wrapper.setState({authLevel});
         expect(wrapper.find('option').length).to.equal(3);
@@ -572,20 +572,20 @@ describe('EditUser', () => {
             "id": 0,
             "auth": "Student"
         }];
-        wrapper = mount(<EditUser routes={[]} route={{name: 'Edit User'}}  username={username} userRole={userRole} userRoleId={userRoleId} auth={auth}/>);
+        wrapper = mount(<EditUser routes={[]} newUserInfo={[]} route={{name: 'Edit User'}}  username={username} userRole={userRole} userRoleId={userRoleId} auth={auth}/>);
         wrapper.setState({authLevel});
         expect(wrapper.find('option').length).to.equal(1);
     });
     it('should accept inputs and changes in dropdown', () => {
 
-        const wrapper = mount(<EditUser routes={[]} route={{name: 'Edit User'}}  username='Aron' userRole='admin' userRoleId={2} auth={true}/>);
+        const wrapper = mount(<EditUser routes={[]} newUserInfo={{newUserId: 0, newUser: 'sara', newUserRoleId: 0}} route={{name: 'Edit User'}}  username='Aron' userRole='admin' userRoleId={2} auth={true}/>);
         const newUser = wrapper.find("[name='newUser']");
         newUser.simulate('change', {target: {name: 'newUser', value: 'sara10'}});
-        expect(wrapper.state('newUser')).to.equal('sara10');
+        expect(wrapper.state(['newUserInfo']).newUser).to.equal('sara10');
 
-        const newRoleId = wrapper.find("[name='newRoleId']");
-        newRoleId.simulate('change', {target: {name: 'newRoleId', value: 'student'}});
-        expect(wrapper.state('newRoleId')).to.equal('student');
+        const newRoleId = wrapper.find("[name='newUserRoleId']");
+        newRoleId.simulate('change', {target: {name: 'newUserRoleId', value: 2}});
+        expect(wrapper.state(['newUserInfo']).newUserRoleId).to.equal(2);
     });
     it('should call apiCall when update user form is submitted', () => {
         const username = 'Aron';
@@ -595,7 +595,7 @@ describe('EditUser', () => {
 
         const apiCallSpy = spy(EditUser.prototype, "apiCall");
         expect(apiCallSpy.notCalled).to.equal(true);
-        const wrapper = mount(<EditUser routes={[]} route={{name: 'Edit User'}}  username={username} userRole={userRole} userRoleId={userRoleId} auth={auth}/>);
+        const wrapper = mount(<EditUser routes={[]} newUserInfo={[]} route={{name: 'Edit User'}}  username={username} userRole={userRole} userRoleId={userRoleId} auth={auth}/>);
         const form = wrapper.find('form');
         form.simulate('submit');
         expect(apiCallSpy.calledOnce).to.equal(true);

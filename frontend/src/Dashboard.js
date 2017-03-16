@@ -22,10 +22,6 @@ export default class Dashboard extends Component {
                 username: this.props.username,
                 userRoleId: this.props.userRoleId,
                 logout: this.props.logout,
-                editUser: this.props.editUser,
-                newUserId: this.props.newUserId,
-                newUser: this.props.newUser,
-                newUserRoleId: this.props.newUserRoleId,
                 routes: this.props.routes
             }));
         } else {

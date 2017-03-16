@@ -248,7 +248,7 @@ describe('FlashcardPractice', () => {
   };
 
   it('should display a flashcard and a "Next Question" button', () => {
-    const wrapper = shallow(<FlashcardPractice chosenDeck={chosenDeck}/>);
+    const wrapper = shallow(<FlashcardPractice route={{name: 'Play Game'}} chosenDeck={chosenDeck} loadUserInfo={spy()} />);
     expect(wrapper.containsAllMatchingElements([
       <Flashcard />,
       <Button bsStyle="info" >Next Question</Button>
@@ -256,7 +256,7 @@ describe('FlashcardPractice', () => {
   });
 
   it('should increase the count of answered questions upon button click', () => {
-    const wrapper = shallow(<FlashcardPractice chosenDeck={chosenDeck}/>);
+    const wrapper = shallow(<FlashcardPractice route={{name: 'Play Game'}} chosenDeck={chosenDeck} loadUserInfo={spy()} />);
 
     expect(wrapper.state('questionsAnswered')).to.equal(0);
     wrapper.find('Button').simulate('click');
@@ -264,7 +264,7 @@ describe('FlashcardPractice', () => {
   });
 
   it('should display the next question after clicking the "Next Question" button', () => {
-    const wrapper = mount(<FlashcardPractice chosenDeck={chosenDeck} />);
+    const wrapper = mount(<FlashcardPractice userInfo={[]} route={{name: 'Play Game'}} chosenDeck={chosenDeck} loadUserInfo={spy()} />);
 
     expect(wrapper.find('label').text()).to.equal("1+1");
     wrapper.find('button').simulate('click');
@@ -272,14 +272,14 @@ describe('FlashcardPractice', () => {
   });
 
   it('should update the "currentAnswer" state when the answer is changed in the flashcard', () => {
-    const wrapper = mount(<FlashcardPractice chosenDeck={chosenDeck} />);
+    const wrapper = mount(<FlashcardPractice userInfo={[]} route={{name: 'Play Game'}} chosenDeck={chosenDeck} loadUserInfo={spy()} />);
 
     wrapper.find('#flashcard').simulate('change', { target : { value : "2" }});
     expect(wrapper.state('currentAnswer')).to.equal('2');
   });
 
   it('should save an answer on clicking "Next Question"', () => {
-    const wrapper = mount(<FlashcardPractice chosenDeck={chosenDeck} />);
+    const wrapper = mount(<FlashcardPractice userInfo={[]} route={{name: 'Play Game'}} chosenDeck={chosenDeck} loadUserInfo={spy()} />);
 
     wrapper.find('#flashcard').simulate('change', { target : { value : "2" }});
     wrapper.find('Button').simulate('click');
@@ -287,7 +287,7 @@ describe('FlashcardPractice', () => {
   });
 
     it('should save solution checking on clicking "Next Question"', () => {
-        const wrapper = mount(<FlashcardPractice chosenDeck={chosenDeck} />);
+        const wrapper = mount(<FlashcardPractice userInfo={[]} route={{name: 'Play Game'}} chosenDeck={chosenDeck} loadUserInfo={spy()} />);
 
         wrapper.find('#flashcard').simulate('change', { target : { value : "3" } });
         wrapper.find('button').simulate('click');
@@ -318,13 +318,13 @@ describe('Solutions', () => {
     ];
 
     it ('should calculate performance info', () => {
-        const wrapper = shallow(<Solutions chosenDeck={chosenDeck} />);
+        const wrapper = shallow(<Solutions route={{name: 'Results'}}  chosenDeck={chosenDeck} />);
         expect(wrapper.state('countCorrect')).to.eql(1);
         expect(wrapper.state('countIncorrect')).to.eql(1);
     });
 
     it ('should render detailed list', () => {
-        const wrapper = shallow(<Solutions chosenDeck={chosenDeck} />);
+        const wrapper = shallow(<Solutions route={{name: 'Results'}} chosenDeck={chosenDeck} />);
         expect(wrapper.containsAllMatchingElements([
             <h4>Correct answers: {1}</h4>,
             <h4>Incorrect answers: {1}</h4>

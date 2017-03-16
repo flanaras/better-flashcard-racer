@@ -474,33 +474,40 @@ describe('CreateUser', () => {
         const wrapper = mount(<CreateUser routes={[]} route={{name: 'Create User'}} username='Aron' userRole='admin' auth={true}/>);
         const newUser = wrapper.find("[name='newUser']");
         newUser.simulate('change', {target: {name: 'newUser', value: 'sara10'}});
-        expect(wrapper.state('newUser')).to.equal('sara10');
+        expect(wrapper.state(['newUserInfo']).newUser).to.equal('sara10');
 
         const newPassw = wrapper.find("[name='newPassw']");
         newPassw.simulate('change', {target: {name: 'newPassw', value: 'some pass'}});
-        expect(wrapper.state('newPassw')).to.equal('some pass');
+        expect(wrapper.state(['newUserInfo']).newPassw).to.equal('some pass');
 
         const reNewPassw = wrapper.find("[name='reNewPassw']");
         reNewPassw.simulate('change', {target: {name: 'reNewPassw', value: 'some pass'}});
-        expect(wrapper.state('reNewPassw')).to.equal('some pass');
+        expect(wrapper.state(['newUserInfo']).reNewPassw).to.equal('some pass');
 
-        const newRoleId = wrapper.find("[name='newRoleId']");
-        newRoleId.simulate('change', {target: {name: 'newRoleId', value: 'student'}});
-        expect(wrapper.state('newRoleId')).to.equal('student');
+        const newRoleId = wrapper.find("[name='newUserRoleId']");
+        newRoleId.simulate('change', {target: {name: 'newUserRoleId', value: 0}});
+        expect(wrapper.state(['newUserInfo']).newUserRoleId).to.equal(0);
     });
     it('should show password unmatched in case they are different', () => {
         const username = 'Aron';
         const userRole = 'admin';
         const auth = true;
-        const newPassw = '123456';
-        const reNewPassw = '654321';
+
+        const  newUserInfo = {
+            newUser: '',
+            newPassw: '123456',
+            reNewPassw: '654321',
+            newUserRoleId: 0,
+            newUserMsg: '',
+            newPassError: ''
+        }
 
         const wrapper = mount(<CreateUser routes={[]} route={{name: 'Create User'}} username={username} userRole={userRole} auth={auth}/>);
-        expect(wrapper.state('newPassError')).to.equal('');
-        wrapper.setState({newPassw, reNewPassw});
+        expect(wrapper.state(['newUserInfo']).newPassError).to.equal('');
+        wrapper.setState({newUserInfo});
         const form = wrapper.find('form');
         form.simulate('submit');
-        expect(wrapper.state('newPassError')).to.equal('Passwords does not match!');
+        expect(wrapper.state(['newUserInfo']).newPassError).to.equal('Passwords does not match!');
     });
     it('should call apiCall when create user form is submitted', () => {
         const username = 'Aron';

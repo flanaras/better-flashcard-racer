@@ -20,7 +20,8 @@ export default class UserList extends Component {
         newUserInfo: {
             newUserId: NaN,
             newUser: '',
-            newUserRoleId: NaN
+            newUserRoleId: NaN,
+            newUserMsg: ''
         }
     };
 
@@ -28,7 +29,7 @@ export default class UserList extends Component {
     this.apiDeleteCall = this.apiDeleteCall.bind(this);
     this.handleEditUser = this.handleEditUser.bind(this);
     this.handleDeleteUser = this.handleDeleteUser.bind(this);
-    this.editUser = this.editUser.bind(this);
+    this.addEditUser = this.addEditUser.bind(this);
   }
 
   componentDidMount() {
@@ -42,7 +43,7 @@ export default class UserList extends Component {
     this.setState({users});
   }
 
-  async apiDeleteCall(endpoint, userid, index) {
+  async apiDeleteCall(endpoint, userid) {
     const url = `${config.base_url}/${endpoint}/${userid}`;
     const delUserAck = await LoadJson(url, 'DELETE');
     if (delUserAck === 'ok') {
@@ -56,8 +57,7 @@ export default class UserList extends Component {
 
   handleDeleteUser(e) {
     const userid = e.target.value;
-    const index = this.state.users.findIndex(user => user.id==userid);
-    this.apiDeleteCall('users', userid, index);
+    this.apiDeleteCall('users', userid);
   }
 
   handleEditUser(e) {
@@ -68,7 +68,7 @@ export default class UserList extends Component {
       browserHistory.push('/dashboard/users/edituser');
   }
 
-  editUser(newUserInfo) {
+  addEditUser(newUserInfo) {
       this.apiCall('users');
       this.setState({newUserInfo});
   }
@@ -94,7 +94,7 @@ export default class UserList extends Component {
               username: this.props.username,
               userRoleId: this.props.userRoleId,
               logout: this.props.logout,
-              editUser: this.editUser,
+              addEditUser: this.addEditUser,
               newUserInfo: this.state.newUserInfo,
               routes: this.props.routes
           }));

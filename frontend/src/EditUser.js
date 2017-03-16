@@ -1,6 +1,6 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
 import update from 'react-addons-update';
-import config from './../config.json'
+import config from './../config.json';
 import LoadJson from "./services/LoadJson";
 import {browserHistory} from "react-router";
 import UserSettings from './UserSettings';
@@ -11,8 +11,7 @@ export default class EditUser extends Component {
         super(props);
         this.state = {
             authLevel: [],
-            newUserInfo: this.props.newUserInfo,
-            newUserMsg: ''
+            newUserInfo: this.props.newUserInfo
         };
         this.handleChange = this.handleChange.bind(this);
         this.onEditUser = this.onEditUser.bind(this);
@@ -34,11 +33,21 @@ export default class EditUser extends Component {
         const url = `${config.base_url}/${endpoint}/${this.state.newUserInfo.newUserId}`;
         const newUserAck = await LoadJson(url, 'PUT', {username: this.state.newUserInfo.newUser, auth_level: this.state.newUserInfo.newUserRoleId});
         if (typeof(newUserAck.ok) !== 'undefined' && newUserAck.ok === 'userEdited') {
-            this.setState({newUserMsg: 'User updated successfully!'});
-            this.props.editUser(this.state.newUserInfo);
+            var newUserInfoParam = update(this.state, {
+                newUserInfo: {
+                    newUserMsg: { $set: 'User updated successfully!' }
+                }
+            });
+            this.setState(newUserInfoParam);
+            this.props.addEditUser(this.state.newUserInfo);
             browserHistory.push('/dashboard/users');
         } else {
-            this.setState({newUserMsg: 'User could not be updated. Try again!'});
+            var newUserInfoParam = update(this.state, {
+                newUserInfo: {
+                    newUserMsg: { $set: 'User could not be updated. Try again!' }
+                }
+            });
+            this.setState(newUserInfoParam);
         }
     }
 
@@ -47,11 +56,11 @@ export default class EditUser extends Component {
         const name = e.target.name;
         var newUserInfoParam = update(this.state, {
             newUserInfo: {
-                [name]: { $set: value }
+                [name]: { $set: value },
+                newUserMsg: { $set: '' }
             }
         });
         this.setState(newUserInfoParam);
-        this.setState({newUserMsg: ''});
     }
 
     onEditUser(e) {
@@ -99,7 +108,7 @@ export default class EditUser extends Component {
                                         <Button bsStyle="info" type="submit">
                                             Update user
                                         </Button>
-                                        <p>{this.state.newUserMsg}</p>
+                                        <p>{this.state.newUserInfo.newUserMsg}</p>
                                     </form>
                                 </Panel>
                             </Col>

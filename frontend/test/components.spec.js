@@ -471,7 +471,7 @@ describe('CreateUser', () => {
     });
     it('should accept inputs and changes in dropdown', () => {
 
-        const wrapper = mount(<CreateUser routes={[]} route={{name: 'Create User'}} username='Aron' userRole='admin' auth={true}/>);
+        const wrapper = mount(<CreateUser addEditUser={spy()} routes={[]} route={{name: 'Create User'}} username='Aron' userRole='admin' auth={true}/>);
         const newUser = wrapper.find("[name='newUser']");
         newUser.simulate('change', {target: {name: 'newUser', value: 'sara10'}});
         expect(wrapper.state(['newUserInfo']).newUser).to.equal('sara10');

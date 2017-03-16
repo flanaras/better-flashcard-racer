@@ -35,14 +35,11 @@ export default class MotherOfDragons extends Component {
 
     login(userid, username, userRole, userRoleId, auth) {
 
-        let d = new Date();
-        d.setTime(d.getTime() + (30*60*1000));
-
-        cookie.save("userid", userid, {path: "/", expires: d});
-        cookie.save("username", username, {path: "/", expires: d});
-        cookie.save("userRole", userRole, {path: "/", expires: d});
-        cookie.save("userRoleId", userRoleId, {path: "/", expires: d});
-        cookie.save("auth", auth, {path: "/", expires: d});
+        cookie.save("userid", userid, {path: "/"});
+        cookie.save("username", username, {path: "/"});
+        cookie.save("userRole", userRole, {path: "/"});
+        cookie.save("userRoleId", userRoleId, {path: "/"});
+        cookie.save("auth", auth, {path: "/"});
 
         browserHistory.push('dashboard');
     }

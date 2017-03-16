@@ -21,21 +21,21 @@ export default class CreateUser extends Component {
         };
         this.handleChange = this.handleChange.bind(this);
         this.onCreateUser = this.onCreateUser.bind(this);
-        this.apiGetCall = this.apiGetCall.bind(this);
-        this.apiCall = this.apiCall.bind(this);
+        this.apiGetAuthLevelsCall = this.apiGetAuthLevelsCall.bind(this);
+        this.apiCreateUserCall = this.apiCreateUserCall.bind(this);
     }
 
     componentWillMount() {
-        this.apiGetCall('authlevel/'+this.props.userInfo.userRoleId);
+        this.apiGetAuthLevelsCall('authlevel/'+this.props.userInfo.userRoleId);
     }
 
-    async apiGetCall(endpoint) {
+    async apiGetAuthLevelsCall(endpoint) {
         const url = `${config.base_url}/${endpoint}`;
         const authLevel = await LoadJson(url);
         this.setState({authLevel});
     }
 
-    async apiCall(endpoint) {
+    async apiCreateUserCall(endpoint) {
         const url = `${config.base_url}/${endpoint}`;
         const newUserAck = await LoadJson(url, 'POST', {username: this.state.newUserInfo.newUser, password: this.state.newUserInfo.newPassw, auth_level: this.state.newUserInfo.newUserRoleId});
         if (typeof(newUserAck.ok) !== 'undefined' && newUserAck.ok === 'userCreated') {
@@ -79,7 +79,7 @@ export default class CreateUser extends Component {
             });
             this.setState(newUserInfoParam);
         } else
-            this.apiCall('users');
+            this.apiCreateUserCall('users');
     }
 
     render() {

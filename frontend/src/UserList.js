@@ -26,8 +26,8 @@ export default class UserList extends Component {
         }
     };
 
-    this.apiCall = this.apiCall.bind(this);
-    this.apiDeleteCall = this.apiDeleteCall.bind(this);
+    this.apiGetUsersCall = this.apiGetUsersCall.bind(this);
+    this.apiDeleteUserCall = this.apiDeleteUserCall.bind(this);
     this.handleEditUser = this.handleEditUser.bind(this);
     this.handleDeleteUser = this.handleDeleteUser.bind(this);
     this.addEditUser = this.addEditUser.bind(this);
@@ -35,17 +35,17 @@ export default class UserList extends Component {
 
   componentDidMount() {
     this.props.loadUserInfo();
-    this.apiCall('users');
+    this.apiGetUsersCall('users');
   }
 
-  async apiCall(endpoint) {
+  async apiGetUsersCall(endpoint) {
     const url = `${config.base_url}/${endpoint}`;
     const users = await LoadJson(url);
     this.setState({users});
   }
 
-  async apiDeleteCall(endpoint, userid) {
-    const url = `${config.base_url}/${endpoint}/${userid}`;
+  async apiDeleteUserCall(endpoint) {
+    const url = `${config.base_url}/${endpoint}`;
     const delUserAck = await LoadJson(url, 'DELETE');
     if (delUserAck === 'ok') {
         var newUserInfoParam = update(this.state, {
@@ -54,7 +54,7 @@ export default class UserList extends Component {
             }
         });
         this.setState(newUserInfoParam);
-        this.apiCall('users');
+        this.apiGetUsersCall('users');
     } else {
         var newUserInfoParam = update(this.state, {
             newUserInfo: {
@@ -68,7 +68,7 @@ export default class UserList extends Component {
 
   handleDeleteUser(e) {
     const userid = e.target.value;
-    this.apiDeleteCall('users', userid);
+    this.apiDeleteUserCall('users/'+userid);
   }
 
   handleEditUser(e) {
@@ -80,7 +80,7 @@ export default class UserList extends Component {
   }
 
   addEditUser(newUserInfo) {
-      this.apiCall('users');
+      this.apiGetUsersCall('users');
       this.setState({newUserInfo});
   }
 

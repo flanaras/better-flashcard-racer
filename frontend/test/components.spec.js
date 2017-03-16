@@ -415,19 +415,19 @@ describe('UserList', () => {
         const tableRows = wrapper.find('tr');
         expect(tableRows).to.have.length.of(3+1);
     });
-    it('should call apiCall to get user list', () => {
-        const apiCallSpy = spy(UserList.prototype, "apiCall");
+    it('should call apiGetUsersCall to get user list', () => {
+        const apiGetUsersCallSpy = spy(UserList.prototype, "apiGetUsersCall");
         const loadUserInfoSpy = spy();
         const wrapper = mount(<UserList routes={[]} route={{name: 'User Management'}} userInfo={userInfo} loadUserInfo={loadUserInfoSpy} />);
-        expect(apiCallSpy.calledOnce).to.equal(true);
+        expect(apiGetUsersCallSpy.calledOnce).to.equal(true);
     });
-    it('should call apiDeleteCall to delete user', () => {
-        const apiDeleteCall = spy(UserList.prototype, "apiDeleteCall");
+    it('should call apiDeleteUserCall to delete user', () => {
+        const apiDeleteUserCallSpy = spy(UserList.prototype, "apiDeleteUserCall");
         const loadUserInfoSpy = spy();
         const wrapper = mount(<UserList routes={[]} route={{name: 'User Management'}} userInfo={userInfo} loadUserInfo={loadUserInfoSpy} />);
         wrapper.setState({users});
         wrapper.find('[name="deleteButton0"]').simulate('click');
-        expect(apiDeleteCall.calledOnce).to.equal(true);
+        expect(apiDeleteUserCallSpy.calledOnce).to.equal(true);
     });
     it('should not render if user is not authenticated', () => {
 
@@ -519,9 +519,9 @@ describe('CreateUser', () => {
                 "id": 2,
                 "auth": "Admin"
             }];
-        const apiGetCallSpy = spy(CreateUser.prototype, "apiGetCall");
+        const apiGetAuthLevelsCallSpy = spy(CreateUser.prototype, "apiGetAuthLevelsCall");
         let wrapper = mount(<CreateUser routes={[]} route={{name: 'Create User'}} userInfo={userInfo} />);
-        expect(apiGetCallSpy.calledOnce).to.equal(true);
+        expect(apiGetAuthLevelsCallSpy.calledOnce).to.equal(true);
         wrapper.setState({authLevel});
         expect(wrapper.find('option').length).to.equal(3);
 
@@ -587,13 +587,13 @@ describe('CreateUser', () => {
         form.simulate('submit');
         expect(wrapper.state(['newUserInfo']).newPassError).to.equal('Passwords does not match!');
     });
-    it('should call apiCall when create user form is submitted', () => {
-        const apiCallSpy = spy(CreateUser.prototype, "apiCall");
-        expect(apiCallSpy.notCalled).to.equal(true);
+    it('should call apiCreateUserCall when create user form is submitted', () => {
+        const apiCreateUserCallSpy = spy(CreateUser.prototype, "apiCreateUserCall");
+        expect(apiCreateUserCallSpy.notCalled).to.equal(true);
         const wrapper = mount(<CreateUser routes={[]} route={{name: 'Create User'}} userInfo={userInfo} />);
         const form = wrapper.find('form');
         form.simulate('submit');
-        expect(apiCallSpy.calledOnce).to.equal(true);
+        expect(apiCreateUserCallSpy.calledOnce).to.equal(true);
     });
 });
 
@@ -661,9 +661,9 @@ describe('EditUser', () => {
                 "id": 2,
                 "auth": "Admin"
             }];
-        const apiGetCallSpy = spy(EditUser.prototype, "apiGetCall");
+        const apiGetAuthLevelsCallSpy = spy(EditUser.prototype, "apiGetAuthLevelsCall");
         let wrapper = mount(<EditUser routes={[]} newUserInfo={[]} route={{name: 'Edit User'}} userInfo={userInfo} />);
-        expect(apiGetCallSpy.calledOnce).to.equal(true);
+        expect(apiGetAuthLevelsCallSpy.calledOnce).to.equal(true);
         wrapper.setState({authLevel});
         expect(wrapper.find('option').length).to.equal(3);
 
@@ -704,13 +704,13 @@ describe('EditUser', () => {
         newRoleId.simulate('change', {target: {name: 'newUserRoleId', value: 2}});
         expect(wrapper.state(['newUserInfo']).newUserRoleId).to.equal(2);
     });
-    it('should call apiCall when update user form is submitted', () => {
-        const apiCallSpy = spy(EditUser.prototype, "apiCall");
-        expect(apiCallSpy.notCalled).to.equal(true);
+    it('should call apiEditUserCall when update user form is submitted', () => {
+        const apiEditUserCallSpy = spy(EditUser.prototype, "apiEditUserCall");
+        expect(apiEditUserCallSpy.notCalled).to.equal(true);
         const wrapper = mount(<EditUser routes={[]} newUserInfo={[]} route={{name: 'Edit User'}} userInfo={userInfo} />);
         const form = wrapper.find('form');
         form.simulate('submit');
-        expect(apiCallSpy.calledOnce).to.equal(true);
+        expect(apiEditUserCallSpy.calledOnce).to.equal(true);
     });
 });
 

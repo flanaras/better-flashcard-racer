@@ -20,23 +20,23 @@ export default class EditUser extends Component {
         };
         this.handleChange = this.handleChange.bind(this);
         this.onEditUser = this.onEditUser.bind(this);
-        this.apiGetCall = this.apiGetCall.bind(this);
-        this.apiCall = this.apiCall.bind(this);
+        this.apiGetAuthLevelsCall = this.apiGetAuthLevelsCall.bind(this);
+        this.apiEditUserCall = this.apiEditUserCall.bind(this);
     }
 
     componentWillMount() {
         this.setState({newUserInfo: this.props.newUserInfo});
-        this.apiGetCall('authlevel/'+this.props.userInfo.userRoleId);
+        this.apiGetAuthLevelsCall('authlevel/'+this.props.userInfo.userRoleId);
     }
 
-    async apiGetCall(endpoint) {
+    async apiGetAuthLevelsCall(endpoint) {
         const url = `${config.base_url}/${endpoint}`;
         const authLevel = await LoadJson(url);
         this.setState({authLevel});
     }
 
-    async apiCall(endpoint) {
-        const url = `${config.base_url}/${endpoint}/${this.state.newUserInfo.newUserId}`;
+    async apiEditUserCall(endpoint) {
+        const url = `${config.base_url}/${endpoint}`;
         const newUserAck = await LoadJson(url, 'PUT', {username: this.state.newUserInfo.newUser, auth_level: this.state.newUserInfo.newUserRoleId});
         if (typeof(newUserAck.ok) !== 'undefined' && newUserAck.ok === 'userEdited') {
             var newUserInfoParam = update(this.state, {
@@ -71,7 +71,7 @@ export default class EditUser extends Component {
 
     onEditUser(e) {
         e.preventDefault();
-        this.apiCall('users');
+        this.apiEditUserCall('users/'+this.state.newUserInfo.newUserId);
     }
 
     render() {

@@ -34,6 +34,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
@@ -154,46 +155,35 @@ public class DeckController {
 
             List<String> operandList = mappingOperand(genCard.getOperand().get(0));
             List<Flashcard> cards = new ArrayList<>();
+            List<Integer>randNumb = new ArrayList<>();
 
             for (int i = 0; i < genCard.getNumberSolution(); i++) {
-                int randNumber1;
-                int randNumber2;
                 int randOperand = (int)(Math.random() * operandList.size());
                 int total = 0;
+
 
                 if (operandList.get(randOperand).equals("/")) {
                     boolean flag;
 
                     do {
-                        randNumber1 = genCard.getMin() + (int) (Math.random() * genCard.getMax());
-                        randNumber2 = genCard.getMin() + (int) (Math.random() * genCard.getMax());
+                        randNumb = randomNumber(genCard.getMin(),genCard.getMax());
                         flag = false;
 
-                        if (randNumber2 == 0) {
+                        if (randNumb.get(1) == 0) {
                             flag = true;
                         } else {
-                            if ((randNumber1 % randNumber2) > 0) {
+                            if ((randNumb.get(0) % randNumb.get(1)) > 0) {
                                 flag = true;
                             }
                         }
                     } while (flag);
-                    total = randNumber1 / randNumber2;
 
                 } else {
-                    randNumber1 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
-                    randNumber2 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
-
-                    if (operandList.get(randOperand).equals("+")) {
-                        total = randNumber1 + randNumber2;
-                    } else if (operandList.get(randOperand).equals("-")) {
-                        total = randNumber1 - randNumber2;
-                    } else if (operandList.get(randOperand).equals("X")) {
-                        total = randNumber1 * randNumber2;
-                    }
+                    randNumb = randomNumber(genCard.getMin(),genCard.getMax());
                 }
 
-
-                String problems = randNumber1 + " " + operandList.get(randOperand) + " " + randNumber2;
+                total = calculateTotal(randNumb,operandList.get(randOperand).toString());
+                String problems = randNumb.get(0) + " " + operandList.get(randOperand) + " " + randNumb.get(1);
                 cards.add(new Flashcard(999999, problems, String.valueOf(total)));
             }
 
@@ -216,6 +206,35 @@ public class DeckController {
 
         return new ResponseContext().status(Status.OK)
                 .entity(deck);
+    }
+
+
+    private List<Integer>randomNumber(int min,int max)
+    {
+        List<Integer>randNumb = new ArrayList<>();
+        int i =0 ;
+        for(i = 0 ; i<2;i++)
+        {
+            Random rand = new Random();
+            randNumb.add(rand.nextInt((max - min)+1)+min);
+        }
+
+        return  randNumb;
+    }
+
+    private int calculateTotal(List<Integer> randnum,String operand)
+    {
+        if (operand.equals("+")) {
+            return randnum.get(0) + randnum.get(1);
+        } else if (operand.equals("-")) {
+            return randnum.get(0) - randnum.get(1);
+        } else if (operand.equals("X")) {
+            return randnum.get(0) * randnum.get(1);
+        }
+        else
+        {
+            return randnum.get(0) / randnum.get(1);
+        }
     }
 
     private List<String> mappingOperand(OperandGenerate operand) {

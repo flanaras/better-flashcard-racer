@@ -2,6 +2,10 @@ package se.uu.it.bfcr.inflector.springboot.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 /**
  * Created by michael on 2017-02-13.
  */
@@ -48,9 +52,42 @@ public class OperandGenerate {
         this.div = div;
     }
 
-    public OperandGenerate()
-    {
+    public OperandGenerate() {
 
+    }
+
+    public List<String> mappingOperators() {
+        List<String> operators = new ArrayList<>();
+
+        if (isAdd()) {
+            operators.add("+");
+        }
+
+        if (isMinus()) {
+            operators.add("-");
+        }
+
+        if (isMulti()) {
+            operators.add("X");
+        }
+
+        if (isDiv()) {
+            operators.add("/");
+        }
+
+        return operators;
+    }
+
+    public static int calculateTotal(int operandA, int operandB, String operator) {
+        if (operator.equals("+")) {
+            return operandA + operandB;
+        } else if (operator.equals("-")) {
+            return operandA - operandB;
+        } else if (operator.equals("X")) {
+            return operandA * operandB;
+        } else {
+            return operandA / operandB;
+        }
     }
 
 }

@@ -1,10 +1,10 @@
 package se.uu.it.bfcr.inflector.springboot.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import se.uu.it.bfcr.inflector.springboot.controllers.DeckController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by michael on 2017-02-13.
@@ -19,6 +19,7 @@ public class GenerateCarding {
     private int numberSolution;
     @JsonProperty
     private ArrayList<OperandGenerate> operators = new ArrayList<OperandGenerate>();
+
 
     public int getMin() {
         return min;
@@ -52,8 +53,12 @@ public class GenerateCarding {
         this.operators = operand;
     }
 
+    public GenerateCarding() {
+
+    }
+
     public Flashcard generateCard() {
-        List<String> operandList = DeckController.mappingOperand(getOperand().get(0));
+        List<String> operandList = getOperand().get(0).mappingOperators();
         List<Integer> randNumb;
 
         int randOperator = (int)(Math.random() * operandList.size());
@@ -63,7 +68,7 @@ public class GenerateCarding {
             boolean flag;
 
             do {
-                randNumb = DeckController.randomNumber(getMin(), getMax());
+                randNumb = randomNumber(getMin(), getMax(), 2);
                 flag = false;
 
                 if (randNumb.get(1) == 0) {
@@ -76,16 +81,23 @@ public class GenerateCarding {
             } while (flag);
 
         } else {
-            randNumb = DeckController.randomNumber(getMin(), getMax());
+            randNumb = randomNumber(getMin(), getMax(), 2);
         }
 
-        total = DeckController.calculateTotal(randNumb.get(0), randNumb.get(1), operandList.get(randOperator));
+        total = OperandGenerate.calculateTotal(randNumb.get(0), randNumb.get(1), operandList.get(randOperator));
         String problems = randNumb.get(0) + " " + operandList.get(randOperator) + " " + randNumb.get(1);
         return new Flashcard(999999, problems, String.valueOf(total));
     }
 
-    public GenerateCarding()
-    {
 
+    public static List<Integer> randomNumber(int min, int max, int amount) {
+        List<Integer> randNumb = new ArrayList<>();
+        Random rand = new Random();
+
+        for (int i = 0 ; i < amount; i++) {
+            randNumb.add(rand.nextInt((max - min) + 1) + min);
+        }
+
+        return randNumb;
     }
 }

@@ -181,49 +181,4 @@ public class DeckController {
     }
 
 
-    public static List<Integer> randomNumber(int min,int max) {
-        List<Integer>randNumb = new ArrayList<>();
-        int i =0 ;
-        for(i = 0 ; i<2;i++)
-        {
-            Random rand = new Random();
-            randNumb.add(rand.nextInt((max - min)+1)+min);
-        }
-
-        return  randNumb;
-    }
-
-    public static int calculateTotal(int operandA, int operandB, String operator) {
-        if (operator.equals("+")) {
-            return operandA + operandB;
-        } else if (operator.equals("-")) {
-            return operandA - operandB;
-        } else if (operator.equals("X")) {
-            return operandA * operandB;
-        } else {
-            return operandA / operandB;
-        }
-    }
-
-    public static List<String> mappingOperand(OperandGenerate operand) {
-        List<String> operands = new ArrayList<>();
-
-        if (operand.isAdd()) {
-            operands.add("+");
-        }
-
-        if (operand.isMinus()) {
-            operands.add("-");
-        }
-
-        if (operand.isMulti()) {
-            operands.add("X");
-        }
-
-        if (operand.isDiv()) {
-            operands.add("/");
-        }
-
-        return operands;
-    }
 }

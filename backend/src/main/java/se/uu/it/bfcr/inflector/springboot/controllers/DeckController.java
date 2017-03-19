@@ -23,7 +23,7 @@ import io.swagger.inflector.models.RequestContext;
 import io.swagger.inflector.models.ResponseContext;
 import se.uu.it.bfcr.inflector.springboot.models.Deck;
 import se.uu.it.bfcr.inflector.springboot.models.Flashcard;
-import se.uu.it.bfcr.inflector.springboot.models.generateCarding;
+import se.uu.it.bfcr.inflector.springboot.models.GenerateCarding;
 import org.springframework.stereotype.Component;
 import se.uu.it.bfcr.inflector.springboot.models.OperandGenerate;
 
@@ -33,7 +33,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
-import java.util.HashMap;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -151,7 +150,7 @@ public class DeckController {
         Deck deck = new Deck();
         try {
             ObjectMapper mapper = new ObjectMapper();
-            generateCarding genCard = mapper.treeToValue(genDecks, generateCarding.class);
+            GenerateCarding genCard = mapper.treeToValue(genDecks, GenerateCarding.class);
 
             List<String> operandList = mappingOperand(genCard.getOperand().get(0));
             List<Flashcard> cards = new ArrayList<>();

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Created by michael on 2017-02-13.
  */
-public class generateCarding {
+public class GenerateCarding {
     @JsonProperty
     private int min;
     @JsonProperty
@@ -49,7 +49,7 @@ public class generateCarding {
         this.operators = operand;
     }
 
-    public generateCarding()
+    public GenerateCarding()
     {
 
     }

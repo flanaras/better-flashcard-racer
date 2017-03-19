@@ -146,44 +146,17 @@ public class DeckController {
                 .entity(decksList);
     }
 
+
     public ResponseContext generateCards(RequestContext requestContext, JsonNode genDecks) {
         Deck deck = new Deck();
         try {
             ObjectMapper mapper = new ObjectMapper();
             GenerateCarding genCard = mapper.treeToValue(genDecks, GenerateCarding.class);
 
-            List<String> operandList = mappingOperand(genCard.getOperand().get(0));
             List<Flashcard> cards = new ArrayList<>();
-            List<Integer>randNumb = new ArrayList<>();
 
             for (int i = 0; i < genCard.getNumberSolution(); i++) {
-                int randOperand = (int)(Math.random() * operandList.size());
-                int total = 0;
-
-
-                if (operandList.get(randOperand).equals("/")) {
-                    boolean flag;
-
-                    do {
-                        randNumb = randomNumber(genCard.getMin(),genCard.getMax());
-                        flag = false;
-
-                        if (randNumb.get(1) == 0) {
-                            flag = true;
-                        } else {
-                            if ((randNumb.get(0) % randNumb.get(1)) > 0) {
-                                flag = true;
-                            }
-                        }
-                    } while (flag);
-
-                } else {
-                    randNumb = randomNumber(genCard.getMin(),genCard.getMax());
-                }
-
-                total = calculateTotal(randNumb.get(0), randNumb.get(1), operandList.get(randOperand));
-                String problems = randNumb.get(0) + " " + operandList.get(randOperand) + " " + randNumb.get(1);
-                cards.add(new Flashcard(999999, problems, String.valueOf(total)));
+                cards.add(genCard.generateCard());
             }
 
 
@@ -208,8 +181,7 @@ public class DeckController {
     }
 
 
-    private List<Integer>randomNumber(int min,int max)
-    {
+    public static List<Integer> randomNumber(int min,int max) {
         List<Integer>randNumb = new ArrayList<>();
         int i =0 ;
         for(i = 0 ; i<2;i++)
@@ -221,7 +193,7 @@ public class DeckController {
         return  randNumb;
     }
 
-    private int calculateTotal(int operandA, int operandB, String operator) {
+    public static int calculateTotal(int operandA, int operandB, String operator) {
         if (operator.equals("+")) {
             return operandA + operandB;
         } else if (operator.equals("-")) {
@@ -233,7 +205,7 @@ public class DeckController {
         }
     }
 
-    private List<String> mappingOperand(OperandGenerate operand) {
+    public static List<String> mappingOperand(OperandGenerate operand) {
         List<String> operands = new ArrayList<>();
 
         if (operand.isAdd()) {

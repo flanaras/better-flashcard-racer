@@ -1,11 +1,14 @@
 package se.uu.it.bfcr.inflector.springboot.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import se.uu.it.bfcr.inflector.springboot.controllers.DeckController;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by michael on 2017-02-13.
+ * @author Philip Lanaras
  */
 public class GenerateCarding {
     @JsonProperty
@@ -47,6 +50,38 @@ public class GenerateCarding {
 
     public void setOperand(ArrayList<OperandGenerate> operand) {
         this.operators = operand;
+    }
+
+    public Flashcard generateCard() {
+        List<String> operandList = DeckController.mappingOperand(getOperand().get(0));
+        List<Integer> randNumb;
+
+        int randOperator = (int)(Math.random() * operandList.size());
+        int total;
+
+        if (operandList.get(randOperator).equals("/")) {
+            boolean flag;
+
+            do {
+                randNumb = DeckController.randomNumber(getMin(), getMax());
+                flag = false;
+
+                if (randNumb.get(1) == 0) {
+                    flag = true;
+                } else {
+                    if ((randNumb.get(0) % randNumb.get(1)) > 0) {
+                        flag = true;
+                    }
+                }
+            } while (flag);
+
+        } else {
+            randNumb = DeckController.randomNumber(getMin(), getMax());
+        }
+
+        total = DeckController.calculateTotal(randNumb.get(0), randNumb.get(1), operandList.get(randOperator));
+        String problems = randNumb.get(0) + " " + operandList.get(randOperator) + " " + randNumb.get(1);
+        return new Flashcard(999999, problems, String.valueOf(total));
     }
 
     public GenerateCarding()

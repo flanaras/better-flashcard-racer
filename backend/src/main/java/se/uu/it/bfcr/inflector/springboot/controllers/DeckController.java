@@ -182,7 +182,7 @@ public class DeckController {
                     randNumb = randomNumber(genCard.getMin(),genCard.getMax());
                 }
 
-                total = calculateTotal(randNumb,operandList.get(randOperand).toString());
+                total = calculateTotal(randNumb.get(0), randNumb.get(1), operandList.get(randOperand));
                 String problems = randNumb.get(0) + " " + operandList.get(randOperand) + " " + randNumb.get(1);
                 cards.add(new Flashcard(999999, problems, String.valueOf(total)));
             }
@@ -222,18 +222,15 @@ public class DeckController {
         return  randNumb;
     }
 
-    private int calculateTotal(List<Integer> randnum,String operand)
-    {
-        if (operand.equals("+")) {
-            return randnum.get(0) + randnum.get(1);
-        } else if (operand.equals("-")) {
-            return randnum.get(0) - randnum.get(1);
-        } else if (operand.equals("X")) {
-            return randnum.get(0) * randnum.get(1);
-        }
-        else
-        {
-            return randnum.get(0) / randnum.get(1);
+    private int calculateTotal(int operandA, int operandB, String operator) {
+        if (operator.equals("+")) {
+            return operandA + operandB;
+        } else if (operator.equals("-")) {
+            return operandA - operandB;
+        } else if (operator.equals("X")) {
+            return operandA * operandB;
+        } else {
+            return operandA / operandB;
         }
     }
 

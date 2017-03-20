@@ -10,8 +10,7 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "virtserver.swaggerhub.com"
-basePath: "/better-flashcard-racer/testar/1.0.0"
+basePath: /v1
 tags:
 - name: "decks"
   description: "All about decks data"
@@ -233,6 +232,7 @@ paths:
       summary: "Logout users"
       description: "Change the status of user for logout"
       operationId: "logout"
+      x-swagger-router-controller: "UserController"
       parameters:
       - name: "id"
         in: "path"
@@ -243,7 +243,6 @@ paths:
       responses:
         204:
           description: "no content"
-      x-swagger-router-controller: "UserController"
   /rooms:
     get:
       tags:
@@ -511,6 +510,11 @@ paths:
         500:
           description: "An unexpected error occured."
       x-swagger-router-controller: "UserController"
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
 definitions:
   AuthLevel:
     properties:
@@ -644,3 +648,14 @@ definitions:
     type: "array"
     items:
       $ref: "#/definitions/Room"
+parameters:
+  id:
+    name: "id"
+    in: "path"
+    description: "The identifier of the object"
+    required: true
+    type: "integer"
+    x-example: 1
+responses:
+  Standard500ErrorResponse:
+    description: "An unexpected error occured."

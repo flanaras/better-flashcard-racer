@@ -5,11 +5,19 @@ import cookie from "react-cookie";
 export default class MotherOfDragons extends Component {
     constructor(props) {
         super(props)
-        this.state = {}
+        this.state = {
+            userInfo: {
+                auth: false,
+                userid: NaN,
+                username: '',
+                userRole: '',
+                userRoleId: NaN
+            }
+        }
         this.onSubmitGameConfig = this.onSubmitGameConfig.bind(this)
         this.submitAnswers = this.submitAnswers.bind(this)
+        this.submitCreateRoom = this.submitCreateRoom.bind(this)
         this.login = this.login.bind(this)
-        this.editUser = this.editUser.bind(this)
         this.loadUserInfo = this.loadUserInfo.bind(this)
         this.logout = this.logout.bind(this)
     }
@@ -23,33 +31,37 @@ export default class MotherOfDragons extends Component {
         browserHistory.push('playgame')
     }
 
+    submitCreateRoom() {
+        browserHistory.push('/');
+    }
+
     submitAnswers(chosenDeck) {
         this.setState({chosenDeck});
         browserHistory.push('solutions');
     }
 
-    login(userid, username, userRole, userRoleId, auth) {
+    login(userInfo) {
+        cookie.save("userid", userInfo.userid, {path: "/"});
+        cookie.save("username", userInfo.username, {path: "/"});
+        cookie.save("userRole", userInfo.userRole, {path: "/"});
+        cookie.save("userRoleId", userInfo.userRoleId, {path: "/"});
+        cookie.save("auth", userInfo.auth, {path: "/"});
 
-        let d = new Date();
-        d.setTime(d.getTime() + (30*60*1000));
+        this.setState({userInfo});
 
-        cookie.save("userid", userid, {path: "/", expires: d});
-        cookie.save("username", username, {path: "/", expires: d});
-        cookie.save("userRole", userRole, {path: "/", expires: d});
-        cookie.save("userRoleId", userRoleId, {path: "/", expires: d});
-        cookie.save("auth", auth, {path: "/", expires: d});
-
-        browserHistory.push('dashboard');
+        browserHistory.push('/dashboard');
     }
 
     loadUserInfo() {
         this.setState({
+            userInfo: {
                 auth: cookie.load("auth") === "true" ? true : false,
                 userid: cookie.load("userid"),
                 username: cookie.load("username"),
                 userRole: cookie.load("userRole"),
                 userRoleId: cookie.load("userRoleId")
-            });
+            }
+        });
     }
 
     logout() {
@@ -60,18 +72,16 @@ export default class MotherOfDragons extends Component {
         cookie.remove("userRoleId");
 
         this.setState({
-            userid: NaN,
-            username: '',
-            userRole: '',
-            userRoleId: NaN,
-            auth: false});
+            userInfo: {
+                userid: NaN,
+                username: '',
+                userRole: '',
+                userRoleId: NaN,
+                auth: false
+            }
+        });
 
         browserHistory.push('/');
-    }
-
-    editUser(newUserId, newUser, newUserRoleId) {
-        this.setState({newUserId, newUser, newUserRoleId});
-        browserHistory.push('/dashboard/users/edituser');
     }
 
     render() {
@@ -86,17 +96,10 @@ export default class MotherOfDragons extends Component {
                     decks: this.state.decks,
                     login: this.login,
                     loadUserInfo: this.loadUserInfo,
-                    auth: this.state.auth,
-                    userid: this.state.userid,
-                    username: this.state.username,
-                    userRole: this.state.userRole,
-                    userRoleId: this.state.userRoleId,
+                    userInfo: this.state.userInfo,
                     logout: this.logout,
-                    editUser: this.editUser,
-                    newUserId: this.state.newUserId,
-                    newUser: this.state.newUser,
-                    newUserRoleId: this.state.newUserRoleId,
-                    routes: this.props.routes
+                    routes: this.props.routes,
+                    submitCreateRoom: this.state.submitCreateRoom
                 })}
             </div>
         )

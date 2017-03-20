@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { PageHeader, Grid, Row, Col, Panel, Button, FormControl } from 'react-bootstrap';
 import Flashcard from './Flashcard';
+import UserSettings from './UserSettings';
 
 export default class FlashcardPractice extends Component {
 
@@ -11,6 +12,10 @@ export default class FlashcardPractice extends Component {
 
     this.updateAnswer = this.updateAnswer.bind(this);
     this.completeQuestion = this.completeQuestion.bind(this);
+  }
+
+  componentWillMount() {
+      this.props.loadUserInfo();
   }
 
   completeQuestion() {
@@ -35,7 +40,10 @@ export default class FlashcardPractice extends Component {
   render() {
     return (
       <div>
-        <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Go!</small></PageHeader>
+        <PageHeader style={{textAlign: "center", marginBottom: 0}}>
+          Flashcard Racer <small>{this.props.route.name}</small>
+        </PageHeader>
+        <UserSettings routes={this.props.routes} userInfo={this.props.userInfo} logout={this.props.logout}/>
         <Grid>
           <Row className="show-grid">
             <Col xs={1} md={4}></Col>

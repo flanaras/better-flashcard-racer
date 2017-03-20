@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SelectMode from './SelectMode'
-import DeckConfig from './DeckConfig'
+import DeckConfigView from './DeckConfigView'
 import MotherOfDragons from './MotherOfDragons'
 import FlashcardPractice  from './FlashcardPractice'
 import Solutions from './Solutions'
@@ -10,6 +10,9 @@ import CreateUser from './CreateUser';
 import EditUser from './EditUser';
 import Dashboard from './Dashboard';
 import { Router, Route, browserHistory } from 'react-router'
+import CreateRoom from './CreateRoom'
+import RoomList from './RoomList'
+import Lobby from './Lobby';
 
 ReactDOM.render((
     <Router history={browserHistory}>
@@ -21,9 +24,12 @@ ReactDOM.render((
                     <Route name="Edit User" path="edituser" component={EditUser} />
                 </Route>
             </Route>
-            <Route name="Deck Configuration" path="deckconfig" component={DeckConfig} />
+            <Route name="Game Configuration" path="deckconfig" component={DeckConfigView} />
             <Route name="Play Game" path="playgame" component={FlashcardPractice} />
-            <Route name="Solutions" path="solutions" component={Solutions} />
+            <Route name="Results" path="solutions" component={Solutions} />
+            <Route path="createroom" component={CreateRoom} />
+            <Route path="roomlist" component={RoomList} />
+            <Route name="Lobby" path="lobby" component={Lobby} />
         </Route>
     </Router>
 ), document.getElementById('root'));

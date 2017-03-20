@@ -12,8 +12,8 @@ export default class UserSettings extends Component {
         this.apiCall = this.apiCall.bind(this);
     }
 
-    async apiCall(endpoint, userid) {
-        const url = `${config.mock_api_url}/${endpoint}/${userid}`;
+    async apiCall(endpoint) {
+        const url = `${config.base_url}/${endpoint}`;
         const logoutAck = await LoadJson(url, 'POST');
         if (logoutAck === 'ok') {
             this.props.logout();
@@ -21,12 +21,12 @@ export default class UserSettings extends Component {
     }
 
     onLogout() {
-        this.apiCall('logout', this.props.userid);
+        this.apiCall('logout/'+this.props.userInfo.userid);
     }
 
     render() {
         return (
-            this.props.auth?
+            this.props.userInfo.auth?
                 <Navbar >
                     <Grid>
                         <Row className="show-grid">
@@ -39,7 +39,7 @@ export default class UserSettings extends Component {
                             </Col>
                             <Col xs={6} md={4} style={{marginTop: 10}}>
                                 <div style={{textAlign: 'right'}}>
-                                    <DropdownButton bsStyle={'info'} bsSize={'small'} title={this.props.username} >
+                                    <DropdownButton bsStyle={'info'} bsSize={'small'} title={this.props.userInfo.username} >
                                         <MenuItem eventKey="1" onClick={this.onLogout}>Sign out</MenuItem>
                                     </DropdownButton>
                                 </div>

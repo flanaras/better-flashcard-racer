@@ -1,4 +1,11 @@
-##GIT WORKFLOW
+
+## IDE
+This project use Intelij as an IDE, can download at https://www.jetbrains.com/idea/
+
+## Project Management
+This project use trello as the project management to manage our job, can see our progress and what left for this project at https://trello.com/b/MmX9WgcZ/flashcard
+
+## GIT WORKFLOW
 
 ###Start working on a new feature
 

@@ -1,60 +1,87 @@
 /**
  * Created by Fabian Schöndorff on 13.02.17.
  */
-import React, {Component} from 'react'
+
+import React, {Component} from 'react';
+import update from 'react-addons-update';
 import { PageHeader, Grid, Row, Col, Table, Button } from 'react-bootstrap';
 import config from '../config.json';
 import {Link} from "react-router";
 import LoadJson from './services/LoadJson';
 import UserSettings from './UserSettings';
+import {browserHistory} from "react-router";
 
 export default class UserList extends Component {
 
   constructor() {
     super();
 
-    this.state = { users : [] };
+    this.state = {
+        users : [],
+        newUserInfo: {
+            newUserId: NaN,
+            newUser: '',
+            newUserRoleId: NaN,
+            newUserMsg: ''
+        }
+    };
 
-    this.apiCall = this.apiCall.bind(this);
-    this.apiDeleteCall = this.apiDeleteCall.bind(this);
+    this.apiGetUsersCall = this.apiGetUsersCall.bind(this);
+    this.apiDeleteUserCall = this.apiDeleteUserCall.bind(this);
     this.handleEditUser = this.handleEditUser.bind(this);
     this.handleDeleteUser = this.handleDeleteUser.bind(this);
+    this.addEditUser = this.addEditUser.bind(this);
   }
 
   componentDidMount() {
     this.props.loadUserInfo();
-    this.apiCall('users');
+    this.apiGetUsersCall('users');
   }
 
-  async apiCall(endpoint) {
-    const url = `${config.mock_api_url}/${endpoint}`;
+  async apiGetUsersCall(endpoint) {
+    const url = `${config.base_url}/${endpoint}`;
     const users = await LoadJson(url);
     this.setState({users});
   }
 
-  async apiDeleteCall(endpoint, userid, index) {
-    const url = `${config.mock_api_url}/${endpoint}/${userid}`;
+  async apiDeleteUserCall(endpoint) {
+    const url = `${config.base_url}/${endpoint}`;
     const delUserAck = await LoadJson(url, 'DELETE');
     if (delUserAck === 'ok') {
-        this.setState({newUserMsg: 'User deleted successfully!'});
-        this.apiCall('users');
+        var newUserInfoParam = update(this.state, {
+            newUserInfo: {
+                newUserMsg: { $set: 'User deleted successfully!' }
+            }
+        });
+        this.setState(newUserInfoParam);
+        this.apiGetUsersCall('users');
     } else {
-        this.setState({newUserMsg: 'User could not be deleted. Try again!'});
+        var newUserInfoParam = update(this.state, {
+            newUserInfo: {
+                newUserMsg: { $set: 'User could not be deleted. Try again!' }
+            }
+        });
+        this.setState(newUserInfoParam);
         alert(this.state.newUserMsg);
     }
   }
 
   handleDeleteUser(e) {
     const userid = e.target.value;
-    const index = this.state.users.findIndex(user => user.id==userid);
-    this.apiDeleteCall('users', userid, index);
+    this.apiDeleteUserCall('users/'+userid);
   }
 
   handleEditUser(e) {
-    const userid = e.target.value;
-    const index = this.state.users.findIndex(user => user.id==userid);
-    const user = this.state.users[index];
-    this.props.editUser(user.id, user.username, user.auth_id);
+      const userid = e.target.value;
+      const index = this.state.users.findIndex(user => user.id == userid);
+      const user = this.state.users[index];
+      this.setState({newUserInfo: {newUserId: user.id, newUser: user.username, newUserRoleId: user.auth_id}});
+      browserHistory.push('/dashboard/users/edituser');
+  }
+
+  addEditUser(newUserInfo) {
+      this.apiGetUsersCall('users');
+      this.setState({newUserInfo});
   }
 
   render() {
@@ -73,27 +100,21 @@ export default class UserList extends Component {
     if(this.props.children) {
           return (React.cloneElement(this.props.children, {
               loadUserInfo: this.props.loadUserInfo,
-              auth: this.props.auth,
-              userid: this.props.userid,
-              username: this.props.username,
-              userRoleId: this.props.userRoleId,
+              userInfo: this.props.userInfo,
               logout: this.props.logout,
-              editUser: this.props.editUser,
-              newUserId: this.props.newUserId,
-              newUser: this.props.newUser,
-              newUserRoleId: this.props.newUserRoleId,
+              addEditUser: this.addEditUser,
+              newUserInfo: this.state.newUserInfo,
               routes: this.props.routes
           }));
     } else {
         return (
-            this.props.auth ?
+            this.props.userInfo.auth ?
                 <div>
                     <PageHeader style={{textAlign: "center", marginBottom: 0}}>
                         Flashcard Racer
                         <small>{this.props.route.name}</small>
                     </PageHeader>
-                    <UserSettings auth={this.props.auth} routes={this.props.routes} userid={this.props.userid}
-                                  username={this.props.username} logout={this.props.logout}/>
+                    <UserSettings routes={this.props.routes} userInfo={this.props.userInfo} logout={this.props.logout}/>
                     <Grid>
                         <Row className="show-grid">
                             <Col xs={1} md={3}></Col>

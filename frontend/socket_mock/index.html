@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Socket Mock</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+</head>
+<body>
+
+<input id="server-address" type="text" placeholder="Server address"> <button onclick="saveAddress()">Save address</button>
+<br>
+<button onclick="connect()">Connect</button>
+<br>
+<button onclick="disconnect()">Disconnect</button>
+
+<div id="messages">
+
+</div>
+
+<script>
+    var socket;
+    var serverAddress;
+
+    function connect() {
+        socket = io(serverAddress);
+        socket.on('connect', function() {
+            var messages = document.getElementById('messages');
+            var p = document.createElement('p');
+            var message = document.createTextNode('Connected...');
+            p.appendChild(message);
+            messages.appendChild(p);
+        })
+    }
+
+    function saveAddress() {
+        serverAddress = document.getElementById('server-address').value;
+        console.log(serverAddress);
+    }
+
+    function disconnect() {
+        socket.disconnect();
+    }
+
+//    socket.on('connect', function(){});
+//    socket.on('event', function(data){});
+//    socket.on('disconnect', function(){});
+</script>
+</body>
+</html>

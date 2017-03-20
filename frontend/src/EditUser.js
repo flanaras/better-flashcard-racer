@@ -1,5 +1,6 @@
-import React, {Component} from 'react'
-import config from './../config.json'
+import React, {Component} from 'react';
+import update from 'react-addons-update';
+import config from './../config.json';
 import LoadJson from "./services/LoadJson";
 import {browserHistory} from "react-router";
 import UserSettings from './UserSettings';
@@ -10,53 +11,73 @@ export default class EditUser extends Component {
         super(props);
         this.state = {
             authLevel: [],
-            newUserId: this.props.newUserId,
-            newUser: this.props.newUser,
-            newRoleId: this.props.newUserRoleId,
-            newUserMsg: ''
+            newUserInfo: {
+                newUserId: NaN,
+                newUser: '',
+                newUserRoleId: NaN,
+                newUserMsg: ''
+            }
         };
         this.handleChange = this.handleChange.bind(this);
         this.onEditUser = this.onEditUser.bind(this);
-        this.apiGetCall = this.apiGetCall.bind(this);
-        this.apiCall = this.apiCall.bind(this);
+        this.apiGetAuthLevelsCall = this.apiGetAuthLevelsCall.bind(this);
+        this.apiEditUserCall = this.apiEditUserCall.bind(this);
     }
 
     componentWillMount() {
-        this.apiGetCall('authlevel/'+this.props.userRoleId);
+        this.setState({newUserInfo: this.props.newUserInfo});
+        this.apiGetAuthLevelsCall('authlevel/'+this.props.userInfo.userRoleId);
     }
 
-    async apiGetCall(endpoint) {
-        const url = `${config.mock_api_url}/${endpoint}`;
+    async apiGetAuthLevelsCall(endpoint) {
+        const url = `${config.base_url}/${endpoint}`;
         const authLevel = await LoadJson(url);
         this.setState({authLevel});
     }
 
-    async apiCall(endpoint, newUser, newRoleId) {
-        const url = `${config.mock_api_url}/${endpoint}/${this.state.newUserId}`;
-        const newUserAck = await LoadJson(url, 'PUT', {username: newUser, auth_level: newRoleId});
+    async apiEditUserCall(endpoint) {
+        const url = `${config.base_url}/${endpoint}`;
+        const newUserAck = await LoadJson(url, 'PUT', {username: this.state.newUserInfo.newUser, auth_level: this.state.newUserInfo.newUserRoleId});
         if (typeof(newUserAck.ok) !== 'undefined' && newUserAck.ok === 'userEdited') {
-            this.setState({newUserMsg: 'User updated successfully!'});
+            var newUserInfoParam = update(this.state, {
+                newUserInfo: {
+                    newUserMsg: { $set: 'User updated successfully!' }
+                }
+            });
+            this.setState(newUserInfoParam);
+            this.props.addEditUser(this.state.newUserInfo);
             browserHistory.push('/dashboard/users');
         } else {
-            this.setState({newUserMsg: 'User could not be updated. Try again!'});
+            var newUserInfoParam = update(this.state, {
+                newUserInfo: {
+                    newUserMsg: { $set: 'User could not be updated. Try again!' }
+                }
+            });
+            this.setState(newUserInfoParam);
         }
     }
 
     handleChange(e) {
         let value = e.target.value;
         const name = e.target.name;
-        this.setState({[name]: value, newUserMsg: ''});
+        var newUserInfoParam = update(this.state, {
+            newUserInfo: {
+                [name]: { $set: value },
+                newUserMsg: { $set: '' }
+            }
+        });
+        this.setState(newUserInfoParam);
     }
 
     onEditUser(e) {
         e.preventDefault();
-        this.apiCall('users', this.state.newUser, this.state.newRoleId);
+        this.apiEditUserCall('users/'+this.state.newUserInfo.newUserId);
     }
 
     render() {
-        var authLevels = <FormControl componentClass="select" name="newRoleId" onChange={event => this.handleChange(event)} >
+        var authLevels = <FormControl componentClass="select" name="newUserRoleId" onChange={event => this.handleChange(event)} >
                             { this.state.authLevel.map((authLevel, index) => {
-                                if (authLevel.id === this.props.newUserRoleId)
+                                if (authLevel.id === this.state.newUserInfo.newUserRoleId)
                                     return <option selected='selected' key={index}
                                                    value={authLevel.id}>{authLevel.auth}</option>
                                 else
@@ -64,14 +85,13 @@ export default class EditUser extends Component {
                             })}
                         </FormControl>
         return (
-            this.props.auth?
+            this.props.userInfo.auth?
                 <div>
                     <PageHeader style={{textAlign: "center", marginBottom: 0}}>
                         Flashcard Racer
                         <small>{this.props.route.name}</small>
                     </PageHeader>
-                    <UserSettings auth={this.props.auth} routes={this.props.routes} userid={this.props.userid}
-                                  username={this.props.username} logout={this.props.logout}/>
+                    <UserSettings routes={this.props.routes} userInfo={this.props.userInfo} logout={this.props.logout}/>
                     <Grid>
                         <Row className="show-grid">
                             <Col xs={1} md={4}></Col>
@@ -81,7 +101,7 @@ export default class EditUser extends Component {
                                         <FormGroup controlId="username">
                                             <ControlLabel>Username:</ControlLabel>
                                             {' '}
-                                            <FormControl type="text" style={{textAlign: "center"}} name="newUser" value={this.state.newUser} onChange={this.handleChange} />
+                                            <FormControl type="text" style={{textAlign: "center"}} name="newUser" value={this.state.newUserInfo.newUser} onChange={this.handleChange} />
                                         </FormGroup>
                                         {' '}
                                         <FormGroup controlId="username">
@@ -93,7 +113,7 @@ export default class EditUser extends Component {
                                         <Button bsStyle="info" type="submit">
                                             Update user
                                         </Button>
-                                        <p>{this.state.newUserMsg}</p>
+                                        <p>{this.state.newUserInfo.newUserMsg}</p>
                                     </form>
                                 </Panel>
                             </Col>

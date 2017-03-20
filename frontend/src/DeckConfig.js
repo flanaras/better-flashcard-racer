@@ -134,7 +134,8 @@ export default class DeckConfig extends Component {
                 }]
             }
             const chosenDeck = await LoadJson(config.base_url + '/generate-cards', 'POST', reqPayload)
-            this.props.onSubmitGameConfig(chosenDeck, this.state.gameLengthProblems, this.state.timePerProblem)
+            const renamedDecks = this.renameAttributes(chosenDeck)
+            this.props.onSubmitGameConfig(renamedDecks, this.state.gameLengthProblems, this.state.timePerProblem)
         }
     }
 
@@ -146,7 +147,6 @@ export default class DeckConfig extends Component {
     render() {
         return (
             <div>
-                <PageHeader style={{textAlign: "center"}}>Flashcard Racer <small>Game Configuration</small></PageHeader>
                 <Grid>
                     <Row className="show-grid">
                         <Col xs={1} md={3}></Col>

@@ -71,5 +71,4 @@ dependencies {
 	compile("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect")
 	compile(group: 'mysql', name: 'mysql-connector-java', version: '6.0.5')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
-
 }

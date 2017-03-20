@@ -23,7 +23,7 @@ import io.swagger.inflector.models.RequestContext;
 import io.swagger.inflector.models.ResponseContext;
 import se.uu.it.bfcr.inflector.springboot.models.Deck;
 import se.uu.it.bfcr.inflector.springboot.models.Flashcard;
-import se.uu.it.bfcr.inflector.springboot.models.generateCarding;
+import se.uu.it.bfcr.inflector.springboot.models.GenerateCarding;
 import org.springframework.stereotype.Component;
 import se.uu.it.bfcr.inflector.springboot.models.OperandGenerate;
 
@@ -33,7 +33,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
-import java.util.HashMap;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
@@ -146,55 +146,17 @@ public class DeckController {
                 .entity(decksList);
     }
 
+
     public ResponseContext generateCards(RequestContext requestContext, JsonNode genDecks) {
         Deck deck = new Deck();
         try {
             ObjectMapper mapper = new ObjectMapper();
-            generateCarding genCard = mapper.treeToValue(genDecks, generateCarding.class);
+            GenerateCarding genCard = mapper.treeToValue(genDecks, GenerateCarding.class);
 
-            List<String> operandList = mappingOperand(genCard.getOperand().get(0));
             List<Flashcard> cards = new ArrayList<>();
 
             for (int i = 0; i < genCard.getNumberSolution(); i++) {
-                int randNumber1;
-                int randNumber2;
-                int randOperand = (int)(Math.random() * operandList.size());
-                int total = 0;
-
-                if (operandList.get(randOperand).equals("/")) {
-                    boolean flag;
-
-                    do {
-                        randNumber1 = genCard.getMin() + (int) (Math.random() * genCard.getMax());
-                        randNumber2 = genCard.getMin() + (int) (Math.random() * genCard.getMax());
-                        flag = false;
-
-                        if (randNumber2 == 0) {
-                            flag = true;
-                        } else {
-                            if ((randNumber1 % randNumber2) > 0) {
-                                flag = true;
-                            }
-                        }
-                    } while (flag);
-                    total = randNumber1 / randNumber2;
-
-                } else {
-                    randNumber1 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
-                    randNumber2 = genCard.getMin() + (int)(Math.random()*genCard.getMax());
-
-                    if (operandList.get(randOperand).equals("+")) {
-                        total = randNumber1 + randNumber2;
-                    } else if (operandList.get(randOperand).equals("-")) {
-                        total = randNumber1 - randNumber2;
-                    } else if (operandList.get(randOperand).equals("X")) {
-                        total = randNumber1 * randNumber2;
-                    }
-                }
-
-
-                String problems = randNumber1 + " " + operandList.get(randOperand) + " " + randNumber2;
-                cards.add(new Flashcard(999999, problems, String.valueOf(total)));
+                cards.add(genCard.generateCard());
             }
 
 
@@ -218,25 +180,5 @@ public class DeckController {
                 .entity(deck);
     }
 
-    private List<String> mappingOperand(OperandGenerate operand) {
-        List<String> operands = new ArrayList<>();
 
-        if (operand.isAdd()) {
-            operands.add("+");
-        }
-
-        if (operand.isMinus()) {
-            operands.add("-");
-        }
-
-        if (operand.isMulti()) {
-            operands.add("X");
-        }
-
-        if (operand.isDiv()) {
-            operands.add("/");
-        }
-
-        return operands;
-    }
 }
